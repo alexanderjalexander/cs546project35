@@ -1,5 +1,4 @@
 import {ObjectId} from 'mongodb';
-import * as valid from 'valid-url'
 
 export function checkString(str, name) {
     if (typeof str !== 'string') throw `${name} must be a string`;
