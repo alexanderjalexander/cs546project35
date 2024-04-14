@@ -10,6 +10,11 @@ lerna-debug.log*
 # Apple DS Store folders
 .DS_Store
 
+# Server Images (server will save incoming image files through route into this directory)
+server_images/
+
+# --------------------------------------------------------------
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
