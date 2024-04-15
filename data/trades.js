@@ -9,7 +9,16 @@ import * as helper from '../helpers.js'
  */
 
 const get = async (id) => {
+    id = helper.checkIdString(id);
 
+    const tradeCollection = await trades();
+    const trade = await tradeCollection.findOne({_id: new ObjectId(id)});
+    if (trade === null) throw 'No trade with provided id';
+
+    trade._id = trade._id.toString();
+    trade.senderId = trade.senderId.toString();
+    trade.receiverId = trade.receiverId.toString();
+    return trade;
 };
 
 /**
@@ -23,7 +32,20 @@ const get = async (id) => {
  */
 
 const create = async (senderId, receiverId, senderItems, receiverItems) => {
+    const tradeCollection = await trades();
 
+    const newTrade = {
+        senderId: new ObjectId(senderId),
+        receiverId: new ObjectId(receiverId),
+        senderItems: senderItems.map(id => new ObjectId(id)),
+        receiverItems: receiverItems.map(id => new ObjectId(id))
+    };
+
+    const insertInfo = await tradeCollection.insertOne(newTrade);
+    if (!insertInfo.acknowledged || !insertInfo.insertedId)
+        throw 'Failed to create trade';
+
+    return await get(insertInfo.insertedId.toString());
 };
 
 /**
