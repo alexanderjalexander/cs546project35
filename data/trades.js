@@ -5,7 +5,7 @@ import * as helper from '../helpers.js'
 /**
  * Gets a trade from the trade collection using an ObjectId
  * @param {string} id the ObjectID of the trade as a string
- * @returns A singular trade document.
+ * @returns A singular trade document
  */
 
 const get = async (id) => {
@@ -42,20 +42,45 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
     };
 
     const insertInfo = await tradeCollection.insertOne(newTrade);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId)
-        throw 'Failed to create trade';
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Failed to create trade';
 
     return await get(insertInfo.insertedId.toString());
 };
 
 /**
- * Swaps the sender and receiver roles and their items in a trade.
+ * Swaps sender and receiver roles and their items in a trade
  * @param {string} id the ObjectID of the trade as a string
  * @returns {Object} The updated trade document after swap
  */
 
 const swap = async (id) => {
+    id = helper.checkIdString(id);
 
+    const tradeCollection = await trades();
+    const trade = await tradeCollection.findOne({_id: new ObjectId(id)});
+    if (!trade) throw 'No trade with provided id';
+
+    const tempSenderId = trade.senderId;
+    const tempSenderItems = trade.senderItems;
+
+    trade.senderId = trade.receiverId;
+    trade.senderItems = trade.receiverItems;
+    trade.receiverId = tempSenderId;
+    trade.receiverItems = tempSenderItems;
+
+    const updateInfo = await tradeCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: { 
+            senderId: trade.senderId, 
+            senderItems: trade.senderItems,
+            receiverId: trade.receiverId,
+            receiverItems: trade.receiverItems 
+        }}
+    );
+
+    if (!updateInfo.acknowledged || updateInfo.modifiedCount === 0) throw 'Failed to update trade';
+
+    return await get(id);
 };
 
 export default {
