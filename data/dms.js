@@ -32,7 +32,7 @@ const get = async (id) => {
  */
 const create = async (actor1, actor2) => {
     const dmCollection = await dms();
-    const newDM = {'actor1':new ObjectId(actor1), 'actor2':new ObjectId(actor1), 'messages': []};
+    const newDM = {'actor1':new ObjectId(actor1), 'actor2':new ObjectId(actor2), 'messages': []};
     const insertInfo = await dmCollection.insertOne(newDM);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
       throw 'Could not add dm';
