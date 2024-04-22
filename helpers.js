@@ -1,5 +1,6 @@
 import {ObjectId} from 'mongodb';
 
+
 export function checkString(str, name) {
     if (typeof str !== 'string') throw `${name} must be a string`;
     if (str.trim().length === 0)
@@ -32,4 +33,22 @@ export function checkPrice(price, varName) {
         throw `Error: Provided arg ${varName} must be a price with <= 2 decimal places.`
     }
     return price;
+}
+
+//helpers for reviews
+
+export function makeRate(rating, reviewerName) {
+    if (rating === null || rating === undefined) {
+        throw `Error: No rating provided for '${reviewerName}'`;
+    }
+    if (typeof rating !== 'number') {
+        throw `Error: Rating for '${reviewerName}' must be a number`;
+    }
+    if (!Number.isInteger(rating)) {
+        throw `Error: Rating for '${reviewerName}' must be an integer`;
+    }
+    if (rating < 1 || rating > 5) {
+        throw `Error: Rating for '${reviewerName}' must be between 1 and 5`;
+    }
+    return `Rating for ${reviewerName} is ${rating}`;
 }
