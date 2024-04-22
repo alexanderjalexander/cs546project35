@@ -1,4 +1,4 @@
-import {items} from '../config/mongoCollections.js';
+import {users, items} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
@@ -47,8 +47,12 @@ const getById = async (id) => {
 const getAllByUserId = async (userId) => {
     userId = helper.checkIdString(userId);
 
-    const itemCollection = await items();
-    const items = await itemCollection.find({userId: new ObjectId(userId)}).toArray();
+    const userCollection = await users();
+    const items = await userCollection.find(
+        {_id: new ObjectId(userId)},
+        {projection: {_id: 0, 'items.$': 1}}
+    );
+
     if (!items) {
         throw `No products with that userId has been found.`
     }
@@ -117,9 +121,9 @@ const update = async (id, userId, updateObject) => {
 const create = async (userId, name, desc, price, image) => {
     userId = helper.checkIdString(userId);
     name = helper.checkString(name, "name");
-    desc = helper.checkString(name, "name");
-    price = helper.checkPrice;
-    image = helper.checkString(name, "name");
+    desc = helper.checkString(name, "desc");
+    price = helper.checkPrice(price, "price");
+    image = helper.checkString(name, "image");
 
     const newItem = {
         userId, name, desc, price, image
@@ -130,6 +134,14 @@ const create = async (userId, name, desc, price, image) => {
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {
         throw `Error: could not add item.`;
     }
+    const itemId = await insertInfo.insertedId;
+
+    const userCollection = await users();
+    await userCollection.updateOne(
+        {_id: itemId},
+        {$push: {items: itemId}}
+    );
+
     return await getById(insertInfo.insertedId.toString());
 }
 
@@ -149,6 +161,12 @@ const remove = async (id, userId) => {
         userId: new ObjectId(userId),
     });
 
+    const userCollection = await users();
+    await userCollection.updateOne(
+        {_id: itemId},
+        {$pull: {items: itemId}}
+    );
+
     if (!removalInfo) {
         throw `Error: Could not delete product with id of ${id}`;
     }
@@ -156,7 +174,7 @@ const remove = async (id, userId) => {
 }
 
 const exportedMethods = {
-    getAll, getById, getAllByUserId, update, create
+    getAll, getById, getAllByUserId, update, create, remove
 }
 
 export default exportedMethods
