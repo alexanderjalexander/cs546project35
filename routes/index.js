@@ -1,9 +1,20 @@
+import dmRoutes from './dms.js';
+import itemRoutes from './items.js';
+import tradeRoutes from './trades.js';
+import userRoutes from './users.js';
+import authRoutes from './auth_routes.js';
+import profileRoutes from './profile.js';
+
+
 const constructorMethod = (app) => {
-    app.use('/', (req, res) => {
-        res.status(200).json({});
-    });
+    app.use('/', authRoutes);
+    app.use('/dms', dmRoutes);
+    app.use('/profiles', userRoutes);
+    app.use('/items', itemRoutes);
+    app.use('/trades', tradeRoutes);
+
     app.use('*', (req, res) => {
-        res.status(404).json({error: 'Route Not Found'});
+        return res.status(404).json({error: 'Not found'});
     });
 };
 

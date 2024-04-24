@@ -38,7 +38,8 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
         senderId: new ObjectId(senderId),
         receiverId: new ObjectId(receiverId),
         senderItems: senderItems.map(id => new ObjectId(id)),
-        receiverItems: receiverItems.map(id => new ObjectId(id))
+        receiverItems: receiverItems.map(id => new ObjectId(id)),
+        status: 'requested'
     };
 
     const insertInfo = await tradeCollection.insertOne(newTrade);
@@ -82,6 +83,26 @@ const swap = async (id) => {
 
     return await get(id);
 };
+
+const getAll = async (userId) => { 
+    const tradesCollection = await trades();
+    userId = helper.checkIdString();
+    let tradesList = await tradesCollection
+        .find({senderId: new ObjectId(userId)})
+        .project({status: 1, receiverId: 1})
+        .toArray();
+    let secondTradesList = await tradesCollection
+    .find({receiverId: new ObjectId(userId)})
+    .project({status: 1, senderId: 1})
+    .toArray();
+    if (!tradesList || !secondTradesList) throw 'Could not get all trades';
+    tradesList.push(...secondTradesList);
+    tradesList = tradesList.map((element) => {
+      element._id = element._id.toString();
+      return element;
+    });
+    return tradesList;
+  };
 
 export default {
     get,
