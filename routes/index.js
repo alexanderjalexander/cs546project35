@@ -3,6 +3,7 @@ import itemRoutes from './items.js';
 import tradeRoutes from './trades.js';
 import userRoutes from './users.js';
 import authRoutes from './auth_routes.js';
+import profileRoutes from './profile.js';
 
 
 const constructorMethod = (app) => {
