@@ -3,12 +3,35 @@
 import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
+import {ObjectId} from 'mongodb';
 
 
 router.route('/')
     .get(async (req, res) => {
         //this route will log all the trades of the current user.
-    
+        //this just shows the user they are trading with, along with the status
+        let trades = [
+            {
+                _id: new ObjectId(),
+                status: 'requested',
+                senderId: ObjectId(),
+                receiverId: ObjectId(),
+                senderItems: [],
+                receiverItems: []
+            },
+            {
+                _id: new ObjectId(),
+                status: 'accepted',
+                senderId: ObjectId(),
+                receiverId: ObjectId(),
+                senderItems: [],
+                receiverItems: []
+            },
+        ];
+        //We will build a list of trade logs to render
+        //We have a database method that gets all the trades that are either coming from or going to the user
+        //we need to parse through all of those trades and then call user database methods to get the username of the other user
+        
     })
     .post(async (req, res) => {
         //this route will initiate a new trade to another person
