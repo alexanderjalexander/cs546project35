@@ -109,3 +109,11 @@ export const checkTheme = (theme) => {
     }
     return theme;
 }
+
+export const checkEmail = (email) => {
+    email = checkString(email, 'email');
+    if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))) {
+        throw `Error: provided email is not a valid.`
+    }
+    return email;
+}

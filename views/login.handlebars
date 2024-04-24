@@ -6,12 +6,12 @@ login form handlebar template
 
 <form id="signin-form" name="signin-form" action="/login" method="POST">
     <div id="errors">
-{{#each errors}}
-<p class="error">{{this}}</p>
-{{/each}}
-</div>  
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"><br>
+        {{#each errors}}
+        <p class="error">{{this}}</p>
+        {{/each}}
+    </div>  
+    <label for="username">Email:</label>
+    <input type="email" id="email" name="email"><br>
     
     <label for="password">Password:</label>
     <input type="password" id="password" name="password"><br>
