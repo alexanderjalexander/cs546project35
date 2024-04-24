@@ -35,4 +35,10 @@ router
     });
   })
 
+router.route('/logout').get(async (req, res) => {
+    //code here for GET
+    req.session.destroy();
+    return res.render('logout', {themePreference: 'light'});
+});
+
 export default router;
