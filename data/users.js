@@ -26,7 +26,7 @@ const getReviewByUserId = async (reviewerId) => {
  */
 
 const createReview = async () => {
-    const userCollection = await user();
+    const userCollection = await users();
     const newReview = {
       temp: []
     };
@@ -52,7 +52,7 @@ const addReview = async (id, reviewerId, comm, rate) => {
     comm = helper.checkString(comment);
     rate=helper.makeRate(rate); 
 
-    const userCollection = await user();
+    const userCollection = await users();
 
     let time = new Date(Date.now());
     const newReview = {  
@@ -78,7 +78,7 @@ const addReview = async (id, reviewerId, comm, rate) => {
 }
 
 
-export default {getReviewByUserId, addReview }
+export default {getReviewByUserId, addReview, createReview}
 
 
 
