@@ -20,17 +20,19 @@ router.route('/login')
     });
 })
 .post(async (req, res) => {
-    try {
-        req.body.email = help.checkEmail(req.body.email);
-        req.body.password = help.checkPassword(req.body.password);
-    } catch (e) {
-        return res.status(400).render('login', {
-            title:"Login",
+    const errors = [];
+    const email = help.tryCatchHelper(() => help.checkEmail(req.body.email), errors);
+    const password = help.tryCatchHelper(() => help.checkPassword(req.body.password), errors);
+    
+    if (errors.length !== 0) {
+        return res.status(400).render('register', {
+            title:"Register",
             auth: req.session.user != undefined,
-            error: e, 
+            errors: errors, 
             themePreference: 'light'
         });
     }
+    
     try {
         // TODO: add database logic once user db functions are done
         const login_result = {
@@ -50,7 +52,7 @@ router.route('/login')
         return res.status(400).render('login', {
             title:"Login",
             auth: req.session.user != undefined,
-            error: e, 
+            errors: [e], 
             themePreference: 'light'
         })
     }
@@ -64,22 +66,23 @@ router.route('/register')
     })
 })
 .post(async (req, res) => {
-    try {
-        req.body.firstName = help.checkName(req.body.firstName);
-        req.body.lastName = help.checkName(req.body.lastName);
-        req.body.email = help.checkEmail(req.body.email);
-        req.body.username = help.checkUsername(req.body.username);
-        req.body.password = help.checkPassword(req.body.password);
-        req.body.confirmPassword = help.checkString(req.body.confirmPassword);
-        if (password !== confirmPassword) {
-            throw 'Error: passwords do not match.'
-        }
-        req.body.themePreference = help.checkTheme(req.body.themePreference)
-    } catch (e) {
+    const errors = [];
+    const firstName = help.tryCatchHelper(() => help.checkName(req.body.firstName), errors);
+    const lastName = help.tryCatchHelper(() => help.checkName(req.body.lastName), errors);
+    const email = help.tryCatchHelper(() => help.checkEmail(req.body.email), errors);
+    const username = help.tryCatchHelper(() => help.checkUsername(req.body.username), errors);
+    const password = help.tryCatchHelper(() => help.checkPassword(req.body.password), errors);
+    const confirmPassword = help.tryCatchHelper(() => help.checkString(req.body.confirmPassword), errors);
+    const themePreference = help.tryCatchHelper(() => help.checkTheme(req.body.themePreference), errors);
+    if (password !== confirmPassword) {
+        throw 'Error: passwords do not match.'
+    }
+
+    if (errors.length !== 0) {
         return res.status(400).render('register', {
             title:"Register",
             auth: req.session.user != undefined,
-            error: e, 
+            errors: errors, 
             themePreference: 'light'
         });
     }
@@ -91,7 +94,7 @@ router.route('/register')
         return res.status(500).render('register', {
             title:"Register",
             auth: req.session.user != undefined,
-            error: e, 
+            errors: [e], 
             themePreference: 'light'
         });
     }
@@ -100,7 +103,7 @@ router.route('/register')
 router.route('/logout')
 .get(async (req, res) => {
     //code here for GET
-    req.session.destroy();
+    req.session.user = null;
     return res.render('logout', {
         title: 'Logged Out',
         auth: req.session.user != undefined
