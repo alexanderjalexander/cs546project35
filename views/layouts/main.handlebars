@@ -9,11 +9,16 @@
    </head>
    <body class="{{themePreference}}">
    <main>
-    <ul id="nav">
-        {{#each nav}}
-        <li><a href="{{this.link}}">{{this.text}}</a></li>
-        {{/each}}
-    </ul>
+    <nav id="nav">
+      <ul>
+        {{#if auth}}
+        <li><a href="/logout">Log Out</a></li>
+        {{else}}
+        <li><a href="/login">Log In</a></li>
+        <li><a href="/register">Register</a></li>
+        {{/if}}
+      </ul>
+    </nav>
     {{{body}}}
     <script src="https://code.jquery.com/jquery-3.5.1.js"
 		integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

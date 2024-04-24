@@ -3,42 +3,39 @@ import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
 
-router.route('/').get(async (req, res) => {
-    if (req.session.user){ //user logged in
-        return res.render('home', {
-            title: 'Home',
-            nav: [
-                {text: 'login', link: '/login'},
-                {text: 'register', link: '/register'}
-            ]
-        });
-    }
-    //user not logged in
+router.route('/')
+.get(async (req, res) => {
     return res.render('home', {
         title: 'Home',
-        nav: [
-            {text: 'login', link: '/login'},
-            {text: 'register', link: '/register'}
-        ]
+        auth: req.session.user != undefined
     });
 });
 
-router
-  .route('/login')
-  .get(async (req, res) => {
+router.route('/login')
+.get(async (req, res) => {
     //code here for GET
-    return res.status(200).render('login', {
+    return res.render('login', {
         title:"Login",
-        nav: [
-            {link: '/register', text: 'already have an account? Register'}
-        ]
+        auth: req.session.user != undefined
     });
-  })
+})
 
-router.route('/logout').get(async (req, res) => {
+router.route('/register')
+.get(async (req, res) => {
+    return res.render('register', {
+        title: 'Register',
+        auth: req.session.user != undefined
+    })
+})
+
+router.route('/logout')
+.get(async (req, res) => {
     //code here for GET
     req.session.destroy();
-    return res.render('logout', {themePreference: 'light'});
+    return res.render('logout', {
+        title: 'Logged Out',
+        auth: req.session.user != undefined
+    });
 });
 
 export default router;
