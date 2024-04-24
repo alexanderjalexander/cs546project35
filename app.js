@@ -13,6 +13,7 @@ import exphbs from 'express-handlebars';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
+import * as middleware from './middleware.js';
 
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -27,6 +28,23 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // let the next middleware run:
   next();
 };
+
+// ---------------------------------------
+// Middleware Declarations
+
+app.use('/', middleware.root_middleware);
+app.use('/register', middleware.register_login_middleware);
+app.use('/login', middleware.register_login_middleware);
+app.use('/logout', middleware.protected_middleware);
+app.use('/profile', middleware.protected_middleware);
+app.use('/directmsgs', middleware.protected_middleware);
+app.use('/trades', middleware.protected_middleware);
+app.use('/profiles/:profileId/follow', middleware.protected_middleware);
+app.use('/profiles/:profileId/reviews', middleware.protected_middleware);
+
+app.post('/items', middleware.protected_middleware);
+
+// ---------------------------------------
 
 app.use('/public', express.static('public'));
 app.use(cookieParser());
