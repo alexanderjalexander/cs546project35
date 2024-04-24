@@ -1,0 +1,40 @@
+{{!--
+
+registration handelbars
+
+--}}
+
+<form id="signup-form" name="signup-form" action="/register" method="POST">
+    <div id="errors">
+    {{#each errors}}
+    <p class="error">{{this}}</p>
+    {{/each}}
+    </div>
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName">
+    
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName">
+    
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password">
+    
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword">
+        
+    <label for="themePreference">Theme Preference:</label>
+    <select id="themePreference" name="themePreference">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+    <label for="role">Role:</label>
+    <select id="role" name="role">
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+    </select>
+    
+    <button type="submit" id="submitButton" name="submitButton">Submit</button>
+</form>
