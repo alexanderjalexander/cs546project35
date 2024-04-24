@@ -7,11 +7,9 @@ Your server this week should not be doing any of the processing! Your server onl
 // This file should set up the express server as shown in the lecture code
 //Here is where you'll set up your server as shown in lecture code
 import express from 'express';
-const app = express();
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
-import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import * as middleware from './middleware.js';
 
@@ -29,6 +27,21 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+
+const app = express();
+
+app.use(session({
+  name: 'AuthenticationState',
+  secret: 'some secret string!',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {maxAge: 60000}
+}));
+
+app.use('/public', express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 // ---------------------------------------
 // Middleware Declarations
 
@@ -41,27 +54,15 @@ app.use('/directmsgs', middleware.protected_middleware);
 app.use('/trades', middleware.protected_middleware);
 app.use('/profiles/:profileId/follow', middleware.protected_middleware);
 app.use('/profiles/:profileId/reviews', middleware.protected_middleware);
-
 app.post('/items', middleware.protected_middleware);
 
 // ---------------------------------------
 
-app.use('/public', express.static('public'));
-app.use(cookieParser());
-
-app.use(express.json());
-app.use(session({
-    name: 'AuthenticationState',
-    secret: 'some secret string!',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {maxAge: 60000}
-  }));
-app.use(express.urlencoded({extended: true}));
 app.use(rewriteUnsupportedBrowserMethods);
-app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs.engine({
+  defaultLayout: 'main'
+}));
 app.set('view engine', 'handlebars');
-
 configRoutes(app);
 
 app.listen(3000, () => {
