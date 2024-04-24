@@ -24,4 +24,17 @@ router.route('/').get(async (req, res) => {
     });
 });
 
+router
+  .route('/login')
+  .get(async (req, res) => {
+    //code here for GET
+    console.log('GET request to /login');
+    return res.status(200).render('login', {
+        title:"Login",
+        nav: [
+            {link: '/register', text: 'already have an account? Register'}
+        ]
+    });
+  })
+
 export default router;
