@@ -84,19 +84,18 @@ const swap = async (id) => {
     return await get(id);
 };
 
+
+/**
+ * Gets all the trades for whcih the userId is one of the actors
+ * @param {string} id the ObjectID of the user
+ * @returns {Array[Object]} All of the user's trades
+ */
 const getAll = async (userId) => { 
     const tradesCollection = await trades();
     userId = helper.checkIdString();
     let tradesList = await tradesCollection
-        .find({senderId: new ObjectId(userId)})
-        .project({status: 1, receiverId: 1})
+        .find({ $or: [{senderId: new ObjectId(userId)},{receiverId: new ObjectId(userId)}]})
         .toArray();
-    let secondTradesList = await tradesCollection
-    .find({receiverId: new ObjectId(userId)})
-    .project({status: 1, senderId: 1})
-    .toArray();
-    if (!tradesList || !secondTradesList) throw 'Could not get all trades';
-    tradesList.push(...secondTradesList);
     tradesList = tradesList.map((element) => {
       element._id = element._id.toString();
       return element;
@@ -105,6 +104,7 @@ const getAll = async (userId) => {
   };
 
 export default {
+    getAll,
     get,
     create,
     swap
