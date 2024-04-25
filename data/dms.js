@@ -4,6 +4,20 @@ import * as helper from '../helpers.js'
 
 
 /**
+ * retrives the DM json by either user's Objectid
+ * @param   {string}  id  the objectid of the user
+ * @return  {Array[Object]}      array of json of the DMs
+ */
+const getByUserId = async (id) => {
+  id = helper.checkIdString(id);
+
+  const dmCollection = await dms();
+  const dms = await dmCollection.find({$or: [{actor1: new ObjectId(id)},{actor2: new ObjectId(id)}]}).toArray();
+  //make these assignments so it returns plain strings instead of objectids
+  return dms;
+};
+
+/**
  * retrives the DM json by it's Objectid
  * @param   {string}  id  the objectid of the DM
  * @return  {Object}      the json of the DM
@@ -87,7 +101,10 @@ const writeMsg = async (id, senderid, msg) => {
 }
 
 
+
+
 export default {
+    getByUserId,
     get,
     create,
     writeMsg
