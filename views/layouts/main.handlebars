@@ -13,10 +13,14 @@
       <ul>
         {{#if auth}}
         <li><a href="/logout">Log Out</a></li>
+        <li><a href="/profile">My Profile</a></li>
+        <li><a href="/dms">Direct Messages</a></li>
+        <li><a href="/trades">My Trades</a></li>
         {{else}}  
         <li><a href="/login">Log In</a></li>
         <li><a href="/register">Register</a></li>
         {{/if}}
+        <li><a href="/items">View Community Items</a></li>
       </ul>
     </nav>
     {{{body}}}

@@ -14,18 +14,18 @@ router.route('/')
             {
                 _id: new ObjectId(),
                 status: 'requested',
-                senderId: ObjectId(),
-                receiverId: ObjectId(),
-                senderItems: [],
-                receiverItems: []
+                senderId: new ObjectId(),
+                receiverId: new ObjectId(),
+                senderItems: [new ObjectId(), new ObjectId()],
+                receiverItems: [new ObjectId(), new ObjectId()]
             },
             {
                 _id: new ObjectId(),
                 status: 'accepted',
-                senderId: ObjectId(),
-                receiverId: ObjectId(),
-                senderItems: [],
-                receiverItems: []
+                senderId: new ObjectId(),
+                receiverId: new ObjectId(),
+                senderItems: [new ObjectId(), new ObjectId()],
+                receiverItems: [new ObjectId(), new ObjectId()]
             },
         ];
         //We will build a list of trade logs to render
