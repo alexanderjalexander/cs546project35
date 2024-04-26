@@ -88,13 +88,13 @@ export function makeRate(rating, reviewerName) {
  * @param {string} name 
  * @returns name if valid.
  */
-export const checkName = (name) => {
-    name = checkString(name, 'name')
+export const checkName = (name, x) => {
+    name = checkString(name, x)
     if (name.length < 2 || name.length > 25) {
-        throw 'Error: name must be >= 2 and <= 25 characters in length.'
+        throw `Error: ${x} must be >= 2 and <= 25 characters in length.`
     }
     if (/\d/.test(name)) {
-        throw `Error: name cannot contain numbers.`
+        throw `Error: ${x} cannot contain numbers.`
     }
     return name;
 }
@@ -185,6 +185,6 @@ export const tryCatchHelper = (fn, errors) => {
     try {
         fn();
     } catch(e) {
-        errors.push(e.message);
+        errors.push(e);
     }
 }
