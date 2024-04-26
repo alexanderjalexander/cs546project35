@@ -2,7 +2,7 @@ import {users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 import bcrypt from 'bcrypt';
-const saltRounds = 16;
+const saltRounds = 13;
 
 
 
@@ -42,17 +42,17 @@ const createReview = async () => {
 
 /**
  * adds a review to the user collection
- * @param {string} id objectid from the user
- * @param {string} reviewerId user's ID as a string
- * @param {string} comm the user's comments
- * @param {number} rate the user's rating 
+ * @param {string} id objectid of the user to be reviewed
+ * @param {string} reviewerId reviewer's ID as a string
+ * @param {string} commment the reviewer's comments
+ * @param {number} rate the reviewer's rating 
  * @returns a new review in the user collection
  */
-const addReview = async (id, reviewerId, comm, rate) => {
+const addReview = async (id, reviewerId, comment, rate) => {
     id = helper.checkIdString(id);
     reviewerId = helper.checkIdString(reviewerId);
-    comm = helper.checkString(comment);
-    rate=helper.makeRate(rate); 
+    comment = helper.checkString(comment);
+    rate=helper.checkRating(rate); 
 
     const userCollection = await users();
 
@@ -60,11 +60,15 @@ const addReview = async (id, reviewerId, comm, rate) => {
     const newReview = {  
         _id: new ObjectId(),
         userId: new ObjectId(reviewerId),
-        comment: com,
+        comment: comment,
         rating: rate,   
         timestamp: time
     };
-    review.temp.push(newReview);
+
+    //first we will find the product we need for the new review
+    let user = await userCollection.findOne({_id: new ObjectId(id)});
+  
+    user.reviews.push(newReview);
 
     const updatedInfo = await userCollection.findOneAndUpdate(
         {_id: new ObjectId(id)},
@@ -74,10 +78,37 @@ const addReview = async (id, reviewerId, comm, rate) => {
     if (!updatedInfo) {
         throw 'could not update product successfully';
     }
-    updatedInfo._id = updatedInfo._id.toString();
-    return updatedInfo;
+    await recalcAverageRating(id);
+    user = await userCollection.findOne({_id: new ObjectId(id)});
+    user._id = user._id.toString();
+    return user;
    
 }
+/**
+ * recalculates the average rating of a user
+ *
+ * @param   {[string]}  userId  user's objectid string
+ *
+ * 
+ */
+const recalcAverageRating = async (userId) => {
+    userId = helper.checkIdString(userId);
+    const userCollection = await users();
+    let user = await getUserById(userId);
+    let sum = 0;
+    for (const rev of user.reviews){
+      sum = sum + rev.rating;
+    }
+    let newAvg =  sum / user.reviews.length;
+    if (user.reviews.length == 0) 
+      newAvg = 0;
+    await userCollection.updateOne(
+      {_id: new ObjectId(userId)},
+      {$set: {avgRating: newAvg}},
+      {returnDocument: 'after'}
+    );
+  }
+
 /**
  * gets a user by id
  *
@@ -92,20 +123,20 @@ const getUserById = async(id) =>{
     if (user === null) throw 'No user with that id';
 
     //make these assignments so it returns plain strings instead of objectids
-    user._id = user.id.toString();
-    user.items = user.items.map((element) =>{
-        element = element.toString();
-    })
-    user.followers = user.followers.map((element) =>{
-        element = element.toString();
-    })
-    user.following = user.following.map((element) =>{
-        element = element.toString();
-    })
+    user._id = user._id.toString();
     return user;
 }
 
-
+/**
+ * creates a new user in the database
+ * @param {[string]} firstName user's first name
+ * @param {[string]} lastName user's last name
+ * @param {[string]} email user's email
+ * @param {[string]} username user's username
+ * @param {[string]} password raw password (plaintext)
+ * @param {[string]} themePreference user's theme preference
+ * @return  {[Object]}  new user json (stringified ids)
+ */
 const createUser = async(
     firstName,
     lastName,

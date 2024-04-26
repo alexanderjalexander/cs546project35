@@ -67,20 +67,13 @@ export function checkPrice(price, varName) {
  * @param {string} reviewerName 
  * @returns string saying `Rating for ${reviewerName} is ${rating}`
  */
-export function makeRate(rating, reviewerName) {
-    if (rating === null || rating === undefined) {
-        throw `Error: No rating provided for '${reviewerName}'`;
-    }
-    if (typeof rating !== 'number') {
-        throw `Error: Rating for '${reviewerName}' must be a number`;
-    }
-    if (!Number.isInteger(rating)) {
-        throw `Error: Rating for '${reviewerName}' must be an integer`;
-    }
-    if (rating < 1 || rating > 5) {
-        throw `Error: Rating for '${reviewerName}' must be between 1 and 5`;
-    }
-    return `Rating for ${reviewerName} is ${rating}`;
+export function checkRating(rating) {
+    if(!rating) throw `You must provide rating`;
+    if(typeof rating !== 'number' || Number.isNaN(rating)) throw `rating must be a number`;
+    if(rating.toFixed(1).length < rating.toString().length)
+        throw `rating cannot have more than one decimal point`
+    if((rating < 1 || rating > 5)) throw `rating must be between 0 and 5`
+    return rating;
 }
 
 /**
