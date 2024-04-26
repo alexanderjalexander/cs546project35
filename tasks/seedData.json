@@ -1,0 +1,139 @@
+{
+    "users": [
+        {
+            "firstName": "Kian",
+            "lastName": "Holden",
+            "email": "kian@gmail.com",
+            "wishlist": [
+                "Desk Chair",
+                "Linear Algebra TextBook"
+            ],
+            "username": "kholden",
+            "password": "ABCDEFG1!",
+            "themePreference": "light",
+            "followers": [
+                "typicalcsmajor",
+                "kenjamin"
+            ],
+            "following": [
+                "pattyh",
+                "kenjamin"
+            ],
+            "reviews": [
+                {
+                    "reviewer": "pattyh",
+                    "comment": "Not the best student...",
+                    "rating": 3.8
+                },
+                {
+                    "reviewer": "kenjamin",
+                    "comment": "Amazing guy",
+                    "rating": 5
+                }
+            ]
+            
+        }, 
+        {
+            "firstName": "patrick",
+            "lastName": "hill",
+            "email": "patrick@gmail.com",
+            "wishlist": [
+                "New 546 TA",
+                "The end of CSS"
+            ],
+            "username": "pattyh",
+            "password": "ABCDEFG2!",
+            "themePreference": "dark",
+            "followers": [
+                "kholden",
+                "kenjamin"
+            ],
+            "following": [
+            ],
+            "reviews": [
+                {
+                    "reviewer": "kholden",
+                    "comment": "truly one of the professors of all time",
+                    "rating": 4.3
+                },
+                {
+                    "reviewer": "kenjamin",
+                    "comment": "i would die for this man",
+                    "rating": 5
+                }
+            ]
+            
+        }, 
+        {
+            "firstName": "Ken",
+            "lastName": "Masters",
+            "email": "ken@gmail.com",
+            "wishlist": [
+                "Martial Arts Cookbook",
+                "mini-fridge"
+            ],
+            "username": "kenjamin",
+            "password": "ABCDEFG3!",
+            "themePreference": "light",
+            "followers": [
+            ],
+            "following": [
+                "pattyh",
+                "kholden"
+            ],
+            "reviews": [
+                {
+                    "reviewer": "pattyh",
+                    "comment": "pretty bad student tbh",
+                    "rating": 1.3
+                },
+                {
+                    "reviewer": "kholden",
+                    "comment": "pretty fun",
+                    "rating": 4.8
+                }
+            ]
+            
+        } 
+    ],
+    "dms": [
+
+    ],
+    "items": [
+        {
+            "user": "kholden",
+            "name": "fridge",
+            "description": "I've used this mini-fridge for a year. It's pretty small",
+            "price": 40.99,
+            "image": "public/fridge" 
+        },
+        {
+            "user": "kholden",
+            "name": "calculus textbook",
+            "description": "This is old and used, but it's pretty cheap",
+            "price": 10.99,
+            "image": "public/calculus" 
+        },
+        {
+            "user": "pattyh",
+            "name": "cigarettes",
+            "description": "I need to quit these...",
+            "price": 0.99,
+            "image": "public/cigarettes" 
+        },
+        {
+            "user": "kenjamin",
+            "name": "",
+            "description": "",
+            "price": 20.99,
+            "image": "public/" 
+        },
+        {
+            "user": "kholden",
+            "name": "fridge",
+            "description": "I've used this mini-fridge for a year. It's pretty small",
+            "price": 40.99,
+            "image": "public/fridge" 
+        }
+    ]
+}
