@@ -31,7 +31,10 @@ router.route('/')
         //We will build a list of trade logs to render
         //We have a database method that gets all the trades that are either coming from or going to the user
         //we need to parse through all of those trades and then call user database methods to get the username of the other user
-        
+        //lets get the usernames from each of those trades now
+        trades = trades.map((element) => {
+            
+        })
     })
     .post(async (req, res) => {
         //this route will initiate a new trade to another person

@@ -1,6 +1,8 @@
 import {users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
+import bcrypt from 'bcrypt';
+const saltRounds = 16;
 
 
 
@@ -76,9 +78,77 @@ const addReview = async (id, reviewerId, comm, rate) => {
     return updatedInfo;
    
 }
+/**
+ * gets a user by id
+ *
+ * @param   {[type]}  id  user's stringid
+ *
+ * @return  {[type]}      user JSON (id's converted to strings)
+ */
+const getUserById = async(id) =>{
+    id = helper.checkIdString(id);
+    const userCollection = await users();
+    const user = await userCollection.findOne({_id: new ObjectId(id)});
+    if (user === null) throw 'No user with that id';
+
+    //make these assignments so it returns plain strings instead of objectids
+    user._id = user.id.toString();
+    user.items = user.items.map((element) =>{
+        element = element.toString();
+    })
+    user.followers = user.followers.map((element) =>{
+        element = element.toString();
+    })
+    user.following = user.following.map((element) =>{
+        element = element.toString();
+    })
+    return user;
+}
 
 
-export default {getReviewByUserId, addReview, createReview}
+const createUser = async(
+    firstName,
+    lastName,
+    email,
+    username,
+    password,
+    themePreference
+) => {
+
+    const userCollection = await users();
+    password = helper.checkPassword(password);
+    const hashed = await bcrypt.hash(password, saltRounds);
+    const newUser = {
+        firstName: helper.checkName(firstName),
+        lastName: helper.checkName(lastName),
+        email: helper.checkEmail(email),
+        username: helper.checkUsername(username),
+        hashedPassword: hashed,
+        themePreference: helper.checkTheme(themePreference),
+        followers: [],
+        following: [],
+        avgRating: 0.0,
+        reviews: []
+    };
+    const insertInfo = await userCollection.insertOne(newUser);
+    if (!insertInfo.acknowledged || !insertInfo.insertedId)
+      throw 'Could not add user';
+    const newId = insertInfo.insertedId.toString();
+    const user = await getUserById(newId);
+    return user;
+
+}
+
+
+export default {
+    // updateUser,
+    createUser,
+    getUserById,
+    // getUserItems,
+    getReviewByUserId,
+    addReview, 
+    createReview
+}
 
 
 
