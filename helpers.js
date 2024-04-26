@@ -124,20 +124,21 @@ export const checkUsername = (username) => {
  */
 export const checkPassword = (password) => {
     password = checkString(password, 'password');
+    const msg = "password cannot contian whitespace, must be at least 8 characters, and must contain the following: one uppercase letter, one number, one special character.";
     if (/\s/.test(password)) {
-        throw `Error: password cannot contain spaces or whitespace characters.`
+        throw msg
     }
     if (password.length < 8) {
-        throw `Error: password must contain at least 8 characters.`
+        throw msg
     }
     if (!(/[A-Z]/).test(password)) {
-        throw `Error: password must contain at least one uppercase letter.`
+        throw msg
     }
     if (!(/[0-9]/).test(password)) {
-        throw `Error: password must contain at least one number.`
+        throw msg
     }
     if (!(/[^a-zA-Z0-9]/).test(password)) {
-        throw `Error: password must contain at least one special character.`
+        throw msg
     }
     return password;
 }

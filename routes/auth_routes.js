@@ -78,11 +78,12 @@ router.route('/register')
     const themePreference = help.tryCatchHelper(() => 
         help.checkTheme(req.body.themePreference), errors);
     if (password !== confirmPassword) {
-        throw 'Error: passwords do not match.'
+        errors.push('Error: passwords do not match.');
     }
 
     if (errors.length !== 0) {
         return res.status(400).render('register', {
+            ...req.body,
             title:"Register",
             auth: req.session.user != undefined,
             errors: errors, 
