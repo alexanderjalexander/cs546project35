@@ -33,9 +33,11 @@ for(const user of objectList.users){
             people[review.reviewer]._id,
             review.comment,
             review.rating
-        )
+        );
     }
-    //TODO: update the follower/following lists of each user accordingly
+    for(const follower of user.followers){
+        await users.addFollower(people[user.username]._id, people[follower]._id);
+    }
 }
 
 //add dummy data here

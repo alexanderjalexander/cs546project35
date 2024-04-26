@@ -1,6 +1,7 @@
 {
     "users": [
         {
+            "username": "kholden",
             "firstName": "Kian",
             "lastName": "Holden",
             "email": "kian@gmail.com",
@@ -8,16 +9,13 @@
                 "Desk Chair",
                 "Linear Algebra TextBook"
             ],
-            "username": "kholden",
             "password": "ABCDEFG1!",
             "themePreference": "light",
             "followers": [
-                "typicalcsmajor",
                 "kenjamin"
             ],
             "following": [
-                "pattyh",
-                "kenjamin"
+                "pattyh"
             ],
             "reviews": [
                 {
@@ -34,6 +32,7 @@
             
         }, 
         {
+            "username": "pattyh",
             "firstName": "patrick",
             "lastName": "hill",
             "email": "patrick@gmail.com",
@@ -41,7 +40,6 @@
                 "New 546 TA",
                 "The end of CSS"
             ],
-            "username": "pattyh",
             "password": "ABCDEFG2!",
             "themePreference": "dark",
             "followers": [
@@ -65,6 +63,7 @@
             
         }, 
         {
+            "username": "kenjamin",
             "firstName": "Ken",
             "lastName": "Masters",
             "email": "ken@gmail.com",
@@ -72,7 +71,6 @@
                 "Martial Arts Cookbook",
                 "mini-fridge"
             ],
-            "username": "kenjamin",
             "password": "ABCDEFG3!",
             "themePreference": "light",
             "followers": [

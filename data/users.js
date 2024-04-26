@@ -169,13 +169,51 @@ const createUser = async(
     return user;
 
 }
+/**
+ * adds to ther follower list of the object specified by userId.
+ * Also adds to the following list of the object specified by followerId
+ *
+ * @param   {[string]}  userId      string id of the followee
+ * @param   {[string]}  followerId  string id of the follower
+ *
+ * @return  {[type]}              [return description]
+ */
+const addFollower = async(userId, followerId) => {
+    userId = helper.checkIdString(userId);
+    followerId = helper.checkIdString(followerId);
+    const userCollection = await users();
+
+
+
+    let followee = await userCollection.findOne({_id: new ObjectId(userId)});
+    followee.followers.push(new ObjectId(followerId));
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$set: followee},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo) {
+        throw 'could not update product successfully';
+    }
+
+    let follower = await userCollection.findOne({_id: new ObjectId(followerId)});
+    follower.following.push(new ObjectId(userId));
+    const updatedInfo2 = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(followerId)},
+        {$set: follower},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo2) {
+        throw 'could not update product successfully';
+    }
+}
 
 
 export default {
     // updateUser,
     createUser,
     getUserById,
-    // getUserItems,
+    addFollower,
     getReviewByUserId,
     addReview, 
     createReview
