@@ -27,7 +27,7 @@ for (const user of objectList.users){
 }
 console.log("added all the users. Now updating user data...");
 for(const user of objectList.users){
-    for(const review of user.reviews){
+    for(const review of user.reviews){ //add reviews
         await users.addReview(
             people[user.username]._id,
             people[review.reviewer]._id,
@@ -35,9 +35,17 @@ for(const user of objectList.users){
             review.rating
         );
     }
-    for(const follower of user.followers){
+    for(const follower of user.followers){ //add followers
         await users.addFollower(people[user.username]._id, people[follower]._id);
     }
+}
+for(const item of objectList.items){ //items
+    await items.create(
+        people[item.user]._id, 
+        item.name, 
+        item.description, 
+        item.price, 
+        item.image);
 }
 
 //add dummy data here

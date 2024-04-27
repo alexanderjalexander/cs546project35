@@ -121,10 +121,10 @@
         },
         {
             "user": "kenjamin",
-            "name": "",
-            "description": "",
+            "name": "Linear Algebra TextBook",
+            "description": "math book",
             "price": 20.99,
-            "image": "public/" 
+            "image": "public/LinAlg" 
         },
         {
             "user": "kholden",

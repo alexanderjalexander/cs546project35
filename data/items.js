@@ -138,7 +138,7 @@ const create = async (userId, name, desc, price, image) => {
 
     const userCollection = await users();
     await userCollection.updateOne(
-        {_id: itemId},
+        {_id: userId},
         {$push: {items: itemId}}
     );
 

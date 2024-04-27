@@ -155,11 +155,13 @@ const createUser = async(
         email: helper.checkEmail(email),
         username: helper.checkUsername(username),
         hashedPassword: hashed,
-        themePreference: helper.checkTheme(themePreference),
+        items: [],
+        wishlist: [],
         followers: [],
         following: [],
+        reviews: [],
         avgRating: 0.0,
-        reviews: []
+        themePreference: helper.checkTheme(themePreference)
     };
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
