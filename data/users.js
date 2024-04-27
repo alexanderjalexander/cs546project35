@@ -185,8 +185,6 @@ const addFollower = async(userId, followerId) => {
     followerId = helper.checkIdString(followerId);
     const userCollection = await users();
 
-
-
     let followee = await userCollection.findOne({_id: new ObjectId(userId)});
     followee.followers.push(new ObjectId(followerId));
     const updatedInfo = await userCollection.findOneAndUpdate(
@@ -211,8 +209,34 @@ const addFollower = async(userId, followerId) => {
 }
 
 
+/**
+ * adds a wish to the users wishist
+ *
+ * @param   {string}  userId  users string id
+ * @param   {string}  wish    item
+ *
+ */
+const addWish = async(userId, wish) => {
+    userId = helper.checkIdString(userId);
+    wish = helper.checkString(wish);
+    const userCollection = await users();
+
+    let user = await userCollection.findOne({_id: new ObjectId(userId)});
+    user.wishlist.push(wish);
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$set: user},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo) {
+        throw 'could not update product successfully';
+    }
+}
+
+
 export default {
     // updateUser,
+    addWish,
     createUser,
     getUserById,
     addFollower,

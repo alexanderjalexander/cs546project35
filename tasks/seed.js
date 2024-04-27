@@ -23,7 +23,11 @@ for (const user of objectList.users){
         user.username,
         user.password,
         user.themePreference
-    )
+    );
+    //need to add items in their wishlist
+    for (const wish of user.wishlist){
+        await users.addWish(people[user.username]._id, wish);
+    }
 }
 console.log("added all the users. Now updating user data...");
 for(const user of objectList.users){
