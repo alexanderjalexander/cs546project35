@@ -112,11 +112,11 @@ const recalcAverageRating = async (userId) => {
 /**
  * gets a user by id
  *
- * @param   {[type]}  id  user's stringid
+ * @param   {string}  id  user's stringid
  *
- * @return  {[type]}      user JSON (id's converted to strings)
+ * @return  {string}      user JSON (id's converted to strings)
  */
-const getUserById = async(id) =>{
+const getUserById = async(id) => {
     id = helper.checkIdString(id);
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
@@ -126,6 +126,34 @@ const getUserById = async(id) =>{
     user._id = user._id.toString();
     return user;
 }
+/**
+ * logs in the user with an email and password
+ *
+ * @param   {string}  email     email
+ * @param   {string}  password  plaintext password
+ *
+ * @return  {object}            user json (stringified id)
+ */
+export const loginUser = async (email, password) => {
+    email = helper.checkEmail(email);
+    password = helper.checkPassword(password);
+  
+    const userCollection = await users();
+    const foundUser = await userCollection.findOne({email: email});
+    if (!foundUser) throw 'Either the username or password is invalid';
+    const pswdMatch = await bcrypt.compare(password, foundUser.password);
+    if (!pswdMatch){
+        throw 'Either the username or password is invalid';
+    }
+    return {
+        id: foundUser._id.toString,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
+        userName: foundUser.username,
+        email: foundUser.email,
+        themePreference: foundUser.themePreference
+    }
+  };
 
 /**
  * creates a new user in the database
@@ -235,7 +263,7 @@ const addWish = async(userId, wish) => {
 
 
 export default {
-    // updateUser,
+    loginUser,
     addWish,
     createUser,
     getUserById,

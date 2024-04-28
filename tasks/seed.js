@@ -6,8 +6,9 @@ import items from '../data/items.js';
 import dms from '../data/dms.js';
 import trades from '../data/trades.js';
 import objectList from './seedData.json' assert { type: "json" };
-
-
+import * as fs from 'fs';
+const o = fs.readFile('seedData.json', { encoding: 'utf8' })
+console.log(o);
 const db = await dbConnection();
 await db.dropDatabase();
 

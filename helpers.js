@@ -175,9 +175,22 @@ export const checkEmail = (email) => {
  * @param {*} fn Non asynchronous callback function that does something.
  * @param {*} errors A list of errors to pass, if it fails.
  */
-export const tryCatchHelper = (fn, errors) => {
+export const tryCatchHelper = (errors, fn) => {
     try {
         return fn();
+    } catch(e) {
+        errors.push(e);
+    }
+}
+
+/**
+ * Trys the callback function provided. If it errors, add it to a list of provided errors. Useful for checking multiple things and giving back multiple errors.
+ * @param {*} fn Non asynchronous callback function that does something.
+ * @param {*} errors A list of errors to pass, if it fails.
+ */
+export const tryCatchAsync = async (errors, fn) => {
+    try {
+        await fn();
     } catch(e) {
         errors.push(e);
     }
