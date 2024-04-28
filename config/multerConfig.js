@@ -1,7 +1,7 @@
 import {ObjectId} from "mongodb";
 import * as path from "node:path";
 
-const multer = require('multer');
+import multer from "multer";
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
