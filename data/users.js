@@ -141,12 +141,12 @@ export const loginUser = async (email, password) => {
     const userCollection = await users();
     const foundUser = await userCollection.findOne({email: email});
     if (!foundUser) throw 'Either the username or password is invalid';
-    const pswdMatch = await bcrypt.compare(password, foundUser.password);
+    const pswdMatch = await bcrypt.compare(password, foundUser.hashedPassword);
     if (!pswdMatch){
         throw 'Either the username or password is invalid';
     }
     return {
-        id: foundUser._id.toString,
+        id: foundUser._id.toString(),
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
         userName: foundUser.username,
