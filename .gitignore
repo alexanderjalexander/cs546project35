@@ -10,6 +10,9 @@ lerna-debug.log*
 # Apple DS Store folders
 .DS_Store
 
+# JetBrains and WebStorm
+.idea
+
 # Server Images (server will save incoming image files through route into this directory)
 server_images/
 
