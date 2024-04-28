@@ -81,13 +81,13 @@ export function checkRating(rating) {
  * @param {string} name 
  * @returns name if valid.
  */
-export const checkName = (name, x) => {
-    name = checkString(name, x)
+export const checkName = (name, varname) => {
+    name = checkString(name, varname)
     if (name.length < 2 || name.length > 25) {
-        throw `Error: ${x} must be >= 2 and <= 25 characters in length.`
+        throw `Error: ${varname} must be >= 2 and <= 25 characters in length.`
     }
     if (/\d/.test(name)) {
-        throw `Error: ${x} cannot contain numbers.`
+        throw `Error: ${varname} cannot contain numbers.`
     }
     return name;
 }
@@ -177,7 +177,7 @@ export const checkEmail = (email) => {
  */
 export const tryCatchHelper = (fn, errors) => {
     try {
-        fn();
+        return fn();
     } catch(e) {
         errors.push(e);
     }
