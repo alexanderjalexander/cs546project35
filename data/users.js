@@ -12,7 +12,7 @@ const saltRounds = 13;
  * @param {string} reviewerId the user's ID as a string
  * @returns one review that belongs to that userId
  */
-const getReviewByUserId = async (reviewerId) => {
+export const getReviewByUserId = async (reviewerId) => {
     reviewerId = helper.checkIdString(reviewerId);
     const reviewCollection = await reviews();
     const review = await reviewCollection.findOne({reviewerId: new ObjectId(reviewerId)});
@@ -27,7 +27,7 @@ const getReviewByUserId = async (reviewerId) => {
  * @returns {string} Objectid of the reviews collection
  */
 
-const createReview = async () => {
+export const createReview = async () => {
     const userCollection = await users();
     const newReview = {
       temp: []
@@ -48,7 +48,7 @@ const createReview = async () => {
  * @param {number} rate the reviewer's rating 
  * @returns a new review in the user collection
  */
-const addReview = async (id, reviewerId, comment, rate) => {
+export const addReview = async (id, reviewerId, comment, rate) => {
     id = helper.checkIdString(id);
     reviewerId = helper.checkIdString(reviewerId);
     comment = helper.checkString(comment);
@@ -82,16 +82,12 @@ const addReview = async (id, reviewerId, comment, rate) => {
     user = await userCollection.findOne({_id: new ObjectId(id)});
     user._id = user._id.toString();
     return user;
-   
 }
 /**
  * recalculates the average rating of a user
- *
- * @param   {[string]}  userId  user's objectid string
- *
- * 
+ * @param   {string}  userId  user's objectid string
  */
-const recalcAverageRating = async (userId) => {
+export const recalcAverageRating = async (userId) => {
     userId = helper.checkIdString(userId);
     const userCollection = await users();
     let user = await getUserById(userId);
@@ -116,7 +112,7 @@ const recalcAverageRating = async (userId) => {
  *
  * @return  {string}      user JSON (id's converted to strings)
  */
-const getUserById = async(id) => {
+export const getUserById = async(id) => {
     id = helper.checkIdString(id);
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
@@ -157,15 +153,15 @@ export const loginUser = async (email, password) => {
 
 /**
  * creates a new user in the database
- * @param {[string]} firstName user's first name
- * @param {[string]} lastName user's last name
- * @param {[string]} email user's email
- * @param {[string]} username user's username
- * @param {[string]} password raw password (plaintext)
- * @param {[string]} themePreference user's theme preference
- * @return  {[Object]}  new user json (stringified ids)
+ * @param {string} firstName user's first name
+ * @param {string} lastName user's last name
+ * @param {string} email user's email
+ * @param {string} username user's username
+ * @param {string} password raw password (plaintext)
+ * @param {string} themePreference user's theme preference
+ * @return  {Object}  new user json (stringified ids)
  */
-const createUser = async(
+export const createUser = async (
     firstName,
     lastName,
     email,
@@ -202,13 +198,10 @@ const createUser = async(
 /**
  * adds to ther follower list of the object specified by userId.
  * Also adds to the following list of the object specified by followerId
- *
- * @param   {[string]}  userId      string id of the followee
- * @param   {[string]}  followerId  string id of the follower
- *
- * @return  {[type]}              [return description]
+ * @param   {string}  userId      string id of the followee
+ * @param   {string}  followerId  string id of the follower
  */
-const addFollower = async(userId, followerId) => {
+export const addFollower = async(userId, followerId) => {
     userId = helper.checkIdString(userId);
     followerId = helper.checkIdString(followerId);
     const userCollection = await users();
@@ -244,7 +237,7 @@ const addFollower = async(userId, followerId) => {
  * @param   {string}  wish    item
  *
  */
-const addWish = async(userId, wish) => {
+export const addWish = async(userId, wish) => {
     userId = helper.checkIdString(userId);
     wish = helper.checkString(wish);
     const userCollection = await users();
@@ -260,39 +253,6 @@ const addWish = async(userId, wish) => {
         throw 'could not update product successfully';
     }
 }
-
-
-export default {
-    loginUser,
-    addWish,
-    createUser,
-    getUserById,
-    addFollower,
-    getReviewByUserId,
-    addReview, 
-    createReview
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* 
