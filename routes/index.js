@@ -9,6 +9,7 @@ import profileRoutes from './profile.js';
 const constructorMethod = (app) => {
     app.use('/', authRoutes);
     app.use('/dms', dmRoutes);
+    app.use('/profile', profileRoutes);
     app.use('/profiles', userRoutes);
     app.use('/items', itemRoutes);
     app.use('/trades', tradeRoutes);

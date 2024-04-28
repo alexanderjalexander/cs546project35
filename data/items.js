@@ -42,21 +42,21 @@ const getById = async (id) => {
 /**
  * Finds all the items owned/listed by a user
  * @param {string} userId the user's ID as a string
- * @returns a collection of items belonging to that userId
+ * @returns an array of items belonging to that userId
  */
 const getAllByUserId = async (userId) => {
     userId = helper.checkIdString(userId);
 
     const userCollection = await users();
-    const items = await userCollection.find(
+    const items = await userCollection.findOne(
         {_id: new ObjectId(userId)},
-        {projection: {_id: 0, 'items.$': 1}}
+        {projection: {_id: 0, items: 1}}
     );
 
     if (!items) {
         throw `No products with that userId has been found.`
     }
-    return items;
+    return items.items;
 }
 
 /**
