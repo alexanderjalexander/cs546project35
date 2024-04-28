@@ -8,7 +8,7 @@ router.route('/')
 .get(async (req, res) => {
     return res.render('home', {
         title: 'Home',
-        auth: req.session.user !== null
+        auth: req.session.user !== undefined
     });
 });
 
@@ -17,7 +17,7 @@ router.route('/login')
     //code here for GET
     return res.render('login', {
         title:"Login",
-        auth: req.session.user !== null
+        auth: req.session.user !== undefined
     });
 })
 .post(async (req, res) => {
@@ -30,7 +30,7 @@ router.route('/login')
     if (errors.length !== 0) {
         return res.status(400).render('login', {
             title:"Login",
-            auth: req.session.user !== null,
+            auth: req.session.user !== undefined,
             errors: errors, 
             themePreference: 'light'
         });
@@ -44,7 +44,7 @@ router.route('/login')
         return res.status(400).render('login', {
             ...req.body,
             title:"Login",
-            auth: req.session.user !== null,
+            auth: req.session.user !== undefined,
             errors: [e],
             themePreference: 'light'
         });
@@ -55,7 +55,7 @@ router.route('/register')
 .get(async (req, res) => {
     return res.render('register', {
         title: 'Register',
-        auth: req.session.user !== null
+        auth: req.session.user !== undefined
     })
 })
 .post(async (req, res) => {
@@ -82,7 +82,7 @@ router.route('/register')
         return res.status(400).render('register', {
             ...req.body,
             title:"Register",
-            auth: req.session.user !== null,
+            auth: req.session.user !== undefined,
             errors: errors, 
             themePreference: 'light'
         });
@@ -101,7 +101,7 @@ router.route('/register')
     } catch(e) {
         return res.status(500).render('register', {
             title:"Register",
-            auth: req.session.user !== null,
+            auth: req.session.user !== undefined,
             errors: errors, 
             themePreference: 'light'
         });
@@ -111,11 +111,10 @@ router.route('/register')
 router.route('/logout')
 .get(async (req, res) => {
     //code here for GET
-    req.session.user = null;
-    console.log(req.session.user !== null)
+    req.session.user = undefined;
     return res.render('logout', {
         title: 'Logged Out',
-        auth: req.session.user !== null
+        auth: false
     });
 });
 
