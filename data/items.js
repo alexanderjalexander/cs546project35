@@ -3,7 +3,7 @@ import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
 /**@typedef {({_id:ObjectId, userId:ObjectId, name:string, desc:string, price:number, image:string})} item
- * Describes a tradeable item. _id and userId are strings that can be converted to ObjectId's
+ * Describes a trade-able item. _id and userId are strings that can be converted to ObjectId's
  */
 
 /** 
@@ -11,7 +11,7 @@ import * as helper from '../helpers.js'
  */
 const getAll = async () => {
     const itemCollection = await items();
-    const items = await itemCollection.find({}).toArray();
+    let items = await itemCollection.find({}).toArray();
     if (!items) {
         throw 'Could not fetch all items.'
     }
@@ -89,21 +89,21 @@ const update = async (id, userId, updateObject) => {
     let updatedItem = {
         userId: item.userId,
         name: (updateObject.hasOwnProperty('name'))
-            ? helper.checkString(updateObject.name)
+            ? helper.checkString(updateObject.name, 'name')
             : item.name,
         desc: (updateObject.hasOwnProperty('desc'))
-            ? helper.checkString(updateObject.desc)
+            ? helper.checkString(updateObject.desc, 'description')
             : item.desc,
         price: (updateObject.hasOwnProperty('price'))
-            ? helper.checkPrice(updateObject.price)
+            ? helper.checkPrice(updateObject.price, 'price')
             : item.price,
         image: (updateObject.hasOwnProperty('image'))
-            ? helper.checkString(updateObject.image)
+            ? helper.checkString(updateObject.image, 'image path')
             : item.image
     };
 
     const itemCollection = await items();
-    await itemCollection.updateOne(
+    const updateInfo = await itemCollection.updateOne(
         {_id: new ObjectId(updatedItem._id)}, 
         {$set: updatedItem},
         {returnDocument: 'after'}
@@ -154,9 +154,10 @@ const create = async (userId, name, desc, price, image) => {
  * Attempts to remove an item.
  * @param {string} id Item's ID as a string
  * @param {string} userId User's ID as a string
+ * @param {string} itemId Desired item ID to be removed, as a string
  * @returns Object with id and deleted:true on successful deletion
  */
-const remove = async (id, userId) => {
+const remove = async (id, userId, itemId) => {
     id = helper.checkIdString(id);
     userId = helper.checkIdString(userId);
 
@@ -168,8 +169,8 @@ const remove = async (id, userId) => {
 
     const userCollection = await users();
     await userCollection.updateOne(
-        {_id: itemId},
-        {$pull: {items: itemId}}
+        {_id: new ObjectId(userId)},
+        {$pull: {items: new ObjectId(itemId)}}
     );
 
     if (!removalInfo) {
