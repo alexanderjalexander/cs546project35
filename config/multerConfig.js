@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
     if (mimeType && extName) {
         cb(null, true);
     } else {
-        return cb(new TypeError('Only image files are allowed!'));
+        return cb(new Error('Only image files are allowed!'));
     }
 }
 

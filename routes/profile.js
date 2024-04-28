@@ -19,17 +19,17 @@ router.route('/items')
         });
     })
     .post(async (req, res) => {
-        // Input checking
-        const errors = [];
-        const name = help.tryCatchHelper(errors,
-            () => help.checkString(req.body.name, 'Item Name'));
-        const desc = help.tryCatchHelper(errors,
-            () => help.checkString(req.body.desc, 'Item Description'));
-        req.body.price = Number(req.body.price);
-        const price = help.tryCatchHelper(errors,
-            () => help.checkPrice(req.body.price, 'Item Price'));
-
         upload(req, res, async function (err) {
+            // Input checking
+            const errors = [];
+            const name = help.tryCatchHelper(errors,
+                () => help.checkString(req.body.name, 'Item Name'));
+            const desc = help.tryCatchHelper(errors,
+                () => help.checkString(req.body.desc, 'Item Description'));
+            req.body.price = Number(req.body.price);
+            const price = help.tryCatchHelper(errors,
+                () => help.checkPrice(req.body.price, 'Item Price'));
+
             if (err instanceof multer.MulterError) {
                 // Multer Error occurred while uploading
                 errors.push(err);
@@ -70,20 +70,20 @@ router.route('/items')
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
-        })
 
-        try {
-            await itemData.create(req.session.user._id, name, desc, price, '/' + req.file.path)
-        } catch (e) {
-            return res.status(500).render('profile_items', {
-                title: "My Profile - Items",
-                errors: [e],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
-                items: await itemData.getAllByUserId(req.session.user._id)
-            });
-        }
-        res.redirect('/profile/items');
+            try {
+                await itemData.create(req.session.user._id, name, desc, price, '/' + req.file.path)
+            } catch (e) {
+                return res.status(500).render('profile_items', {
+                    title: "My Profile - Items",
+                    errors: [e],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    items: await itemData.getAllByUserId(req.session.user._id)
+                });
+            }
+            res.redirect('/profile/items');
+        })
     })
     .delete((req, res) => {
         res.redirect('/profile/items');
