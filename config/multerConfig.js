@@ -4,9 +4,12 @@ import * as path from "node:path";
 import multer from "multer";
 
 const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'server_images/')
+    },
     filename: function (req, file, cb) {
-        const uniqueSuffix = new ObjectId().toString();
-        cb(null, file.originalname + '_' + uniqueSuffix)
+        const uniquePrefix = new ObjectId().toString();
+        cb(null, uniquePrefix + '_' + file.originalname);
     }
 })
 
@@ -17,20 +20,16 @@ const fileFilter = (req, file, cb) => {
     if (mimeType && extName) {
         cb(null, true);
     } else {
-        cb("Error: You can Only Upload Images!!");
-    }
-
-    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpg') {
-        req.fileValidationError = 'Incorrect image type.';
-        cb(new Error('goes wrong on the mimetype'));
+        return cb(new TypeError('Only image files are allowed!'));
     }
 }
 
-const upload = multer({
-    dest: 'server_images/',
+const multerConfig = multer({
     storage,
     fileFilter,
-    fileSize: (4*1024*1024)
+    limits: {
+        fileSize: (4*1024*1024)
+    }
 })
 
-export {upload};
+export {multerConfig};

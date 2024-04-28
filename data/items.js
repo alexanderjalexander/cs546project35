@@ -1,4 +1,4 @@
-import {users, items} from '../config/mongoCollections.js';
+import {items, users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
@@ -56,7 +56,12 @@ const getAllByUserId = async (userId) => {
     if (!items) {
         throw `No products with that userId has been found.`
     }
-    return items.items;
+    const itemList = [];
+    for (let itemId of items.items) {
+        let itemDetails = await getById(itemId.toString())
+        itemList.push(itemDetails);
+    }
+    return itemList;
 }
 
 /**
@@ -121,12 +126,12 @@ const update = async (id, userId, updateObject) => {
 const create = async (userId, name, desc, price, image) => {
     userId = helper.checkIdString(userId);
     name = helper.checkString(name, "name");
-    desc = helper.checkString(name, "desc");
+    desc = helper.checkString(desc, "desc");
     price = helper.checkPrice(price, "price");
-    image = helper.checkString(name, "image");
+    image = helper.checkString(image, "image");
 
     const newItem = {
-        userId, name, desc, price, image
+        userId: new ObjectId(userId), name, desc, price, image
     }
 
     const itemCollection = await items();
@@ -138,7 +143,7 @@ const create = async (userId, name, desc, price, image) => {
 
     const userCollection = await users();
     await userCollection.updateOne(
-        {_id: userId},
+        {_id: new ObjectId(userId)},
         {$push: {items: itemId}}
     );
 

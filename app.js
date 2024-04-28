@@ -12,6 +12,7 @@ import exphbs from 'express-handlebars';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import * as middleware from './middleware.js';
+import fs from 'fs';
 
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -35,10 +36,18 @@ app.use(session({
   secret: 'some secret string!',
   resave: false,
   saveUninitialized: false,
-  cookie: {maxAge: 60000}
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30,} // 30 days
 }));
 
+
+// If the server_images folder doesn't exist, create it.
+const server_img_dir = './server_images';
+if (!fs.existsSync(server_img_dir)) {
+  fs.mkdirSync(server_img_dir);
+}
+
 app.use('/public', express.static('public'));
+app.use('/server_images', express.static('server_images'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
