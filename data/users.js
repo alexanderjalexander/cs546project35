@@ -24,7 +24,7 @@ export const getReviewByUserId = async (reviewerId) => {
 
 /**
  * creates a new review in the users collection
- * @returns {string} Objectid of the reviews collection
+ * @returns {string} ObjectId of the reviews collection
  */
 
 export const createReview = async () => {
@@ -42,16 +42,16 @@ export const createReview = async () => {
 
 /**
  * adds a review to the user collection
- * @param {string} id objectid of the user to be reviewed
+ * @param {string} id ObjectId of the user to be reviewed
  * @param {string} reviewerId reviewer's ID as a string
- * @param {string} commment the reviewer's comments
+ * @param {string} comment the reviewer's comments
  * @param {number} rate the reviewer's rating 
  * @returns a new review in the user collection
  */
 export const addReview = async (id, reviewerId, comment, rate) => {
     id = helper.checkIdString(id);
     reviewerId = helper.checkIdString(reviewerId);
-    comment = helper.checkString(comment);
+    comment = helper.checkString(comment, 'comment');
     rate=helper.checkRating(rate); 
 
     const userCollection = await users();
@@ -85,7 +85,7 @@ export const addReview = async (id, reviewerId, comment, rate) => {
 }
 /**
  * recalculates the average rating of a user
- * @param   {string}  userId  user's objectid string
+ * @param   {string}  userId  user's ObjectId string
  */
 export const recalcAverageRating = async (userId) => {
     userId = helper.checkIdString(userId);
@@ -96,7 +96,7 @@ export const recalcAverageRating = async (userId) => {
       sum = sum + rev.rating;
     }
     let newAvg =  sum / user.reviews.length;
-    if (user.reviews.length == 0) 
+    if (user.reviews.length === 0)
       newAvg = 0;
     await userCollection.updateOne(
       {_id: new ObjectId(userId)},
@@ -107,28 +107,24 @@ export const recalcAverageRating = async (userId) => {
 
 /**
  * gets a user by id
- *
- * @param   {string}  id  user's stringid
- *
+ * @param   {string}  id  user's ObjectId as a string
  * @return  {string}      user JSON (id's converted to strings)
  */
-export const getUserById = async(id) => {
+export const getUserById = async (id) => {
     id = helper.checkIdString(id);
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
     if (user === null) throw 'No user with that id';
 
-    //make these assignments so it returns plain strings instead of objectids
+    //make these assignments so, it returns plain strings instead of ObjectIds
     user._id = user._id.toString();
     return user;
 }
 /**
  * logs in the user with an email and password
- *
- * @param   {string}  email     email
- * @param   {string}  password  plaintext password
- *
- * @return  {object}            user json (stringified id)
+ * @param {string} email email
+ * @param {string} password plaintext password
+ * @returns {Promise<{themePreference: (string|*), firstName: (string|*), lastName: (string|*), id: string, userName, email: *}>}
  */
 export const loginUser = async (email, password) => {
     email = helper.checkEmail(email);
@@ -159,7 +155,7 @@ export const loginUser = async (email, password) => {
  * @param {string} username user's username
  * @param {string} password raw password (plaintext)
  * @param {string} themePreference user's theme preference
- * @return  {Object}  new user json (stringified ids)
+ * @return  {Object}  new user json (ObjectId represented as a string)
  */
 export const createUser = async (
     firstName,
@@ -174,8 +170,8 @@ export const createUser = async (
     password = helper.checkPassword(password);
     const hashed = await bcrypt.hash(password, saltRounds);
     const newUser = {
-        firstName: helper.checkName(firstName),
-        lastName: helper.checkName(lastName),
+        firstName: helper.checkName(firstName, 'First Name'),
+        lastName: helper.checkName(lastName, 'Last Name'),
         email: helper.checkEmail(email),
         username: helper.checkUsername(username),
         hashedPassword: hashed,
@@ -196,7 +192,7 @@ export const createUser = async (
 
 }
 /**
- * adds to ther follower list of the object specified by userId.
+ * adds to their follower list of the object specified by userId.
  * Also adds to the following list of the object specified by followerId
  * @param   {string}  userId      string id of the followee
  * @param   {string}  followerId  string id of the follower
@@ -231,11 +227,9 @@ export const addFollower = async(userId, followerId) => {
 
 
 /**
- * adds a wish to the users wishist
- *
- * @param   {string}  userId  users string id
+ * adds a wish to the users wishlist
+ * @param   {string}  userId  user's ObjectId as a string
  * @param   {string}  wish    item
- *
  */
 export const addWish = async(userId, wish) => {
     userId = helper.checkIdString(userId);

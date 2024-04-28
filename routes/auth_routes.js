@@ -8,7 +8,7 @@ router.route('/')
 .get(async (req, res) => {
     return res.render('home', {
         title: 'Home',
-        auth: req.session.user != undefined
+        auth: req.session.user !== null
     });
 });
 
@@ -17,7 +17,7 @@ router.route('/login')
     //code here for GET
     return res.render('login', {
         title:"Login",
-        auth: req.session.user != undefined
+        auth: req.session.user !== null
     });
 })
 .post(async (req, res) => {
@@ -30,37 +30,32 @@ router.route('/login')
     if (errors.length !== 0) {
         return res.status(400).render('login', {
             title:"Login",
-            auth: req.session.user != undefined,
+            auth: req.session.user !== null,
             errors: errors, 
             themePreference: 'light'
         });
     }
     
-    // TODO: add database logic once user db functions are done
-    const login_result = await help.tryCatchAsync(errors, async () => {
-        return await userData.loginUser(email, password);
-    });
-    if (errors.length == 0){
+    try {
+        const login_result = await userData.loginUser(email, password);
         req.session.user = login_result;
-        return res.redirect('/');
-    }
-    else {
+        res.redirect('/');
+    } catch (e) {
         return res.status(400).render('login', {
-        ...req.body,
-        title:"Login",
-        auth: req.session.user != undefined,
-        errors: errors, 
-        themePreference: 'light'
+            ...req.body,
+            title:"Login",
+            auth: req.session.user !== null,
+            errors: [e],
+            themePreference: 'light'
         });
     }
-    
 })
 
 router.route('/register')
 .get(async (req, res) => {
     return res.render('register', {
         title: 'Register',
-        auth: req.session.user != undefined
+        auth: req.session.user !== null
     })
 })
 .post(async (req, res) => {
@@ -76,7 +71,7 @@ router.route('/register')
     const password = help.tryCatchHelper(errors, () => 
         help.checkPassword(req.body.password));
     const confirmPassword = help.tryCatchHelper(errors, () => 
-        help.checkString(req.body.confirmPassword));
+        help.checkString(req.body.confirmPassword, 'confirmPassword'));
     const themePreference = help.tryCatchHelper(errors, () => 
         help.checkTheme(req.body.themePreference));
     if (password !== confirmPassword) {
@@ -87,19 +82,26 @@ router.route('/register')
         return res.status(400).render('register', {
             ...req.body,
             title:"Register",
-            auth: req.session.user != undefined,
+            auth: req.session.user !== null,
             errors: errors, 
             themePreference: 'light'
         });
     }
 
     try {
-        // TODO: add database implementation once done.
+        await userData.createUser(
+            firstName,
+            lastName,
+            email,
+            username,
+            password,
+            themePreference
+        );
         res.redirect('/login');
     } catch(e) {
         return res.status(500).render('register', {
             title:"Register",
-            auth: req.session.user != undefined,
+            auth: req.session.user !== null,
             errors: errors, 
             themePreference: 'light'
         });
@@ -110,9 +112,10 @@ router.route('/logout')
 .get(async (req, res) => {
     //code here for GET
     req.session.user = null;
+    console.log(req.session.user !== null)
     return res.render('logout', {
         title: 'Logged Out',
-        auth: req.session.user != undefined
+        auth: req.session.user !== null
     });
 });
 
