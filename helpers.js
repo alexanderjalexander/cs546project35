@@ -177,7 +177,7 @@ export const checkEmail = (email) => {
  */
 export const tryCatchHelper = (errors, fn) => {
     try {
-        fn();
+        return fn();
     } catch(e) {
         errors.push(e);
     }
@@ -190,7 +190,7 @@ export const tryCatchHelper = (errors, fn) => {
  */
 export const tryCatchAsync = async (errors, fn) => {
     try {
-        await fn();
+        return await fn();
     } catch(e) {
         errors.push(e);
     }

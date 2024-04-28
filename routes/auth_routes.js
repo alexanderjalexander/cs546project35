@@ -37,18 +37,22 @@ router.route('/login')
     }
     
     // TODO: add database logic once user db functions are done
-    help.tryCatchAsync(errors, async () => {
-        req.session.user = await userData.loginUser(email, password);
-        return res.redirect('/');
+    const login_result = await help.tryCatchAsync(errors, async () => {
+        return await userData.loginUser(email, password);
     });
-
-    return res.status(400).render('login', {
+    if (errors.length == 0){
+        req.session.user = login_result;
+        return res.redirect('/');
+    }
+    else {
+        return res.status(400).render('login', {
         ...req.body,
         title:"Login",
         auth: req.session.user != undefined,
         errors: errors, 
         themePreference: 'light'
-    })
+        });
+    }
     
 })
 
