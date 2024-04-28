@@ -2,6 +2,7 @@
 import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
+import * as userData from '../data/users.js';
 
 router.route('/')
 .get(async (req, res) => {
@@ -20,9 +21,11 @@ router.route('/login')
     });
 })
 .post(async (req, res) => {
-    let errors = [];
-    const email = help.tryCatchHelper(() => help.checkEmail(req.body.email), errors);
-    const password = help.tryCatchHelper(() => help.checkPassword(req.body.password), errors);
+    const errors = [];
+    const email = help.tryCatchHelper(errors, () => 
+        help.checkEmail(req.body.email));
+    const password = help.tryCatchHelper(errors, () => 
+        help.checkPassword(req.body.password));
     
     if (errors.length !== 0) {
         return res.status(400).render('login', {
@@ -33,25 +36,20 @@ router.route('/login')
         });
     }
     
-    try {
-        // TODO: add database logic once user db functions are done
-        const login_result = {
-            firstName: 'test',
-            lastName: 'test',
-            username: 'test',
-            email: 'test@gmail.com',
-            themepreference: 'light',
-        }
-        req.session.user = login_result;
+    // TODO: add database logic once user db functions are done
+    help.tryCatchAsync(errors, async () => {
+        req.session.user = await userData.loginUser(email, password);
         return res.redirect('/');
-    } catch(e) {
-        return res.status(400).render('login', {
-            title:"Login",
-            auth: req.session.user != undefined,
-            errors: [e], 
-            themePreference: 'light'
-        })
-    }
+    });
+
+    return res.status(400).render('login', {
+        ...req.body,
+        title:"Login",
+        auth: req.session.user != undefined,
+        errors: errors, 
+        themePreference: 'light'
+    })
+    
 })
 
 router.route('/register')
@@ -63,20 +61,20 @@ router.route('/register')
 })
 .post(async (req, res) => {
     const errors = [];
-    const firstName = help.tryCatchHelper(() => 
-        help.checkName(req.body.firstName, 'First Name'), errors);
-    const lastName = help.tryCatchHelper(() => 
-        help.checkName(req.body.lastName, 'Last Name'), errors);
-    const email = help.tryCatchHelper(() => 
-        help.checkEmail(req.body.email), errors);
-    const username = help.tryCatchHelper(() => 
-        help.checkUsername(req.body.username), errors);
-    const password = help.tryCatchHelper(() => 
-        help.checkPassword(req.body.password), errors);
-    const confirmPassword = help.tryCatchHelper(() => 
-        help.checkString(req.body.confirmPassword), errors);
-    const themePreference = help.tryCatchHelper(() => 
-        help.checkTheme(req.body.themePreference), errors);
+    const firstName = help.tryCatchHelper(errors, () => 
+        help.checkName(req.body.firstName, 'First Name'));
+    const lastName = help.tryCatchHelper(errors, () => 
+        help.checkName(req.body.lastName, 'Last Name'));
+    const email = help.tryCatchHelper(errors, () => 
+        help.checkEmail(req.body.email));
+    const username = help.tryCatchHelper(errors, () => 
+        help.checkUsername(req.body.username));
+    const password = help.tryCatchHelper(errors, () => 
+        help.checkPassword(req.body.password));
+    const confirmPassword = help.tryCatchHelper(errors, () => 
+        help.checkString(req.body.confirmPassword));
+    const themePreference = help.tryCatchHelper(errors, () => 
+        help.checkTheme(req.body.themePreference));
     if (password !== confirmPassword) {
         errors.push('Error: passwords do not match.');
     }
@@ -98,7 +96,7 @@ router.route('/register')
         return res.status(500).render('register', {
             title:"Register",
             auth: req.session.user != undefined,
-            errors: [e], 
+            errors: errors, 
             themePreference: 'light'
         });
     }

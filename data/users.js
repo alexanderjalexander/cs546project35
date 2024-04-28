@@ -135,8 +135,8 @@ const getUserById = async(id) => {
  * @return  {object}            user json (stringified id)
  */
 export const loginUser = async (email, password) => {
-    email = help.checkEmail(email);
-    password = help.checkPassword(password);
+    email = helper.checkEmail(email);
+    password = helper.checkPassword(password);
   
     const userCollection = await users();
     const foundUser = await userCollection.findOne({email: email});
@@ -146,7 +146,7 @@ export const loginUser = async (email, password) => {
         throw 'Either the username or password is invalid';
     }
     return {
-        id: foundUser._id.toString(),
+        id: foundUser._id.toString,
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
         userName: foundUser.username,
