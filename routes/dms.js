@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import * as dmData from '../data/dmData.js'; 
+import * as dmData from '../data/dms.js'; 
 
-router.route('/directmsgs')
+router.route('/')
   .get(async (req, res) => {
     try {
       const dmList = await dmData.getAllDMs();
@@ -12,7 +12,7 @@ router.route('/directmsgs')
     }
   });
 
-router.route('/directmsgs/:id')
+router.route('/:id')
   .get(async (req, res) => {
     try {
       const dm = await dmData.getDMById(req.params.id);
