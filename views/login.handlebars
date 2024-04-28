@@ -10,11 +10,11 @@ login form handlebar template
         <p class="error">{{this}}</p>
         {{/each}}
     </div>  
-    <label for="username">Email:</label>
-    <input type="email" id="email" name="email"><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{default_email}}"><br>
     
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br>
+    <input type="password" id="password" name="password" value="{{default_password}}"><br>
         
     <button type="submit" id="submitButton" name="submitButton">Submit</button>
 </form>

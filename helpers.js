@@ -67,20 +67,13 @@ export function checkPrice(price, varName) {
  * @param {string} reviewerName 
  * @returns string saying `Rating for ${reviewerName} is ${rating}`
  */
-export function makeRate(rating, reviewerName) {
-    if (rating === null || rating === undefined) {
-        throw `Error: No rating provided for '${reviewerName}'`;
-    }
-    if (typeof rating !== 'number') {
-        throw `Error: Rating for '${reviewerName}' must be a number`;
-    }
-    if (!Number.isInteger(rating)) {
-        throw `Error: Rating for '${reviewerName}' must be an integer`;
-    }
-    if (rating < 1 || rating > 5) {
-        throw `Error: Rating for '${reviewerName}' must be between 1 and 5`;
-    }
-    return `Rating for ${reviewerName} is ${rating}`;
+export function checkRating(rating) {
+    if(!rating) throw `You must provide rating`;
+    if(typeof rating !== 'number' || Number.isNaN(rating)) throw `rating must be a number`;
+    if(rating.toFixed(1).length < rating.toString().length)
+        throw `rating cannot have more than one decimal point`
+    if((rating < 1 || rating > 5)) throw `rating must be between 0 and 5`
+    return rating;
 }
 
 /**
@@ -88,13 +81,13 @@ export function makeRate(rating, reviewerName) {
  * @param {string} name 
  * @returns name if valid.
  */
-export const checkName = (name) => {
-    name = checkString(name, 'name')
+export const checkName = (name, x) => {
+    name = checkString(name, x)
     if (name.length < 2 || name.length > 25) {
-        throw 'Error: name must be >= 2 and <= 25 characters in length.'
+        throw `Error: ${x} must be >= 2 and <= 25 characters in length.`
     }
     if (/\d/.test(name)) {
-        throw `Error: name cannot contain numbers.`
+        throw `Error: ${x} cannot contain numbers.`
     }
     return name;
 }
@@ -124,20 +117,21 @@ export const checkUsername = (username) => {
  */
 export const checkPassword = (password) => {
     password = checkString(password, 'password');
+    const msg = "password cannot contian whitespace, must be at least 8 characters, and must contain the following: one uppercase letter, one number, one special character.";
     if (/\s/.test(password)) {
-        throw `Error: password cannot contain spaces or whitespace characters.`
+        throw msg
     }
     if (password.length < 8) {
-        throw `Error: password must contain at least 8 characters.`
+        throw msg
     }
     if (!(/[A-Z]/).test(password)) {
-        throw `Error: password must contain at least one uppercase letter.`
+        throw msg
     }
     if (!(/[0-9]/).test(password)) {
-        throw `Error: password must contain at least one number.`
+        throw msg
     }
     if (!(/[^a-zA-Z0-9]/).test(password)) {
-        throw `Error: password must contain at least one special character.`
+        throw msg
     }
     return password;
 }
@@ -185,6 +179,6 @@ export const tryCatchHelper = (fn, errors) => {
     try {
         fn();
     } catch(e) {
-        errors.push(e.message);
+        errors.push(e);
     }
 }

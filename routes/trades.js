@@ -14,24 +14,27 @@ router.route('/')
             {
                 _id: new ObjectId(),
                 status: 'requested',
-                senderId: ObjectId(),
-                receiverId: ObjectId(),
-                senderItems: [],
-                receiverItems: []
+                senderId: new ObjectId(),
+                receiverId: new ObjectId(),
+                senderItems: [new ObjectId(), new ObjectId()],
+                receiverItems: [new ObjectId(), new ObjectId()]
             },
             {
                 _id: new ObjectId(),
                 status: 'accepted',
-                senderId: ObjectId(),
-                receiverId: ObjectId(),
-                senderItems: [],
-                receiverItems: []
+                senderId: new ObjectId(),
+                receiverId: new ObjectId(),
+                senderItems: [new ObjectId(), new ObjectId()],
+                receiverItems: [new ObjectId(), new ObjectId()]
             },
         ];
         //We will build a list of trade logs to render
         //We have a database method that gets all the trades that are either coming from or going to the user
         //we need to parse through all of those trades and then call user database methods to get the username of the other user
-        
+        //lets get the usernames from each of those trades now
+        trades = trades.map((element) => {
+            
+        })
     })
     .post(async (req, res) => {
         //this route will initiate a new trade to another person

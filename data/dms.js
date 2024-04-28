@@ -54,8 +54,8 @@ const create = async (actor1, actor2) => {
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
       throw 'Could not add dm';
     const newId = insertInfo.insertedId.toString();
-    const product = await get(newId);
-    return product;
+    const dm = await getById(newId);
+    return dm;
   };
 
 /**

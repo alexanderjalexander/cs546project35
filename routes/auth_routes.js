@@ -20,13 +20,13 @@ router.route('/login')
     });
 })
 .post(async (req, res) => {
-    const errors = [];
+    let errors = [];
     const email = help.tryCatchHelper(() => help.checkEmail(req.body.email), errors);
     const password = help.tryCatchHelper(() => help.checkPassword(req.body.password), errors);
     
     if (errors.length !== 0) {
-        return res.status(400).render('register', {
-            title:"Register",
+        return res.status(400).render('login', {
+            title:"Login",
             auth: req.session.user != undefined,
             errors: errors, 
             themePreference: 'light'
@@ -42,11 +42,7 @@ router.route('/login')
             email: 'test@gmail.com',
             themepreference: 'light',
         }
-        req.session.user = {
-            firstName: login_result.firstName, lastName: login_result.lastName,
-            username: login_result.username, email: login_result.email,
-            themePreference: login_result.themePreference
-        };
+        req.session.user = login_result;
         return res.redirect('/');
     } catch(e) {
         return res.status(400).render('login', {
@@ -67,19 +63,27 @@ router.route('/register')
 })
 .post(async (req, res) => {
     const errors = [];
-    const firstName = help.tryCatchHelper(() => help.checkName(req.body.firstName), errors);
-    const lastName = help.tryCatchHelper(() => help.checkName(req.body.lastName), errors);
-    const email = help.tryCatchHelper(() => help.checkEmail(req.body.email), errors);
-    const username = help.tryCatchHelper(() => help.checkUsername(req.body.username), errors);
-    const password = help.tryCatchHelper(() => help.checkPassword(req.body.password), errors);
-    const confirmPassword = help.tryCatchHelper(() => help.checkString(req.body.confirmPassword), errors);
-    const themePreference = help.tryCatchHelper(() => help.checkTheme(req.body.themePreference), errors);
+    const firstName = help.tryCatchHelper(() => 
+        help.checkName(req.body.firstName, 'First Name'), errors);
+    const lastName = help.tryCatchHelper(() => 
+        help.checkName(req.body.lastName, 'Last Name'), errors);
+    const email = help.tryCatchHelper(() => 
+        help.checkEmail(req.body.email), errors);
+    const username = help.tryCatchHelper(() => 
+        help.checkUsername(req.body.username), errors);
+    const password = help.tryCatchHelper(() => 
+        help.checkPassword(req.body.password), errors);
+    const confirmPassword = help.tryCatchHelper(() => 
+        help.checkString(req.body.confirmPassword), errors);
+    const themePreference = help.tryCatchHelper(() => 
+        help.checkTheme(req.body.themePreference), errors);
     if (password !== confirmPassword) {
-        throw 'Error: passwords do not match.'
+        errors.push('Error: passwords do not match.');
     }
 
     if (errors.length !== 0) {
         return res.status(400).render('register', {
+            ...req.body,
             title:"Register",
             auth: req.session.user != undefined,
             errors: errors, 
