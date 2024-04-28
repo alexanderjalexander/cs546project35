@@ -126,7 +126,14 @@ const getUserById = async(id) => {
     user._id = user._id.toString();
     return user;
 }
-
+/**
+ * logs in the user with an email and password
+ *
+ * @param   {string}  email     email
+ * @param   {string}  password  plaintext password
+ *
+ * @return  {object}            user json (stringified id)
+ */
 export const loginUser = async (email, password) => {
     email = help.checkEmail(email);
     password = help.checkPassword(password);
@@ -139,7 +146,7 @@ export const loginUser = async (email, password) => {
         throw 'Either the username or password is invalid';
     }
     return {
-        id: foundUser._id,
+        id: foundUser._id.toString(),
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
         userName: foundUser.username,
