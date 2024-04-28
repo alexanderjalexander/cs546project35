@@ -127,23 +127,26 @@ const getUserById = async(id) => {
     return user;
 }
 
-/**
- * gets a user by email
- *
- * @param   {string}  email  user's email
- *
- * @return  {Object}      user JSON (id's converted to strings)
- */
-const getUserByEmail = async(email) => {
-    email = helper.checkEmail(email);
+export const loginUser = async (email, password) => {
+    email = help.checkEmail(email);
+    password = help.checkPassword(password);
+  
     const userCollection = await users();
-    const user = await userCollection.findOne({email: email});
-    if (user === null) throw 'No user with that id';
-
-    //make these assignments so it returns plain strings instead of objectids
-    user._id = user._id.toString();
-    return user;
-}
+    const foundUser = await userCollection.findOne({email: email});
+    if (!foundUser) throw 'Either the username or password is invalid';
+    const pswdMatch = await bcrypt.compare(password, foundUser.password);
+    if (!pswdMatch){
+        throw 'Either the username or password is invalid';
+    }
+    return {
+        id: foundUser._id,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
+        userName: foundUser.username,
+        email: foundUser.email,
+        themePreference: foundUser.themePreference
+    }
+  };
 
 /**
  * creates a new user in the database
@@ -253,7 +256,7 @@ const addWish = async(userId, wish) => {
 
 
 export default {
-    getUserByEmail,
+    loginUser,
     addWish,
     createUser,
     getUserById,
