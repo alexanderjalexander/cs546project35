@@ -112,14 +112,32 @@ const recalcAverageRating = async (userId) => {
 /**
  * gets a user by id
  *
- * @param   {[type]}  id  user's stringid
+ * @param   {string}  id  user's stringid
  *
- * @return  {[type]}      user JSON (id's converted to strings)
+ * @return  {string}      user JSON (id's converted to strings)
  */
-const getUserById = async(id) =>{
+const getUserById = async(id) => {
     id = helper.checkIdString(id);
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
+    if (user === null) throw 'No user with that id';
+
+    //make these assignments so it returns plain strings instead of objectids
+    user._id = user._id.toString();
+    return user;
+}
+
+/**
+ * gets a user by email
+ *
+ * @param   {string}  email  user's email
+ *
+ * @return  {Object}      user JSON (id's converted to strings)
+ */
+const getUserByEmail = async(email) => {
+    email = helper.checkEmail(email);
+    const userCollection = await users();
+    const user = await userCollection.findOne({email: email});
     if (user === null) throw 'No user with that id';
 
     //make these assignments so it returns plain strings instead of objectids
@@ -235,7 +253,7 @@ const addWish = async(userId, wish) => {
 
 
 export default {
-    // updateUser,
+    getUserByEmail,
     addWish,
     createUser,
     getUserById,
