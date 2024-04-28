@@ -138,7 +138,7 @@ export const loginUser = async (email, password) => {
         throw 'Either the username or password is invalid';
     }
     return {
-        id: foundUser._id.toString(),
+        _id: foundUser._id.toString(),
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
         userName: foundUser.username,
