@@ -5,10 +5,25 @@ import users from '../data/users.js';
 import items from '../data/items.js';
 import dms from '../data/dms.js';
 import trades from '../data/trades.js';
-import objectList from './seedData.json' assert { type: "json" };
+// import objectList from './seedData.json' assert { type: "json" };
 import * as fs from 'fs';
-const o = fs.readFile('seedData.json', { encoding: 'utf8' })
-console.log(o);
+import {fileURLToPath} from 'url';
+import * as path from 'path';
+import { log } from 'console';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
+
+const jsonFilePath = path.join(__filename, '../seedData.json');
+// Read users.json file 
+// Read asynchronously
+let objectList = undefined;
+try {
+    const data = fs.readFileSync(jsonFilePath, 'utf8');
+    objectList = JSON.parse(data);
+} catch (err) {
+    console.error('Error reading file:', err);
+}
+
 const db = await dbConnection();
 await db.dropDatabase();
 
