@@ -103,21 +103,21 @@
             "name": "fridge",
             "description": "I've used this mini-fridge for a year. It's pretty small",
             "price": 40.99,
-            "image": "public/fridge" 
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSHngGPTx42k_oWPlZ7IR6ce2NCSGxTRRspeC0maYlug&s" 
         },
         {
             "user": "kholden",
             "name": "calculus textbook",
             "description": "This is old and used, but it's pretty cheap",
             "price": 10.99,
-            "image": "public/calculus" 
+            "image": "https://atlas-content-cdn.pixelsquid.com/stock-images/textbooks-book-Va7kewA-600.jpg" 
         },
         {
             "user": "pattyh",
             "name": "cigarettes",
             "description": "I need to quit these...",
             "price": 0.99,
-            "image": "public/cigarettes" 
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJIcXkRpLOeYrWF_dZycCoIpok06beyXpCj7aNrZtkRQ&s" 
         },
         {
             "user": "kenjamin",
@@ -131,7 +131,7 @@
             "name": "fridge",
             "description": "I've used this mini-fridge for a year. It's pretty small",
             "price": 40.99,
-            "image": "public/fridge" 
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSHngGPTx42k_oWPlZ7IR6ce2NCSGxTRRspeC0maYlug&s" 
         }
     ]
 }
