@@ -103,9 +103,54 @@ const getAll = async (userId) => {
     return tradesList;
   };
 
+const update = async (id, newObj) => {
+    id = helper.checkIdString(id);
+    if (Object.keys(updateObject).length === 0) {
+        throw `Must supply at least one key/value pair to updateObject.`
+    }
+    if (!Object.keys(updateObject).includes('senderId')
+        && !Object.keys(updateObject).includes('recieverId')
+        && !Object.keys(updateObject).includes('status')
+        && !Object.keys(updateObject).includes('senderItems')
+        && !Object.keys(updateObject).includes('recieverItems')) {
+        throw `Must supply at least one of these: stats, senderId, recieverId, senderItems, receiverItems`
+    }
+    const trade = await get(id);
+
+    let updatedTrade = {
+        userId: item.userId,
+        senderId: (updateObject.hasOwnProperty('senderId'))
+            ? helper.checkIdString(updateObject.name, 'senderId')
+            : item.senderId,
+        receiverId: (updateObject.hasOwnProperty('receiverId'))
+            ? helper.checkIdString(updateObject.name, 'receiverId')
+            : item.senderId,
+        senderItems: (updateObject.hasOwnProperty('senderItems'))
+            ? helper.checkIdArray(updateObject.name, 'senderItems')
+            : item.senderItems,
+        recieverItems: (updateObject.hasOwnProperty('recieverItems'))
+            ? helper.checkArray(updateObject.name, 'recieverItems')
+            : item.recieverItems,
+        status: (updateObject.hasOwnProperty('status'))
+            ? helper.checkString(updateObject.desc, 'status')
+            : item.status,
+    };
+
+    const tradesCollection = await trades();
+    const updateInfo = await itemCollection.updateOne(
+        {_id: new ObjectId(id)}, 
+        {$set: updatedItem},
+        {returnDocument: 'after'}
+    );
+
+    if (!updateInfo) throw `Update failed, could not find an item with id of ${id}`;
+    return updateInfo;
+};
+
 export default {
     getAll,
     get,
     create,
-    swap
+    swap,
+    update,
 };

@@ -59,13 +59,18 @@ for(const user of objectList.users){
         await users.addFollower(people[user.username]._id, people[follower]._id);
     }
 }
+const items = {}
 for(const item of objectList.items){ //items
-    await items.create(
+    items[item.name] = await items.create(
         people[item.user]._id, 
         item.name, 
         item.description, 
         item.price, 
         item.image);
+}
+
+for(const trade of objectList.trades){
+    
 }
 
 //add dummy data here
