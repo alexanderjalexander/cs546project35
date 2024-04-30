@@ -125,13 +125,22 @@
             "description": "math book",
             "price": 20.99,
             "image": "public/LinAlg" 
+        }
+    ],
+    "trades": [
+        {
+            "sender": "kholden",
+            "receiver": "pattyh",
+            "senderItems": ["fridge", "calculus textbook"],
+            "recieverItems": ["cigarettes"],
+            "status": "requested"
         },
         {
-            "user": "kholden",
-            "name": "fridge",
-            "description": "I've used this mini-fridge for a year. It's pretty small",
-            "price": 40.99,
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSHngGPTx42k_oWPlZ7IR6ce2NCSGxTRRspeC0maYlug&s" 
+            "sender": "kenjamin",
+            "receiver": "kholden",
+            "senderItems": ["Linear Algebra TextBook"],
+            "recieverItems": ["fridge"],
+            "status": "accepted"
         }
     ]
 }
