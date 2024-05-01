@@ -76,6 +76,13 @@ for(const trade of objectList.trades){
     await trades.update(currentTrade._id, {'status': trade.status});
 }
 
+for(const dm of objectList.DMS){
+    let currentDM = await dms.create(people[dm.actor1]._id, people[dm.actor2]._id);
+    for(const message of dm.messages){
+        await dms.writeMsg(currentDM._id, people[message.sender]._id, message.content)
+    }
+}
+
 //add dummy data here
 // const userid1 = new ObjectId();
 // const userid2 = new ObjectId();

@@ -168,17 +168,18 @@ const createUser = async (
 
     firstName = helper.checkName(firstName);
     lastName = helper.checkName(lastName);
-    username = helper.checkUserName(username);
+    username = helper.checkUsername(username);
     username = username.toLowerCase();
     password = helper.checkPassword(password);
-    favoriteQuote = helper.checkFavQuote(favoriteQuote);
     themePreference = helper.checkTheme(themePreference);
   
     //check for duplicate username in the system first
     const userCollection = await users();
     const foundUsername = await userCollection.findOne({username: username});
     if (foundUsername) throw 'there is already a user with that name';
-  
+    const foundEmail = await userCollection.findOne({email: email});
+    if (foundEmail) throw 'there is already a user with that email';
+
 
     password = helper.checkPassword(password);
     const hashed = await bcrypt.hash(password, saltRounds);

@@ -41,7 +41,7 @@ const getById = async (id) => {
  * @param   {string}  actor1  Objectid of one messager
  * @param   {string}  actor2  Objectid of other messager
  *
- * @return  {string}          Objectid of the direct message
+ * @return  {string}          Object of the direct message
  */
 const create = async (actor1, actor2) => {
     const dmCollection = await dms();
