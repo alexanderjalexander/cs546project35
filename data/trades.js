@@ -103,7 +103,7 @@ const getAll = async (userId) => {
     return tradesList;
   };
 
-const update = async (id, newObj) => {
+const update = async (id, updateObject) => {
     id = helper.checkIdString(id);
     if (Object.keys(updateObject).length === 0) {
         throw `Must supply at least one key/value pair to updateObject.`
@@ -112,34 +112,33 @@ const update = async (id, newObj) => {
         && !Object.keys(updateObject).includes('recieverId')
         && !Object.keys(updateObject).includes('status')
         && !Object.keys(updateObject).includes('senderItems')
-        && !Object.keys(updateObject).includes('recieverItems')) {
+        && !Object.keys(updateObject).includes('receiverItems')) {
         throw `Must supply at least one of these: stats, senderId, recieverId, senderItems, receiverItems`
     }
     const trade = await get(id);
 
     let updatedTrade = {
-        userId: item.userId,
         senderId: (updateObject.hasOwnProperty('senderId'))
-            ? helper.checkIdString(updateObject.name, 'senderId')
-            : item.senderId,
+            ? helper.checkIdString(updateObject.senderId, 'senderId')
+            : trade.senderId,
         receiverId: (updateObject.hasOwnProperty('receiverId'))
-            ? helper.checkIdString(updateObject.name, 'receiverId')
-            : item.senderId,
+            ? helper.checkIdString(updateObject.recieverId, 'receiverId')
+            : trade.receiverId,
         senderItems: (updateObject.hasOwnProperty('senderItems'))
-            ? helper.checkIdArray(updateObject.name, 'senderItems')
-            : item.senderItems,
-        recieverItems: (updateObject.hasOwnProperty('recieverItems'))
-            ? helper.checkArray(updateObject.name, 'recieverItems')
-            : item.recieverItems,
+            ? helper.checkIdArray(updateObject.senderItems, 'senderItems')
+            : trade.senderItems,
+        receiverItems: (updateObject.hasOwnProperty('receiverItems'))
+            ? helper.checkArray(updateObject.receiverItems, 'receiverItems')
+            : trade.receiverItems,
         status: (updateObject.hasOwnProperty('status'))
-            ? helper.checkString(updateObject.desc, 'status')
-            : item.status,
+            ? helper.checkString(updateObject.status, 'status')
+            : trade.status,
     };
 
     const tradesCollection = await trades();
-    const updateInfo = await itemCollection.updateOne(
+    const updateInfo = await tradesCollection.updateOne(
         {_id: new ObjectId(id)}, 
-        {$set: updatedItem},
+        {$set: updatedTrade},
         {returnDocument: 'after'}
     );
 
