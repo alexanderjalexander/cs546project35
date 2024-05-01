@@ -59,9 +59,9 @@ for(const user of objectList.users){
         await users.addFollower(people[user.username]._id, people[follower]._id);
     }
 }
-const items = {}
+const stuff = {}
 for(const item of objectList.items){ //items
-    items[item.name] = await items.create(
+    stuff[item.name] = await items.create(
         people[item.user]._id, 
         item.name, 
         item.description, 
@@ -70,7 +70,9 @@ for(const item of objectList.items){ //items
 }
 
 for(const trade of objectList.trades){
-    
+    trade.senderItems = trade.senderItems.map((el)=>stuff[el]._id);
+    trade.receiverItems = trade.receiverItems.map((el)=>stuff[el]._id);
+    await trades.create(people[trade.sender]._id, people[trade.receiver]._id, trade.senderItems, trade.receiverItems);
 }
 
 //add dummy data here
