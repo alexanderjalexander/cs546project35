@@ -85,70 +85,11 @@ router.route('/items')
             res.redirect('/profile/items');
         })
     })
-
-    // .post('/profiles/:profileId/follow', async (req, res) => {
-    //     if (!req.session.user) {
-    //         return res.status(403).send("Unauthorized");
-    //     }
-    //     try {
-    //         await profileData.followUser(req.session.user._id, req.params.profileId);
-    //         res.redirect('/profiles/' + req.params.profileId);
-    //     } catch (error) {
-    //         res.status(500).send(error.message);
-    //     }
-    // })
-    
-
+    .patch((req, res) => {
+        res.redirect('/profile/items');
+    })
     .delete((req, res) => {
         res.redirect('/profile/items');
     })
-    // .post(upload, (req, res, cb) => {
-    //     // Input checking
-    //     const errors = [];
-    //     const name = help.tryCatchHelper(errors,
-    //         () => help.checkString(req.body.name, 'Item Name'));
-    //     const desc = help.tryCatchHelper(errors,
-    //         () => help.checkString(req.body.desc, 'Item Description'));
-    //     req.body.price = Number(req.body.price);
-    //     const price = help.tryCatchHelper(errors,
-    //         () => help.checkPrice(req.body.price, 'Item Price'));
-    //
-    //     // TODO: Handle other logic for item image upload
-    //     res.redirect('/profile/items');
-    // })
-
-
-
-// the follow route for profiles
-router.post('/profiles/:profileId/follow', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
-    try {
-        await profileData.followUser(req.session.user._id, req.params.profileId);
-        res.redirect('/profiles/' + req.params.profileId);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
-
-// the review route for profiles
-router.post('/profiles/:profileId/review', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
-
-    const reviewContent = req.body.review;
-    if (!reviewContent) {
-        return res.status(400).send("Review content cannot be empty");
-    }
-
-    try {
-        await profileData.addReviewToProfile(req.params.profileId, req.session.user._id, reviewContent);
-        res.redirect('/profiles/' + req.params.profileId);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
 
 export default router;
