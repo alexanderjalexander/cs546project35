@@ -86,17 +86,17 @@ router.route('/items')
         })
     })
 
-    .post('/profiles/:profileId/follow', async (req, res) => {
-        if (!req.session.user) {
-            return res.status(403).send("Unauthorized");
-        }
-        try {
-            await profileData.followUser(req.session.user._id, req.params.profileId);
-            res.redirect('/profiles/' + req.params.profileId);
-        } catch (error) {
-            res.status(500).send(error.message);
-        }
-    })
+    // .post('/profiles/:profileId/follow', async (req, res) => {
+    //     if (!req.session.user) {
+    //         return res.status(403).send("Unauthorized");
+    //     }
+    //     try {
+    //         await profileData.followUser(req.session.user._id, req.params.profileId);
+    //         res.redirect('/profiles/' + req.params.profileId);
+    //     } catch (error) {
+    //         res.status(500).send(error.message);
+    //     }
+    // })
     
 
     .delete((req, res) => {
