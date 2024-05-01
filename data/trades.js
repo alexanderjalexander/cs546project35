@@ -92,7 +92,7 @@ const swap = async (id) => {
  */
 const getAll = async (userId) => { 
     const tradesCollection = await trades();
-    userId = helper.checkIdString();
+    userId = helper.checkIdString(userId);
     let tradesList = await tradesCollection
         .find({ $or: [{senderId: new ObjectId(userId)},{receiverId: new ObjectId(userId)}]})
         .toArray();
