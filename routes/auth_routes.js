@@ -2,7 +2,7 @@
 import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
-import * as userData from '../data/users.js';
+import userData from '../data/users.js';
 
 router.route('/')
 .get(async (req, res) => {
