@@ -132,14 +132,14 @@
             "sender": "kholden",
             "receiver": "pattyh",
             "senderItems": ["fridge", "calculus textbook"],
-            "recieverItems": ["cigarettes"],
+            "receiverItems": ["cigarettes"],
             "status": "requested"
         },
         {
             "sender": "kenjamin",
             "receiver": "kholden",
             "senderItems": ["Linear Algebra TextBook"],
-            "recieverItems": ["fridge"],
+            "receiverItems": ["fridge"],
             "status": "accepted"
         }
     ]
