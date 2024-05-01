@@ -1,11 +1,11 @@
 //this will have all the routes that begin with /items
-import { Router } from 'express';
+import {Router} from 'express';
 const router = Router();
 import * as helper from '../helpers.js';
 import itemData from '../data/items.js';
 import multer from 'multer';
-import { multerConfig } from '../config/multerConfig.js';
-import { ObjectId } from 'mongodb';
+import {multerConfig} from '../config/multerConfig.js';
+import {ObjectId} from 'mongodb';
 const upload = multer(multerConfig).single('image');
 
 //GET route to view all items in the community
@@ -34,6 +34,26 @@ router.get('/:itemid', async (req, res) => {
     } 
     catch (error) {
         res.status(404).send({error: error.toString()});
+    }
+});
+
+//POST route to create new item via quick add form
+router.post('/', upload, async (req, res) => {
+    try {
+        const name = helper.checkString(req.body.name, 'Item Name');
+        const desc = helper.checkString(req.body.desc, 'Item Description');
+        const price = helper.checkPrice(Number(req.body.price), 'Item Price');
+        const userId = req.session.user._id;
+        const imagePath = req.file ? '/' + req.file.path : '/path/to/default-image.png';
+        await itemData.create(userId, name, desc, price, imagePath);
+        res.redirect('/items');
+    } 
+    catch (error) {
+        const errors = [error.message || "An error occurred during item creation."];
+        res.status(400).render('item_create', {
+            title: "Add New Item",
+            errors: errors
+        });
     }
 });
 
