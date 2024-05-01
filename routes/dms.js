@@ -1,14 +1,14 @@
 import { Router } from 'express';
 const router = Router();
-import * as dmData from '../data/dms.js'; 
+import dmData from '../data/dms.js'; 
 
 router.route('/')
   .get(async (req, res) => {
     try {
-      const dmList = await dmData.getAllDMs();
-      res.json(dmList);
+      const dmList = await dmData.getByUserId(req.session.user._id);
+      return res.json(dmList);
     } catch (e) {
-      res.status(500).json({ error: 'Failed to retrieve direct messages.' });
+      return res.status(500).json({ error: 'Failed to retrieve direct messages.' });
     }
   });
 
