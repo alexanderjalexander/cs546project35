@@ -11,9 +11,9 @@ import * as helper from '../helpers.js'
 const getByUserId = async (id) => {
   id = helper.checkIdString(id);
   const dmCollection = await dms();
-  const dms = await dmCollection.find({$or: [{actor1: new ObjectId(id)},{actor2: new ObjectId(id)}]}).toArray();
+  const foundDms = await dmCollection.find({$or: [{actor1: new ObjectId(id)},{actor2: new ObjectId(id)}]}).toArray();
   //make these assignments so it returns plain strings instead of objectids
-  return dms;
+  return foundDms;
 };
 
 /**
