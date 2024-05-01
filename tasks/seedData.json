@@ -142,5 +142,57 @@
             "receiverItems": ["fridge"],
             "status": "accepted"
         }
+    ],
+    "DMS": [
+        {
+            "actor1": "kholden",
+            "actor2": "kenjamin",
+            "messages": [
+                {
+                    "sender": "kholden",
+                    "content": "This is a message"
+                },
+                {
+                    "sender": "kholden",
+                    "content": "This is a double text!"
+                },
+                {
+                    "sender": "kenjamin",
+                    "content": "This is an answer!"
+                }
+            ]
+        },
+        {
+            "actor1": "pattyh",
+            "actor2": "kholden",
+            "messages": [
+                {
+                    "sender": "pattyh",
+                    "content": "Hello"
+                },
+                {
+                    "sender": "kholden",
+                    "content": "Hi! I have a textbook to trade you"
+                },
+                {
+                    "sender": "pattyh",
+                    "content": "Sure thing!"
+                }
+            ]
+        },
+        {
+            "actor1": "kenjamin",
+            "actor2": "pattyh",
+            "messages": [
+                {
+                    "sender": "kenjamin",
+                    "content": "Please bump my grade to an A :sob:"
+                },
+                {
+                    "sender": "pattyh",
+                    "content": "No..."
+                }
+            ]
+        }
     ]
 }
