@@ -72,7 +72,8 @@ for(const item of objectList.items){ //items
 for(const trade of objectList.trades){
     trade.senderItems = trade.senderItems.map((el)=>stuff[el]._id);
     trade.receiverItems = trade.receiverItems.map((el)=>stuff[el]._id);
-    await trades.create(people[trade.sender]._id, people[trade.receiver]._id, trade.senderItems, trade.receiverItems);
+    const currentTrade = await trades.create(people[trade.sender]._id, people[trade.receiver]._id, trade.senderItems, trade.receiverItems);
+    await trades.update(currentTrade._id, {'status': trade.status});
 }
 
 //add dummy data here
