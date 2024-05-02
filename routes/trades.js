@@ -10,22 +10,47 @@ import userData from '../data/users.js'
 
 router.route('/')
     .get(async (req, res) => {
-        //this route will log all the trades of the current user.
-        //this just shows the user they are trading with, along with the status
-        let trades = await tradeData.getAll(req.session.user._id)
-        //We will build a list of trade logs to render
-        //We have a database method that gets all the trades that are either coming from or going to the user
-        //we need to parse through all of those trades and then call user database methods to get the username of the other user
-        //lets get the usernames from each of those trades now
-        return res.json(trades);
+        try {
+            let trades = await tradeData.getAll(req.session.user._id)
+            return res.json(trades);
+        } catch(e){
+            return res.status(500).json({error: e});
+        }
     })
     .post(async (req, res) => {
         //this route will initiate a new trade to another person
+
+        const other = req.body.userId;
+        const self = req.session.user._id;
+        
     })
 
 router.route('/:tradeId')
     .get(async (req, res) => {
         //views one trade with another user. Offers forms to manage the trade
+        const errors = [];
+        req.params.tradeId = help.tryCatchHelper(errors, ()=>help.checkIdString(req.params.tradeId))
+        if (errors.length !== 0){
+            return res.status(500).render('error', {
+                errors,
+                auth: req.session.user !== undefined
+            });
+        }
+        try{
+            const usersTrades = await tradeData.getAll(req.session.user._id);
+            const foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
+            if (!foundTrade) return res.status(404).render("error", {
+                errors: ["trade not found!"],
+                auth: req.session.user !== undefined
+            });
+            return res.status(200).json(foundTrade);
+        } catch (e){
+            return res.status(500).render('error', {
+                errors: [e],
+                auth: req.session.user !== undefined
+            });
+        }
+
     })
     .patch(async (req, res) => {
         //updates existing trade, resends the trade to the database and swaps requester/requestee
