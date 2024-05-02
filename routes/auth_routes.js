@@ -102,7 +102,7 @@ router.route('/register')
         return res.status(500).render('register', {
             title:"Register",
             auth: req.session.user !== undefined,
-            errors: errors, 
+            errors: [e], 
             themePreference: 'light'
         });
     }
