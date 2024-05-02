@@ -116,6 +116,8 @@ const update = async (id, updateObject) => {
         throw `Must supply at least one of these: stats, senderId, recieverId, senderItems, receiverItems`
     }
     const trade = await get(id);
+    trade.senderId = new ObjectId(trade.senderId);
+    trade.receiverId = new ObjectId(trade.receiverId);
 
     let updatedTrade = {
         senderId: (updateObject.hasOwnProperty('senderId'))

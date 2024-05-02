@@ -69,7 +69,7 @@ for(const item of objectList.items){ //items
         item.image);
 }
 
-for(const trade of objectList.trades){
+for(const trade of objectList.trades){ //adding trades
     trade.senderItems = trade.senderItems.map((el)=>stuff[el]._id);
     trade.receiverItems = trade.receiverItems.map((el)=>stuff[el]._id);
     const currentTrade = await trades.create(people[trade.sender]._id, people[trade.receiver]._id, trade.senderItems, trade.receiverItems);
