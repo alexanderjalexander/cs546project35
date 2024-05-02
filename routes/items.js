@@ -12,13 +12,13 @@ const upload = multer(multerConfig).single('image');
 router.get('/', async (req, res) => {
     try {
         const items = await itemData.getAll();
-        res.render('items_all', {
+        return res.render('items_all', {
             title: "All Community Items",
             items: items
         });
     } 
     catch (error) {
-        res.status(500).send({error: error.toString()});
+        return res.status(500).send({error: error.toString()});
     }
 });
 
@@ -27,13 +27,13 @@ router.get('/:itemid', async (req, res) => {
     try {
         const itemid = helper.checkIdString(req.params.itemid);
         const item = await itemData.getById(itemid);
-        res.render('item_detail', {
+        return res.render('item_detail', {
             title: "View Item",
             item: item
         });
     } 
     catch (error) {
-        res.status(404).send({error: error.toString()});
+        return res.status(404).send({error: error.toString()});
     }
 });
 
