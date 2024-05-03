@@ -32,7 +32,10 @@ router.route('/:id')
         element.timestamp = element.timestamp.toDateString()
       };
       if (dm) {
-        res.render('dm', dm);
+        res.render('dm', {
+          auth: req.session.user !== undefined,
+          ...dm
+        });
       } else {
         res.status(404).json({ error: 'Direct message not found.' });
       }
