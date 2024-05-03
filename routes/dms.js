@@ -26,6 +26,11 @@ router.route('/:id')
   .get(async (req, res) => {
     try {
       const dm = await dmData.getById(req.params.id);
+      for(const element of dm.messages){
+        const sender = await userData.getUserById(element.sender.toString());
+        element.sender = sender.username;
+        element.timestamp = element.timestamp.toDateString()
+      };
       if (dm) {
         res.json(dm);
       } else {
