@@ -22,8 +22,8 @@ export const root_middleware = (req, res, next) => {
  */
 export const nav_middleware = (req, res, next) => {
     const everyone = [
+        {label: "View Community Items", url: "/items"},
         {label: "Home", url: "/"},
-        {label: "View Community Items", url: "/items"}
     ];
     const authorized_only = [
         {label: "My Profile", url: "/profile"},
