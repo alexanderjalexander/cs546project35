@@ -141,7 +141,7 @@ const loginUser = async (email, password) => {
         _id: foundUser._id.toString(),
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
-        userName: foundUser.username,
+        username: foundUser.username,
         email: foundUser.email,
         themePreference: foundUser.themePreference
     }

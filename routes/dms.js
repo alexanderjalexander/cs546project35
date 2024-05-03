@@ -6,7 +6,10 @@ router.route('/')
   .get(async (req, res) => {
     try {
       const dmList = await dmData.getByUserId(req.session.user._id);
-      return res.json(dmList);
+      return res.render('dms', {
+        dmlist: dmList,
+        auth: req.session.user !== undefined
+      });
     } catch (e) {
       return res.status(500).json({ error: 'Failed to retrieve direct messages.' });
     }
@@ -15,7 +18,7 @@ router.route('/')
 router.route('/:id')
   .get(async (req, res) => {
     try {
-      const dm = await dmData.getDMById(req.params.id);
+      const dm = await dmData.getById(req.params.id);
       if (dm) {
         res.json(dm);
       } else {

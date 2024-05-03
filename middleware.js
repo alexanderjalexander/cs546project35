@@ -8,7 +8,7 @@ export const root_middleware = (req, res, next) => {
     const timestamp = new Date().toUTCString();
     const method = req.method;
     const route = req.originalUrl;
-    const auth_string = req.session.user ? ('Authenticated User') : ('Non-authenticated User');
+    const auth_string = req.session.user ? (req.session.user.username) : ('Non-authenticated User');
     console.log(`[${timestamp}]: ${method} ${route} (${auth_string})`);
 
     next();
