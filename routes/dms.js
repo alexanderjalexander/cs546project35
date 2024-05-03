@@ -1,11 +1,18 @@
 import { Router } from 'express';
 const router = Router();
 import dmData from '../data/dms.js'; 
+import userData from '../data/users.js'; 
 
 router.route('/')
   .get(async (req, res) => {
     try {
       const dmList = await dmData.getByUserId(req.session.user._id);
+      await Promise.all(dmList.map( async (el) => {
+        const actor1 = await userData.getUserById(el.actor1.toString());
+        const actor2 = await userData.getUserById(el.actor2.toString());
+        el.actor1 = actor1.username;
+        el.actor2 = actor2.username;
+      }));
       return res.render('dms', {
         dmlist: dmList,
         auth: req.session.user !== undefined
