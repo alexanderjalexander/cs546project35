@@ -45,12 +45,15 @@ export const nav_middleware = (req, res, next) => {
 
     }
     navLinks = navLinks.concat(everyone)
-    //take away the link for the page that the user is currently on
-    navLinks = navLinks.filter((el) => {
-        return el.url !== req.originalUrl
-    })
+    //add an id for the link for the page that the user is currently on
+    navLinks.map((el) => {
+        if(el.url === req.originalUrl){
+            el.class = "currentLink";
+        } else{
+            el.class = "otherLink";
+        }
+    });
     res.locals.navLinks = navLinks
-    console.log(res.locals.navLinks)
     next();
 }
 
