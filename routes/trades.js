@@ -6,15 +6,27 @@ import * as help from '../helpers.js';
 import {ObjectId} from 'mongodb';
 import tradeData from '../data/trades.js'
 import userData from '../data/users.js'
+import itemData from '../data/items.js'
 
 
 router.route('/')
     .get(async (req, res) => {
         try {
-            let trades = await tradeData.getAll(req.session.user._id)
-            return res.json(trades);
+            const allTrades = await tradeData.getAll(req.session.user._id);
+            await Promise.all(allTrades.map(async (trade) => {
+                trade.senderId = await userData.getUserById(trade.senderId.toString())
+                trade.receiverId = await userData.getUserById(trade.receiverId.toString())
+
+                trade.senderItems = await Promise.all(trade.senderItems.map(async (itemId) => {
+                    return await itemData.getById(itemId.toString());
+                }));
+                trade.receieverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
+                    return await itemData.getById(itemId.toString());
+                }));
+            }));
+            return res.json(allTrades);
         } catch(e){
-            return res.status(500).json({error: e});
+            return res.status(500).render('error', {errors: [e]});
         }
     })
     .post(async (req, res) => {
