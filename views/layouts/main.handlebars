@@ -11,16 +11,9 @@
    <main>
     <nav id="nav">
       <ul>
-        {{#if auth}}
-        <li><a href="/logout">Log Out</a></li>
-        <li><a href="/profile">My Profile</a></li>
-        <li><a href="/directmsgs">Direct Messages</a></li>
-        <li><a href="/trades">My Trades</a></li>
-        {{else}}  
-        <li><a href="/login">Log In</a></li>
-        <li><a href="/register">Register</a></li>
-        {{/if}}
-        <li><a href="/items">View Community Items</a></li>
+        {{#each navLinks}}
+        <li><a href="{{this.url}}">{{this.label}}</a></li>
+        {{/each}}
       </ul>
     </nav>
     {{{body}}}

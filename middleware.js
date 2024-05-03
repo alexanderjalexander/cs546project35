@@ -15,6 +15,46 @@ export const root_middleware = (req, res, next) => {
 }
 
 /**
+ * Dynamically determines the navLinks that should be visible when the user's 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const nav_middleware = (req, res, next) => {
+    const everyone = [
+        {label: "Home", url: "/"},
+        {label: "View Community Items", url: "/items"}
+    ];
+    const authorized_only = [
+        {label: "My Profile", url: "/profile"},
+        {label: "Log Out", url: "/logout"},
+        {label: "Direct Messages", url: "/directmsgs"},
+        {label: "My Trades", url: "/trades"},
+    ];
+    const guest_only = [
+        {label: "Log In", url: "/login"},
+        {label: "Register", url: "/register"}
+    ];
+    let navLinks = [];
+    if (req.session.user) {
+        //user is authorized
+        navLinks = navLinks.concat(authorized_only)
+    } else {
+        //user is not authorized
+        navLinks = navLinks.concat(guest_only)
+
+    }
+    navLinks = navLinks.concat(everyone)
+    //take away the link for the page that the user is currently on
+    navLinks = navLinks.filter((el) => {
+        return el.url !== req.originalUrl
+    })
+    res.locals.navLinks = navLinks
+    console.log(res.locals.navLinks)
+    next();
+}
+
+/**
  * If user is already logged in, bring them back home instead.
  * Otherwise, allow them to register / login.
  * @param {*} req 
