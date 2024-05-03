@@ -10,8 +10,11 @@ router.route('/')
       await Promise.all(dmList.map( async (el) => {
         const actor1 = await userData.getUserById(el.actor1.toString());
         const actor2 = await userData.getUserById(el.actor2.toString());
-        el.actor1 = actor1.username;
-        el.actor2 = actor2.username;
+        if (actor1.username !== req.session.user.username){
+          el.otherUser = actor1.username
+        } else{
+          el.otherUser = actor2.username
+        }
       }));
       return res.render('dms', {
         dmlist: dmList,
