@@ -32,7 +32,7 @@ router.route('/:id')
         element.timestamp = element.timestamp.toDateString()
       };
       if (dm) {
-        res.json(dm);
+        res.render('dm', dm);
       } else {
         res.status(404).json({ error: 'Direct message not found.' });
       }

@@ -1,1 +1,12 @@
 {{!renders the view of an individual text chain between the user and the other user}}
+<ol id="dm">
+    {{#each messages}}
+    <li>
+        <div>
+            <label for="content" id="sender">{{this.sender}}</label>
+            <p id="content">{{content}}</p>
+            <p id="timestamp">{{timestamp}}</p>
+        </div>
+    </li>
+    {{/each}}
+</ol>
