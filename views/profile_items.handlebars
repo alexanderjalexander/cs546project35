@@ -1,12 +1,12 @@
 {{> profile_nav}}
 
-<h1>Items</h1>
 <ul>
     {{#each errors}}
         <li class="error">{{this}}</li>
     {{/each}}
 </ul>
 
+<!-- Adding a profile item Handlebars -->
 <button id="openAddProfileItem">Add New Item</button>
 <dialog id="addProfileItem">
     <button id="closeAddProfileItem" aria-label="close" formnovalidate>X</button>
@@ -24,29 +24,16 @@
         <br>
 
         <label for="Image">Image: </label>
-        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="price">
+        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="image">
         <br>
 
         <input type="submit" value="Add">
     </form>
 </dialog>
 
-<!--<dialog>-->
-<!--    <form action="/profile/items/:itemId">-->
-<!--        <label for="name">Name: </label>-->
-<!--        <input type="text" id="name" name="name">-->
-<!--        <label for="desc">Description: </label>-->
-<!--        <input type="text" id="desc" name="desc">-->
-<!--        <label for="price">Price: </label>-->
-<!--        <input type="number" id="price" name="price">-->
-<!--        <label for="Image">Image: </label>-->
-<!--        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="price">-->
-<!--        <input type="submit" value="Add">-->
-<!--    </form>-->
-<!--</dialog>-->
 {{#each items}}
     <div>
-        <h2>{{name}}</h2>
+        <h2><a href="/profile/items/{{_id}}">{{name}}</a></h2>
         <dl>
             <dt>Description: </dt>
             <dd>{{desc}}</dd>

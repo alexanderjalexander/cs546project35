@@ -85,21 +85,178 @@ router.route('/items')
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
-            res.redirect('/profile/items');
+            return res.redirect('/profile/items');
         })
     })
 
 router.route('/items/:itemId')
-    .patch(async (req, res) => {
-        // TODO: not implemented yet
-        res.redirect('/profile/items');
+    .get(async (req, res) => {
+        // Check Request Parameter
+        try {
+            req.params.itemId = help.checkIdString(req.params.itemId)
+        } catch (e) {
+            return res.status(400).render('profile_items', {
+                title: "My Inventory",
+                errors: [e],
+                auth: req.session.user !== undefined,
+                themePreference: req.session.user.themePreference,
+                items: await itemData.getAllByUserId(req.session.user._id)
+            });
+        }
+
+        // Check if item exists in database
+        let item;
+        try {
+            item = await itemData.getById(req.params.itemId);
+        } catch (e) {
+            return res.status(404).render('profile_items', {
+                title: "My Inventory",
+                errors: [e],
+                auth: req.session.user !== undefined,
+                themePreference: req.session.user.themePreference,
+                items: await itemData.getAllByUserId(req.session.user._id)
+            });
+        }
+
+        // Checking if item belongs to user
+        if (item.userId !== req.session.user._id) {
+            return res.status(403).render('profile_items', {
+                title: "My Inventory",
+                errors: ['Error: that item does not belong to you.'],
+                auth: req.session.user !== undefined,
+                themePreference: req.session.user.themePreference,
+                items: await itemData.getAllByUserId(req.session.user._id)
+            });
+        }
+
+        res.render('profile_item', {
+            title: `My Inventory - ${item.name}`,
+            auth: req.session.user !== undefined,
+            themePreference: req.session.user.themePreference,
+            item
+        })
+    })
+    .post(async (req, res) => {
+        upload(req, res, async function (err) {
+            // Check the itemId parameter to see if it's valid.
+            try {
+                req.params.itemId = help.checkIdString(req.params.itemId)
+            } catch (e) {
+                return res.status(400).render('profile_items', {
+                    title: "My Inventory",
+                    errors: [e],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    items: await itemData.getAllByUserId(req.session.user._id)
+                });
+            }
+
+            // Check if item exists in database
+            let item;
+            try {
+                item = await itemData.getById(req.params.itemId);
+            } catch (e) {
+                return res.status(404).render('profile_items', {
+                    title: "My Inventory",
+                    errors: [e],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    items: await itemData.getAllByUserId(req.session.user._id)
+                });
+            }
+
+            // Check if item belongs to user
+            if (item.userId !== req.session.user._id) {
+                return res.status(403).render('profile_items', {
+                    title: "My Inventory",
+                    errors: ['Error: that item does not belong to you.'],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    items: await itemData.getAllByUserId(req.session.user._id)
+                });
+            }
+
+            // Check to see if some or all of the parameters exist.
+            // One or the following must be present: name, desc, price, req.file
+            if (req.body.name === '' &&
+                req.body.desc === '' &&
+                req.body.price === '' &&
+                req.file === undefined) {
+                return res.status(400).render('profile_item', {
+                    title: `My Inventory - ${item.name}`,
+                    errors: ['Error: You must at least one of the following: name, description, price, image.'],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    item
+                });
+            }
+
+            // Otherwise, check any supplied parameters and make sure they're valid.
+            const errors = [];
+            // let updatedItem = {
+            //     name: req.body.name !== ''
+            //         ? help.tryCatchHelper(errors, () => help.checkString(req.body.name, 'name'))
+            //         : undefined,
+            //     desc: req.body.desc !== ''
+            //         ? help.tryCatchHelper(errors, () => help.checkString(req.body.desc, 'description'))
+            //         : undefined,
+            //     price: req.body.price !== ''
+            //         ? help.tryCatchHelper(errors, () => help.checkPrice(Number(req.body.price), 'price'))
+            //         : undefined,
+            //     image: req.file !== undefined
+            //         ? ('/' + req.file.path)
+            //         : undefined,
+            // };
+            let updatedItem = {}
+            if (req.body.name !== '') {
+                updatedItem.name = help.tryCatchHelper(errors,
+                    () => help.checkString(req.body.name, 'name'))
+            }
+            if (req.body.desc !== '') {
+                updatedItem.desc = help.tryCatchHelper(errors,
+                    () => help.checkString(req.body.desc, 'description'));
+            }
+            if (req.body.price !== '') {
+                updatedItem.price = help.tryCatchHelper(errors,
+                    () => help.checkPrice(Number(req.body.price), 'price'));
+            }
+            if (req.file !== undefined) {
+                updatedItem.image = '/' + req.file.path;
+            }
+
+            if (errors.length !== 0) {
+                return res.status(400).render('profile_item', {
+                    title: `My Inventory - ${item.name}`,
+                    errors,
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    item: item
+                });
+            }
+
+            // We should be good! Try to update the item now.
+            try {
+                await itemData.update(req.params.itemId, req.session.user._id, updatedItem);
+            } catch (e) {
+                return res.status(500).render('profile_item', {
+                    title: `My Inventory - ${item.name}`,
+                    errors: [e],
+                    auth: req.session.user !== undefined,
+                    themePreference: req.session.user.themePreference,
+                    item: item
+                });
+            }
+
+            // If all successful, redirect
+            return res.redirect(`/profile/items/${req.params.itemId}`);
+        })
     })
     .delete(async (req, res) => {
         // Bad Request Checking
         try {
             req.params.itemId = help.checkIdString(req.params.itemId);
         } catch (e) {
-            res.status(400).render('profile_items', {
+            return res.status(400).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
                 auth: req.session.user !== undefined,
@@ -113,7 +270,7 @@ router.route('/items/:itemId')
         try {
             item = await itemData.getById(req.params.itemId);
         } catch (e) {
-            res.status(404).render('profile_items', {
+            return res.status(404).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
                 auth: req.session.user !== undefined,
@@ -124,7 +281,7 @@ router.route('/items/:itemId')
 
         // Checking if item belongs to user
         if (item.userId !== req.session.user._id) {
-            res.status(403).render('profile_items', {
+            return res.status(403).render('profile_items', {
                 title: "My Inventory",
                 errors: ['Error: you are not authorized to delete that item. It is not yours.'],
                 auth: req.session.user !== undefined,
@@ -138,7 +295,7 @@ router.route('/items/:itemId')
         try {
             await itemData.remove(req.params.itemId, req.session.user._id);
         } catch (e) {
-            res.status(500).render('profile_items', {
+            return res.status(500).render('profile_items', {
                 title: "My Inventory",
                 errors: [`Error: something wrong happened on the serverside: (${e.message}).`],
                 auth: req.session.user !== undefined,

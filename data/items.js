@@ -114,7 +114,7 @@ const update = async (id, userId, updateObject) => {
 
     const itemCollection = await items();
     const updateInfo = await itemCollection.updateOne(
-        {_id: new ObjectId(updatedItem._id)}, 
+        {_id: new ObjectId(id)},
         {$set: updatedItem},
         {returnDocument: 'after'}
     );

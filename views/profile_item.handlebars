@@ -1,0 +1,58 @@
+{{> profile_nav}}
+
+<ul>
+    {{#each errors}}
+        <li class="error">{{this}}</li>
+    {{/each}}
+</ul>
+
+<!-- Editing Profile Item Handlebars -->
+<button id="openEditProfileItem">Edit Item</button>
+<dialog id="editProfileItem">
+    <button id="closeEditProfileItem" aria-label="close" formnovalidate>X</button>
+    <form action="/profile/items/{{item._id}}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_id" value="{{item._id}}">
+        <input type="hidden" name="_method" value="PATCH">
+
+        <label for="name">Name: </label>
+        <input type="text" id="name" name="name" value="{{item.name}}">
+        <br>
+
+        <label for="desc">Description: </label>
+        <input type="text" id="desc" name="desc" value="{{item.desc}}">
+        <br>
+
+        <label for="price">Price: </label>
+        <input type="number" id="price" name="price" value="{{item.price}}">
+        <br>
+
+        <label for="Image">Image: </label>
+        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="image">
+        <br>
+
+        <input type="submit" value="Edit">
+    </form>
+</dialog>
+
+<!-- Deleting a profile item. -->
+<button id="openDeleteProfileItem">Delete</button>
+<dialog id="deleteProfileItem">
+    <button id="closeDeleteProfileItem" aria-label="close" formnovalidate>X</button>
+    <form action="/profile/items/{{item._id}}" method="post">
+        <input type="hidden" name="_id" value="{{item._id}}">
+        <input type="hidden" name="_method" value="DELETE">
+
+        <label>Are you sure you want to delete this item?</label>
+        <input type="submit" value="Yes">
+    </form>
+</dialog>
+
+<div>
+    <dl>
+        <dt>Description: </dt>
+        <dd>{{item.desc}}</dd>
+        <dt>Price: </dt>
+        <dd>{{item.price}}</dd>
+    </dl>
+    <img width='500px' alt="{{item.name}}" src="{{item.image}}">
+</div>
