@@ -193,20 +193,6 @@ router.route('/items/:itemId')
 
             // Otherwise, check any supplied parameters and make sure they're valid.
             const errors = [];
-            // let updatedItem = {
-            //     name: req.body.name !== ''
-            //         ? help.tryCatchHelper(errors, () => help.checkString(req.body.name, 'name'))
-            //         : undefined,
-            //     desc: req.body.desc !== ''
-            //         ? help.tryCatchHelper(errors, () => help.checkString(req.body.desc, 'description'))
-            //         : undefined,
-            //     price: req.body.price !== ''
-            //         ? help.tryCatchHelper(errors, () => help.checkPrice(Number(req.body.price), 'price'))
-            //         : undefined,
-            //     image: req.file !== undefined
-            //         ? ('/' + req.file.path)
-            //         : undefined,
-            // };
             let updatedItem = {}
             if (req.body.name !== '') {
                 updatedItem.name = help.tryCatchHelper(errors,
