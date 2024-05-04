@@ -11,13 +11,23 @@ import itemData from '../data/items.js'
 const tradeDisplay = async (trade, req) => {
     const sender = await userData.getUserById(trade.senderId.toString())
     const receiver = await userData.getUserById(trade.receiverId.toString())
-    trade.otherUser = sender.username === req.session.user.username ? receiver : sender
     trade.senderItems = await Promise.all(trade.senderItems.map(async (itemId) => {
         return await itemData.getById(itemId.toString());
     }));
     trade.receiverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
         return await itemData.getById(itemId.toString());
     }));
+    if (sender.username === req.session.user.username){
+        trade.thisUser = sender;
+        trade.thisUserItems = trade.senderItems;
+        trade.otherUser = receiver;
+        trade.otherUserItems = trade.receiverItems;
+    } else {
+        trade.otherUser = sender;
+        trade.otherUserItems = trade.senderItems;
+        trade.thisUser = receiver;
+        trade.thisUserItems = trade.receiverItems;
+    }
     return trade
 }
 
@@ -26,7 +36,7 @@ router.route('/')
         try {
             const allTrades = await tradeData.getAll(req.session.user._id);
             await Promise.all(allTrades.map(async (trade) => {
-                trade = tradeDisplay(trade, req);
+                trade = await tradeDisplay(trade, req);
             }));
             return res.status(200).render('trades', {trades: allTrades, title: "Trades"});
         } catch(e){
@@ -54,15 +64,17 @@ router.route('/:tradeId')
         }
         try{
             const usersTrades = await tradeData.getAll(req.session.user._id);
-            const foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
+            let foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
             if (!foundTrade) return res.status(404).render("error", {
                 errors: ["trade not found!"],
                 auth: req.session.user !== undefined
             });
+            foundTrade = await tradeDisplay(foundTrade, req);
 
-            
-
-            return res.status(200).json(foundTrade);
+            return res.status(200).render('trade', {
+                title: 'Trade',
+                trade: foundTrade
+            });
         } catch (e){
             return res.status(500).render('error', {
                 errors: [e],
