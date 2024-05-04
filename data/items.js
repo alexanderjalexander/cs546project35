@@ -154,10 +154,9 @@ const create = async (userId, name, desc, price, image) => {
  * Attempts to remove an item.
  * @param {string} id Item's ID as a string
  * @param {string} userId User's ID as a string
- * @param {string} itemId Desired item ID to be removed, as a string
  * @returns Object with id and deleted:true on successful deletion
  */
-const remove = async (id, userId, itemId) => {
+const remove = async (id, userId) => {
     id = helper.checkIdString(id);
     userId = helper.checkIdString(userId);
 
@@ -170,7 +169,7 @@ const remove = async (id, userId, itemId) => {
     const userCollection = await users();
     await userCollection.updateOne(
         {_id: new ObjectId(userId)},
-        {$pull: {items: new ObjectId(itemId)}}
+        {$pull: {items: new ObjectId(id)}}
     );
 
     if (!removalInfo) {

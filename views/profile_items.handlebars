@@ -1,18 +1,49 @@
+{{> profile_nav}}
+
 <h1>Items</h1>
-{{#each errors}}
-    <p class="error">{{this}}</p>
-{{/each}}
-<form action="/profile/items" method="post" enctype="multipart/form-data">
-    <label for="name">Name: </label>
-    <input type="text" id="name" name="name">
-    <label for="desc">Description: </label>
-    <input type="text" id="desc" name="desc">
-    <label for="price">Price: </label>
-    <input type="number" id="price" name="price">
-    <label for="Image">Image: </label>
-    <input type="file" name="image" accept=".jpeg, .png, .jpg" id="price">
-    <input type="submit" value="Add">
-</form>
+<ul>
+    {{#each errors}}
+        <li class="error">{{this}}</li>
+    {{/each}}
+</ul>
+
+<button id="openAddProfileItem">Add New Item</button>
+<dialog id="addProfileItem">
+    <button id="closeAddProfileItem" aria-label="close" formnovalidate>X</button>
+    <form action="/profile/items" method="post" enctype="multipart/form-data">
+        <label for="name">Name: </label>
+        <input type="text" id="name" name="name">
+        <br>
+
+        <label for="desc">Description: </label>
+        <input type="text" id="desc" name="desc">
+        <br>
+
+        <label for="price">Price: </label>
+        <input type="number" id="price" name="price">
+        <br>
+
+        <label for="Image">Image: </label>
+        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="price">
+        <br>
+
+        <input type="submit" value="Add">
+    </form>
+</dialog>
+
+<!--<dialog>-->
+<!--    <form action="/profile/items/:itemId">-->
+<!--        <label for="name">Name: </label>-->
+<!--        <input type="text" id="name" name="name">-->
+<!--        <label for="desc">Description: </label>-->
+<!--        <input type="text" id="desc" name="desc">-->
+<!--        <label for="price">Price: </label>-->
+<!--        <input type="number" id="price" name="price">-->
+<!--        <label for="Image">Image: </label>-->
+<!--        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="price">-->
+<!--        <input type="submit" value="Add">-->
+<!--    </form>-->
+<!--</dialog>-->
 {{#each items}}
     <div>
         <h2>{{name}}</h2>
