@@ -18,6 +18,7 @@ router.route('/')
       }));
       return res.render('dms', {
         dmlist: dmList,
+        title: "My Direct messages",
         auth: req.session.user !== undefined
       });
     } catch (e) {

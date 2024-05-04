@@ -14,17 +14,17 @@ router.route('/')
         try {
             const allTrades = await tradeData.getAll(req.session.user._id);
             await Promise.all(allTrades.map(async (trade) => {
-                trade.senderId = await userData.getUserById(trade.senderId.toString())
-                trade.receiverId = await userData.getUserById(trade.receiverId.toString())
-
+                const sender = await userData.getUserById(trade.senderId.toString())
+                const receiver = await userData.getUserById(trade.receiverId.toString())
+                trade.otherUser = sender.username === req.session.user.username ? receiver : sender
                 trade.senderItems = await Promise.all(trade.senderItems.map(async (itemId) => {
                     return await itemData.getById(itemId.toString());
                 }));
-                trade.receieverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
+                trade.receiverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
                     return await itemData.getById(itemId.toString());
                 }));
             }));
-            return res.json(allTrades);
+            return res.status(200).render('trades', {trades: allTrades, title: "Trades"});
         } catch(e){
             return res.status(500).render('error', {errors: [e]});
         }

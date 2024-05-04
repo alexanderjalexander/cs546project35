@@ -1,1 +1,11 @@
 {{!shows all the trades for which the user is an actor of}}
+<ul>
+    {{#each trades}}
+    <li>
+        <p>
+            <a href="/trades/{{this._id}}">{{this.otherUser.username}}</a>
+            Status: {{this.status}}
+        </p>
+    </li>
+    {{/each}}
+</ul>
