@@ -8,21 +8,25 @@ import tradeData from '../data/trades.js'
 import userData from '../data/users.js'
 import itemData from '../data/items.js'
 
+const tradeDisplay = async (trade, req) => {
+    const sender = await userData.getUserById(trade.senderId.toString())
+    const receiver = await userData.getUserById(trade.receiverId.toString())
+    trade.otherUser = sender.username === req.session.user.username ? receiver : sender
+    trade.senderItems = await Promise.all(trade.senderItems.map(async (itemId) => {
+        return await itemData.getById(itemId.toString());
+    }));
+    trade.receiverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
+        return await itemData.getById(itemId.toString());
+    }));
+    return trade
+}
 
 router.route('/')
     .get(async (req, res) => {
         try {
             const allTrades = await tradeData.getAll(req.session.user._id);
             await Promise.all(allTrades.map(async (trade) => {
-                const sender = await userData.getUserById(trade.senderId.toString())
-                const receiver = await userData.getUserById(trade.receiverId.toString())
-                trade.otherUser = sender.username === req.session.user.username ? receiver : sender
-                trade.senderItems = await Promise.all(trade.senderItems.map(async (itemId) => {
-                    return await itemData.getById(itemId.toString());
-                }));
-                trade.receiverItems = await Promise.all(trade.receiverItems.map(async (itemId) => {
-                    return await itemData.getById(itemId.toString());
-                }));
+                trade = tradeDisplay(trade, req);
             }));
             return res.status(200).render('trades', {trades: allTrades, title: "Trades"});
         } catch(e){
@@ -55,6 +59,9 @@ router.route('/:tradeId')
                 errors: ["trade not found!"],
                 auth: req.session.user !== undefined
             });
+
+            
+
             return res.status(200).json(foundTrade);
         } catch (e){
             return res.status(500).render('error', {
