@@ -2,7 +2,13 @@ import {items, users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
-/**@typedef {({_id:ObjectId, userId:ObjectId, name:string, desc:string, price:number, image:string})} item
+/**@typedef {({
+ * _id:ObjectId,
+ * userId:ObjectId,
+ * name:string,
+ * desc:string,
+ * price:number,
+ * image:string})} item
  * Describes a trade-able item. _id and userId are strings that can be converted to ObjectId's
  */
 
@@ -36,6 +42,7 @@ const getById = async (id) => {
         throw `No product with that id has been found.`
     }
     item._id = item._id.toString();
+    item.userId = item.userId.toString();
     return item;
 }
 
@@ -85,6 +92,9 @@ const update = async (id, userId, updateObject) => {
     }
 
     const item = await getById(id);
+    if (item.userId !== userId) {
+        throw `Error: only the item's owner may update this item.`
+    }
 
     let updatedItem = {
         userId: item.userId,
@@ -122,7 +132,6 @@ const update = async (id, userId, updateObject) => {
  * @param {string} image server-side image pathname
  * @returns the item from the database on successful completion
  */
-// TODO: either figure out GridFS or test saving it on a server when the time comes to work out backend routes.
 const create = async (userId, name, desc, price, image) => {
     userId = helper.checkIdString(userId);
     name = helper.checkString(name, "name");
@@ -159,6 +168,11 @@ const create = async (userId, name, desc, price, image) => {
 const remove = async (id, userId) => {
     id = helper.checkIdString(id);
     userId = helper.checkIdString(userId);
+
+    const item = await getById(id);
+    if (item.userId !== userId) {
+        throw `Error: only the item's owner may remove this item.`
+    }
 
     const itemCollection = await items();
     const removalInfo = await itemCollection.findOneAndDelete({
