@@ -74,14 +74,14 @@ const getAllExceptUserId = async (userId) => {
     userId = helper.checkIdString(userId);
 
     const itemCollection = await items();
-    const items = await itemCollection.find(
-        {$not: {userId: new ObjectId(userId)}}
+    const itemList = await itemCollection.find(
+        {$nor: [{userId: new ObjectId(userId)}]}
     ).toArray();
 
-    if (!items) {
+    if (!itemList) {
         throw `No products have been found.`
     }
-    return items;
+    return itemList;
 }
 
 /**

@@ -24,6 +24,17 @@ export function checkIdString(id) {
     if (!ObjectId.isValid(id)) throw 'invalid object ID';
     return id;
 }
+/**
+ * Checks if all element are valid ObjectId strings.
+ * @param {Array} arr An array
+ * @returns a thrown error or a valid array of strings depending on input.
+ */
+export function checkIdArray(arr) {
+    arr = arr.map((el) => {
+        return checkIdString(el);
+    })
+    return arr;
+}
 
 /**
  * Calculates amt of decimal places a number has.
