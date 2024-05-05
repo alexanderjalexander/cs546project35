@@ -1,4 +1,6 @@
 <form action="/trades" method="PATCH" id="edit-trade-form">
+    <input type="hidden" name="_method" value="PATCH">
+    <input type="hidden" name="otherUserId" value="{{otherUser._id}}">
     <p>{{otherUser.username}}'s items</p>
     {{#each otherUser.items}}
     <label for="{{this._id}}">{{this.name}}</label>
