@@ -1,4 +1,7 @@
 {{!shows all the items in the community, as per our deliverables}}
+{{#if auth}}
+    {{> add_profile_item_json}}
+{{/if}}
 <div id="communityItemsList">
 {{#each items}}
     <div>

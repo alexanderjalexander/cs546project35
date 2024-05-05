@@ -4,6 +4,8 @@ import * as helper from '../helpers.js';
 import itemData from '../data/items.js';
 import multer from 'multer';
 import { multerConfig } from '../config/multerConfig.js';
+import xss from "xss";
+import * as help from "../helpers.js";
 
 const router = Router();
 const upload = multer(multerConfig).single('image');
@@ -14,6 +16,8 @@ router.get('/', async (req, res) => {
         const items = await itemData.getAll();
         res.render('items', {
             title: "All Community Items",
+            auth: req.session.user !== undefined,
+            themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             items: items
         });
     } 
@@ -29,6 +33,8 @@ router.get('/:itemid', async (req, res) => {
         const item = await itemData.getById(itemid);
         res.render('item', {
             title: "View Item",
+            auth: req.session.user !== undefined,
+            themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             item: item
         });
     } 
@@ -39,17 +45,51 @@ router.get('/:itemid', async (req, res) => {
 
 
 //POST route to create new item via quick add form
-router.post('/', upload, async (req, res) => {
-    try {
-        const {name, desc, price} = req.body;
-        const userId = req.session.user._id;
-        const imagePath = req.file ? '/' + req.file.path : '/path/to/default-image.png';
-        await itemData.create(userId, helper.checkString(name, 'Item Name'), helper.checkString(desc, 'Item Description'), helper.checkPrice(Number(price), 'Item Price'), imagePath);
-        res.redirect('/items');
-    } 
-    catch (error) {
-        res.status(400).render('item_create', {title: "Add New Item", errors: [error.message || "An error occurred during item creation."]});
-    }
-});
+router.route('/')
+    .post(async (req, res) => {
+        upload(req, res, async function (err) {
+            // Input cleaning
+            let cleanName = xss(req.body.name);
+            let cleanDesc = xss(req.body.desc);
+            let cleanPrice = Number(xss(req.body.price));
+
+            // Input checking
+            const errors = [];
+            const name = help.tryCatchHelper(errors,
+                () => help.checkString(cleanName, 'Item Name'));
+            const desc = help.tryCatchHelper(errors,
+                () => help.checkString(cleanDesc, 'Item Description'));
+            req.body.price = Number(req.body.price);
+            const price = help.tryCatchHelper(errors,
+                () => help.checkPrice(cleanPrice, 'Item Price'));
+
+            // If errors occurred, propagate them back to the user
+            if (err instanceof multer.MulterError || err) {
+                // Multer Error occurred while uploading
+                errors.push('Error: ' + err.message);
+                return res.status(500).json({success: false, errors: errors});
+            } else if (err instanceof TypeError) {
+                // TypeError due to invalid file format
+                errors.push(err);
+                return res.status(400).json({success: false, errors: errors});
+            } else if (req.file === undefined) {
+                errors.push('Error: You must supply an image, either in .png, .jpeg, or .jpg formats.');
+                return res.status(400).json({success: false, errors: errors});
+            } else if (errors.length !== 0) {
+                // No multer error, but validation errors
+                return res.status(400).json({success: false, errors: errors});
+            }
+
+            let item;
+            try {
+                item = await itemData.create(req.session.user._id, name, desc, price, '/' + req.file.path)
+            } catch (e) {
+                return res.status(500).json({success: false, errors: ['']});
+            }
+
+            return res.json({success: true, item: item})
+        })
+    })
+
 
 export default router;

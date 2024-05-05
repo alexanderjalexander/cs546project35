@@ -6,7 +6,6 @@ import itemData from '../data/items.js'
 
 import {multerConfig} from "../config/multerConfig.js";
 import multer from "multer";
-import {ObjectId} from "mongodb";
 const upload = multerConfig.single('image');
 
 router.route('/')
