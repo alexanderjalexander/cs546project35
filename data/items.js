@@ -17,15 +17,9 @@ import * as helper from '../helpers.js'
  */
 const getAll = async () => {
     const itemCollection = await items();
-    let items = await itemCollection.find({}).toArray();
-    if (!items) {
-        throw 'Could not fetch all items.'
-    }
-    items = items.map((element) => {
-        element._id = element._id.toString();
-        return element;
-    });
-    return items;
+    let itemList = await itemCollection.find({}).toArray();
+    if (!itemList) throw 'Could not fetch all items.';
+    return itemList.map(element => ({ ...element, _id: element._id.toString(), userId: element.userId.toString() }));
 }
 
 /**
