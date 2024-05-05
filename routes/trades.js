@@ -160,6 +160,95 @@ router.route('/:tradeId')
     })
     .patch(async (req, res) => {
         //updates existing trade, resends the trade to the database and swaps requester/requestee
+        //validate url parameter
+        console.log(req.body);
+        let foundTrade = undefined;
+        const errors = [];
+        let tradeId = help.tryCatchHelper(errors, () => {
+            return help.checkIdString(req.params.tradeId);
+        });
+        //tradeId not valid
+        if (errors.length !== 0){  
+            return res.status(400).render('error', {
+                errors,
+                auth: req.session.user !== undefined
+            });
+        }
+        //check if the trade exists
+        try{ 
+            const usersTrades = await tradeData.getAll(req.session.user._id);
+            foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
+            if (!foundTrade) return res.status(404).render("error", {
+                errors: ["trade not found!"],
+                auth: req.session.user !== undefined
+            });
+        } catch (e) { //server error
+            return res.status(500).render('error', {
+                title: "error",
+                errors: [e]
+            })
+        }
+
+        //validate inputs
+        if (!req.body.accepted){
+            if(typeof req.body.thisUserItems == 'string'){
+                req.body.thisUserItems = [req.body.thisUserItems];
+            }
+            if(typeof req.body.otherUserItems == 'string'){
+                req.body.otherUserItems = [req.body.otherUserItems];
+            }
+            for (let id of req.body.thisUserItems){
+                id = help.tryCatchAsync(errors, (el) => {
+                    return help.checkIdString(id, "item id");
+                });
+            }
+            for (let id of req.body.otherUserItems){
+                id = help.tryCatchAsync(errors, (el) => {
+                    return help.checkIdString(id, "item id");
+                });
+            }
+        }
+
+        if (errors.length !== 0){
+            return res.status(400).render('trades', {
+                title: "Trades",
+                trades: allTrades,
+                errors: errors,
+            });
+        }
+
+        //do the updating
+        try {
+            //they clicked the accept button. 
+            //Just update the statuses and return to the same trade
+            let thisTrade = await tradeDisplay(foundTrade, req);
+            let newTrade = {}
+            if (req.body.accepted) {
+                newTrade = {
+                    senderId: thisTrade.thisUser._id,
+                    senderStatus: "accepted",
+                    receiverId: thisTrade.otherUser._id,
+                    receiverStatus: "pending"
+                };
+            } else {
+                newTrade = {
+                    senderId: thisTrade.thisUser._id,
+                    senderItems: req.body.thisUserItems,
+                    senderStatus: "accepted",
+                    receiverId: thisTrade.otherUser._id,
+                    receiverItems: req.body.otherUserItems,
+                    receiverStatus: "pending"
+                };
+            }
+            await tradeData.update(tradeId, newTrade);
+            req.session._message = ['successfully updated trade'];
+            res.redirect(`/trades/${tradeId}`);
+        } catch (e) {
+            return res.status(500).render('error', {
+                title: "server error",
+                errors: [e]
+            })
+        }
     })
     .delete(async (req, res) => {
         const errors = [];
