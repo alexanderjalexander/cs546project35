@@ -4,10 +4,13 @@
     <input type="hidden" name="_method" value="DELETE">
     <button type="submit">Cancel This Trade</button>
     </form>
+
     <form action="/trades/{{_id}}" method="post">
     <input type="hidden" name="_method" value="PATCH">
+    <input type="hidden" name="accepted" value="true">
     <button type="submit">Accept This Trade</button>
     </form>
+
     <p>Status: {{status}}</p>
     <p><a href="/profiles/{{otherUser._id}}">{{otherUser.username}}</a>'s offerings</p>
     {{#each otherUserItems}}
