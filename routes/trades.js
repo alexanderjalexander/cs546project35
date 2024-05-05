@@ -103,7 +103,7 @@ router.route('/')
             );
             return res.redirect(`/trades`)
         } catch (e) {
-            return res.status(400).render('trades', {
+            return res.status(500).render('trades', {
                 title: "Trades",
                 trades: allTrades,
                 errors: [e],
@@ -117,7 +117,7 @@ router.route('/:tradeId')
         const errors = [];
         req.params.tradeId = help.tryCatchHelper(errors, ()=>help.checkIdString(req.params.tradeId))
         if (errors.length !== 0){
-            return res.status(500).render('error', {
+            return res.status(400).render('error', {
                 errors,
                 auth: req.session.user !== undefined
             });

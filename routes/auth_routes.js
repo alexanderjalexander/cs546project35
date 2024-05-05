@@ -53,7 +53,7 @@ router.route('/login')
 
 router.route('/register')
 .get(async (req, res) => {
-    return res.render('register', {
+    return res.status(200).render('register', {
         title: 'Register',
         auth: req.session.user !== undefined
     })
@@ -112,7 +112,7 @@ router.route('/logout')
 .get(async (req, res) => {
     //code here for GET
     req.session.destroy();
-    return res.render('logout', {
+    return res.status(200).render('logout', {
         title: 'Logged Out',
         auth: false,
     });
