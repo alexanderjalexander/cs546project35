@@ -148,7 +148,37 @@ router.route('/:tradeId')
         //updates existing trade, resends the trade to the database and swaps requester/requestee
     })
     .delete(async (req, res) => {
-        
+        const errors = [];
+        req.params.tradeId = help.tryCatchHelper(errors,
+            ()=>help.checkIdString(req.params.tradeId))
+        if (errors.length !== 0){
+            return res.status(400).render('error', {
+                errors,
+                auth: req.session.user !== undefined
+            });
+        }
+        try {
+            await tradeData.remove(req.params.tradeId);
+            const allTrades = await tradeData.getAll(req.session.user._id);
+            await Promise.all(allTrades.map(async (trade) => {
+                trade = await tradeDisplay(trade, req);
+            }));
+            return res.status(200).render('trades', {
+                title: "Trades",
+                trades: allTrades,
+                _messages: ["successfully removed trade"]
+            });
+        } catch (e) {
+            const allTrades = await tradeData.getAll(req.session.user._id);
+            await Promise.all(allTrades.map(async (trade) => {
+                trade = await tradeDisplay(trade, req);
+            }));
+            return res.status(500).render('trades', {
+                trades: allTrades, 
+                title: "Trades",
+                errors: [e]
+            });
+        }
     });
 
 

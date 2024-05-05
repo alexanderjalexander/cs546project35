@@ -39,7 +39,8 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
         receiverId: new ObjectId(receiverId),
         senderItems: senderItems.map(id => new ObjectId(id)),
         receiverItems: receiverItems.map(id => new ObjectId(id)),
-        status: 'requested'
+        senderStatus: "accepted",
+        receiverStatus: "pending"
     };
 
     const insertInfo = await tradeCollection.insertOne(newTrade);
@@ -110,7 +111,8 @@ const update = async (id, updateObject) => {
     }
     if (!Object.keys(updateObject).includes('senderId')
         && !Object.keys(updateObject).includes('recieverId')
-        && !Object.keys(updateObject).includes('status')
+        && !Object.keys(updateObject).includes('senderStatus')
+        && !Object.keys(updateObject).includes('receiverStatus')
         && !Object.keys(updateObject).includes('senderItems')
         && !Object.keys(updateObject).includes('receiverItems')) {
         throw `Must supply at least one of these: stats, senderId, recieverId, senderItems, receiverItems`
@@ -132,9 +134,12 @@ const update = async (id, updateObject) => {
         receiverItems: (updateObject.hasOwnProperty('receiverItems'))
             ? helper.checkArray(updateObject.receiverItems, 'receiverItems')
             : trade.receiverItems,
-        status: (updateObject.hasOwnProperty('status'))
-            ? helper.checkString(updateObject.status, 'status')
-            : trade.status,
+        senderStatus: (updateObject.hasOwnProperty('senderStatus'))
+            ? helper.checkString(updateObject.senderStatus, 'senderStatus')
+            : trade.senderStatus,
+        receiverStatus: (updateObject.hasOwnProperty('receiverStatus'))
+            ? helper.checkString(updateObject.receiverStatus, 'receiverStatus')
+            : trade.receiverStatus,
     };
 
     const tradesCollection = await trades();
@@ -148,7 +153,23 @@ const update = async (id, updateObject) => {
     return updateInfo;
 };
 
+const remove = async (id) => {
+    id = helper.checkIdString(id);
+
+    const tradeCollection = await trades();
+    const removalInfo = await tradeCollection.findOneAndDelete({
+        _id: new ObjectId(id),
+    });
+    
+    if (!removalInfo) {
+        throw `Error: Could not delete trade with id of ${id}`;
+    }
+
+    return {_id: new Object(id), deleted: true}
+}
+
 export default {
+    remove,
     getAll,
     get,
     create,

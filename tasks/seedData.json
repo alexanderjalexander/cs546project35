@@ -133,14 +133,16 @@
             "receiver": "pattyh",
             "senderItems": ["fridge", "calculus textbook"],
             "receiverItems": ["cigarettes"],
-            "status": "requested"
+            "senderStatus": "requested",
+            "receiverStatus": "pending"
         },
         {
             "sender": "kenjamin",
             "receiver": "kholden",
             "senderItems": ["Linear Algebra TextBook"],
             "receiverItems": ["fridge"],
-            "status": "accepted"
+            "senderStatus": "accepted",
+            "receiverStatus": "accepted"
         }
     ],
     "DMS": [
