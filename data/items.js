@@ -181,7 +181,7 @@ const remove = async (id, userId) => {
     );
 
     if (!removalInfo) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete trade with id of ${id}`;
     }
     return {_id: new Object(id), deleted: true}
 }

@@ -148,7 +148,23 @@ const update = async (id, updateObject) => {
     return updateInfo;
 };
 
+const remove = async (id) => {
+    id = helper.checkIdString(id);
+
+    const tradeCollection = await trades();
+    const removalInfo = await tradeCollection.findOneAndDelete({
+        _id: new ObjectId(id),
+    });
+    
+    if (!removalInfo) {
+        throw `Error: Could not delete trade with id of ${id}`;
+    }
+
+    return {_id: new Object(id), deleted: true}
+}
+
 export default {
+    remove,
     getAll,
     get,
     create,
