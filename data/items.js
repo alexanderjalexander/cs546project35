@@ -66,6 +66,25 @@ const getAllByUserId = async (userId) => {
 }
 
 /**
+ * Finds all the items owned/listed not from a specific user
+ * @param {string} userId the user's ID as a string
+ * @returns an array of items belonging to that userId
+ */
+const getAllExceptUserId = async (userId) => {
+    userId = helper.checkIdString(userId);
+
+    const itemCollection = await items();
+    const items = await itemCollection.find(
+        {$not: {userId: new ObjectId(userId)}}
+    ).toArray();
+
+    if (!items) {
+        throw `No products have been found.`
+    }
+    return items;
+}
+
+/**
  * Patch updates an item using at least one of the provided values in updateObject.
  * @param {string} id the ObjectID of the item as a string
  * @param {string} userId the ObjectID of the user owning it as a string
@@ -220,7 +239,7 @@ const remove = async (id, userId) => {
 }
 
 const exportedMethods = {
-    getAll, getById, getAllByUserId, update, create, remove
+    getAll, getById, getAllByUserId, getAllExceptUserId, update, create, remove
 }
 
 export default exportedMethods
