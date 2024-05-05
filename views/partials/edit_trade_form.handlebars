@@ -1,4 +1,4 @@
-<form action="/trades" method="PATCH" id="edit-trade-form">
+<form action="/trades/{{_id}}" method="post" id="edit-trade-form">
     <input type="hidden" name="_method" value="PATCH">
     <input type="hidden" name="otherUserId" value="{{otherUser._id}}">
     <p>{{otherUser.username}}'s items</p>
@@ -11,6 +11,5 @@
     <label for="{{this._id}}">{{this.name}}</label>
     <input type="checkbox" id="{{this._id}}"  name="thisUserItems" value="{{this._id}}">
     {{/each}}
-    <input type="text" name="otherUserId" value="{{otherUser._id}}" hidden>
     <button type="submit">Edit Trade</button>
 </form>
