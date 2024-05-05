@@ -183,6 +183,7 @@ const remove = async (id, userId) => {
         {$pull: {items: new ObjectId(id)}}
     );
 
+    // Remove item from any trades the item appears in
     const tradesCollection = await trades();
     const updateInfo1 = await tradesCollection.update(
         {senderId: new ObjectId(userId)},
@@ -196,6 +197,22 @@ const remove = async (id, userId) => {
         {$pull: {receiverItems: new ObjectId(id)}}
     );
     if (!updateInfo2) {
+        throw `Error: Could not delete product with id of ${id}`;
+    }
+
+    // If in the event there are no items left in the trade,
+    // the trade should delete itself.
+    const deleteInfo1 = await tradesCollection.deleteMany(
+        {senderItems: []}
+    )
+    if (!deleteInfo1) {
+        throw `Error: Could not delete product with id of ${id}`;
+    }
+
+    const deleteInfo2 = await tradesCollection.deleteMany(
+        {receiverItems: []}
+    )
+    if (!deleteInfo2) {
         throw `Error: Could not delete product with id of ${id}`;
     }
 
