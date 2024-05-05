@@ -1,0 +1,24 @@
+<button id="openAddProfileItemJson">Add New Item</button>
+<dialog id="addProfileItemJson">
+    <button id="closeAddProfileItemJson" aria-label="close" formnovalidate>X</button>
+    <ul id="addProfileItemJsonErrors" class="error"></ul>
+    <form action="/profile/items" method="post" enctype="multipart/form-data">
+        <label for="nameJson">Name: </label>
+        <input type="text" id="nameJson" name="name">
+        <br>
+
+        <label for="descJson">Description: </label>
+        <input type="text" id="descJson" name="desc">
+        <br>
+
+        <label for="priceJson">Price: </label>
+        <input type="number" id="priceJson" name="price" step="0.01">
+        <br>
+
+        <label for="imageJson">Image: </label>
+        <input type="file" name="image" accept=".jpeg, .png, .jpg" id="imageJson">
+        <br>
+
+        <input type="submit" value="Add">
+    </form>
+</dialog>
