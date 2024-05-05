@@ -36,7 +36,7 @@ export const nav_middleware = (req, res, next) => {
         {label: "Register", url: "/register"}
     ];
     let navLinks = [];
-    if (req.session.user) {
+    if (req.session.user && req.originalUrl !== '/logout') {
         //user is authorized
         navLinks = navLinks.concat(authorized_only)
     } else {

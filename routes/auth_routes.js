@@ -111,10 +111,10 @@ router.route('/register')
 router.route('/logout')
 .get(async (req, res) => {
     //code here for GET
-    req.session.user = undefined;
+    req.session.destroy();
     return res.render('logout', {
         title: 'Logged Out',
-        auth: false
+        auth: false,
     });
 });
 
