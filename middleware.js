@@ -56,6 +56,17 @@ export const nav_middleware = (req, res, next) => {
     res.locals.navLinks = navLinks
     next();
 }
+/**
+ * Dynamically determines the navLinks that should be visible when the user's 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const message_middleware = (req, res, next) => {
+    res.locals._message = req.session._message
+    req.session._message = undefined
+    next();
+}
 
 /**
  * If user is already logged in, bring them back home instead.

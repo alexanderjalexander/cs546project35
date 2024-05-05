@@ -16,6 +16,11 @@
         </ul>
     </nav>
     {{> error}}
+    <div>
+        {{#each _message}}
+        <p>{{this}}</p>
+        {{/each}}
+    </div>
     <h1>{{title}}</h1>
     {{{body}}}
     <script src="https://code.jquery.com/jquery-3.5.1.js"

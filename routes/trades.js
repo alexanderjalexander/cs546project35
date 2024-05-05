@@ -20,13 +20,27 @@ const tradeDisplay = async (trade, req) => {
     if (sender.username === req.session.user.username){
         trade.thisUser = sender;
         trade.thisUserItems = trade.senderItems;
+        trade.thisUserStatus = trade.senderStatus;
         trade.otherUser = receiver;
         trade.otherUserItems = trade.receiverItems;
+        trade.otherUserStatus = trade.receiverStatus;
     } else {
         trade.otherUser = sender;
         trade.otherUserItems = trade.senderItems;
+        trade.otherUserStatus = trade.senderStatus;
         trade.thisUser = receiver;
         trade.thisUserItems = trade.receiverItems;
+        trade.thisUserStatus = trade.receiverStatus;
+    }
+    //only statuses are pending accepted and completed
+    if (trade.thisUserStatus !== 'pending' && trade.otherUserStatus !== 'pending'){
+        trade.status = "waiting to complete trade";
+    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "pending"){
+        trade.status = "wating for other user to accept";
+    } else if (trade.thisUserStatus == "pending" && trade.otherUserStatus == "accepted"){
+        trade.status = "waiting for you to accept";
+    } else {
+
     }
     return trade
 }
@@ -159,15 +173,8 @@ router.route('/:tradeId')
         }
         try {
             await tradeData.remove(req.params.tradeId);
-            const allTrades = await tradeData.getAll(req.session.user._id);
-            await Promise.all(allTrades.map(async (trade) => {
-                trade = await tradeDisplay(trade, req);
-            }));
-            return res.status(200).render('trades', {
-                title: "Trades",
-                trades: allTrades,
-                _messages: ["successfully removed trade"]
-            });
+            req.session._message = ['successfully removed a trade']
+            return res.redirect('/trades');
         } catch (e) {
             const allTrades = await tradeData.getAll(req.session.user._id);
             await Promise.all(allTrades.map(async (trade) => {

@@ -133,7 +133,7 @@
             "receiver": "pattyh",
             "senderItems": ["fridge", "calculus textbook"],
             "receiverItems": ["cigarettes"],
-            "senderStatus": "requested",
+            "senderStatus": "accepted",
             "receiverStatus": "pending"
         },
         {
