@@ -52,15 +52,35 @@ router.route('/')
 
         const errors = [];
         //check user inputs
-        req.params.otherUserId = help.tryCatchHelper(errors, ()=>{
-            return help.checkIdString(req.params.otherUserId, "Other user id");
+        req.body.otherUserId = help.tryCatchHelper(errors, ()=>{
+            return help.checkIdString(req.body.otherUserId, "Other user id");
         });
-        for (let id of req.params.thisUserItems){
+        if (!req.body.thisUserItems){
+            errors.push("Must choose at least one item to give");
+        }
+        if (!req.body.otherUserItems){
+            errors.push("Must choose at least one item to receive");
+        }
+        if (errors.length !== 0){
+            return res.status(400).render('trades', {
+                title: "Trades",
+                trades: allTrades,
+                errors: errors,
+            });
+        }
+        
+        if(typeof req.body.thisUserItems == 'string'){
+            req.body.thisUserItems = [req.body.thisUserItems];
+        }
+        if(typeof req.body.otherUserItems == 'string'){
+            req.body.otherUserItems = [req.body.otherUserItems];
+        }
+        for (let id of req.body.thisUserItems){
             id = help.tryCatchAsync(errors, (el) => {
                 return help.checkIdString(id, "item id");
             });
         }
-        for (let id of req.params.otherUserItems){
+        for (let id of req.body.otherUserItems){
             id = help.tryCatchAsync(errors, (el) => {
                 return help.checkIdString(id, "item id");
             });
@@ -77,14 +97,11 @@ router.route('/')
         try {
             const newTrade = await tradeData.create(
                 req.session.user._id,
-                req.params.otherUserId,
-                req.params.thisUserItems,
-                req.params.otherUserItems
+                req.body.otherUserId,
+                req.body.thisUserItems,
+                req.body.otherUserItems
             );
-            return res.status(200).render('trade', {
-                title: "Trade",
-                trade: await tradeDisplay(newTrade)
-            })
+            return res.redirect(`/trades`)
         } catch (e) {
             return res.status(400).render('trades', {
                 title: "Trades",
@@ -113,10 +130,11 @@ router.route('/:tradeId')
                 auth: req.session.user !== undefined
             });
             foundTrade = await tradeDisplay(foundTrade, req);
-
+            foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
+            foundTrade.thisUser.items = await itemData.getAllByUserId(foundTrade.thisUser._id);
             return res.status(200).render('trade', {
                 title: 'Trade',
-                trade: foundTrade
+                ...foundTrade,
             });
         } catch (e){
             return res.status(500).render('error', {
