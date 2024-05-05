@@ -1,10 +1,15 @@
 {{!shows all the items in the community, as per our deliverables}}
-<ol>
-    {{#each item}}
-        <li>
-            <strong>Name:</strong> {{this.name}} <br>
-            <strong>Description:</strong> {{this.desc}}
-
-        </li>
-    {{/each}}
-</ol>
+{{#each items}}
+    <div>
+        <h2><a href="/profile/items/{{_id}}">{{name}}</a></h2>
+        <dl>
+            <dt>Description: </dt>
+            <dd>{{desc}}</dd>
+            <dt>Price: </dt>
+            <dd>{{price}}</dd>
+        </dl>
+        <img width='500px' alt="{{name}}" src="{{image}}">
+    </div>
+{{else}}
+    <p>No items. :(</p>
+{{/each}}
