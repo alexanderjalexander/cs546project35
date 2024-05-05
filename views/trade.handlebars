@@ -1,7 +1,7 @@
 {{!views an individual trade between the current user and another user}}
 <div id="trade">
     <p>Status: {{trade.status}}</p>
-    <p>{{trade.otherUser.username}}'s offerings</p>
+    <p><a href="/profiles/{{trade.otherUser._id}}">{{trade.otherUser.username}}</a>'s offerings</p>
     {{#each trade.otherUserItems}}
     <div id="trade-item">
         <p>{{this.name}}: ${{this.price}}</p>
@@ -9,7 +9,7 @@
         <p>{{this.desc}}</p>
     </div>
     {{/each}}
-    
+
     <p>{{trade.thisUser.username}}'s offerings</p>
     {{#each trade.thisUserItems}}
     <div id="trade-item">

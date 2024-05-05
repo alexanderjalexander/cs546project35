@@ -45,10 +45,53 @@ router.route('/')
     })
     .post(async (req, res) => {
         //this route will initiate a new trade to another person
+        const allTrades = await tradeData.getAll(req.session.user._id);
+        await Promise.all(allTrades.map(async (trade) => {
+            trade = await tradeDisplay(trade, req);
+        }));
 
-        const other = req.body.userId;
-        const self = req.session.user._id;
-        
+        const errors = [];
+        //check user inputs
+        req.params.otherUserId = help.tryCatchHelper(errors, ()=>{
+            return help.checkIdString(req.params.otherUserId, "Other user id");
+        });
+        for (let id of req.params.thisUserItems){
+            id = help.tryCatchAsync(errors, (el) => {
+                return help.checkIdString(id, "item id");
+            });
+        }
+        for (let id of req.params.otherUserItems){
+            id = help.tryCatchAsync(errors, (el) => {
+                return help.checkIdString(id, "item id");
+            });
+        }
+        if (errors.length !== 0){
+            return res.status(400).render('trades', {
+                title: "Trades",
+                trades: allTrades,
+                errors: errors,
+            });
+        }
+        //now we need to create a new trade object
+
+        try {
+            const newTrade = await tradeData.create(
+                req.session.user._id,
+                req.params.otherUserId,
+                req.params.thisUserItems,
+                req.params.otherUserItems
+            );
+            return res.status(200).render('trade', {
+                title: "Trade",
+                trade: await tradeDisplay(newTrade)
+            })
+        } catch (e) {
+            return res.status(400).render('trades', {
+                title: "Trades",
+                trades: allTrades,
+                errors: [e],
+            });
+        }
     })
 
 router.route('/:tradeId')
