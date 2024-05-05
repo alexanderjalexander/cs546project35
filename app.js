@@ -50,6 +50,7 @@ app.use('/public', express.static('public'));
 app.use('/server_images', express.static('server_images'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(rewriteUnsupportedBrowserMethods);
 
 // ---------------------------------------
 // Middleware Declarations
@@ -68,7 +69,6 @@ app.post('/items', middleware.protected_middleware);
 
 // ---------------------------------------
 
-app.use(rewriteUnsupportedBrowserMethods);
 app.engine('handlebars', exphbs.engine({
   defaultLayout: 'main'
 }));
