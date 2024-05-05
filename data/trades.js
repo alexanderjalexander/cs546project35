@@ -126,7 +126,7 @@ const update = async (id, updateObject) => {
             ? helper.checkIdString(updateObject.senderId, 'senderId')
             : trade.senderId,
         receiverId: (updateObject.hasOwnProperty('receiverId'))
-            ? helper.checkIdString(updateObject.recieverId, 'receiverId')
+            ? helper.checkIdString(updateObject.receiverId, 'receiverId')
             : trade.receiverId,
         senderItems: (updateObject.hasOwnProperty('senderItems'))
             ? helper.checkIdArray(updateObject.senderItems, 'senderItems')
