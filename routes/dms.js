@@ -48,4 +48,16 @@ router.route('/:id')
     }
   });
 
+  router.post('/api/dms/send', async (req, res) => {
+    try {
+        const { senderId, recipientId, message } = req.body;
+        const result = await dmData.writeMsg(senderId, recipientId, message);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Failed to send message:', error);
+        res.status(500).json({ success: false, error: 'Failed to send message' });
+    }
+});
+
+
 export default router;
