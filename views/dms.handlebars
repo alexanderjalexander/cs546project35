@@ -10,3 +10,20 @@ Also needs to have a way to start a new chat with a user}}
 {{#unless dmlist}}
 <p>You have no dms :(</p>
 {{/unless}}
+
+<h2>Send a New Message</h2>
+
+<form id="messageNewForm">
+    <label for="senderId">Sender ID:</label>
+    <input type="text" id="senderId" name="senderId" required><br>
+
+    <label for="recipientId">Recipient ID:</label>
+    <input type="text" id="recipientId" name="recipientId" required><br>
+
+    <label for="messageInput">Your Message:</label><br>
+    <textarea id="messageInput" name="messageInput" required></textarea><br>
+
+    <button type="submit">Send Message</button>
+</form>
+
+<script src="public/js/client_side_dialog.js"></script>
