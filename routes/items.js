@@ -13,8 +13,13 @@ const upload = multer(multerConfig).single('image');
 //GET route to view all items in the community
 router.get('/', async (req, res) => {
     try {
-        const items = await itemData.getAll();
-        res.render('items', {
+        let items;
+        if (req.session.user !== undefined) {
+            items = await itemData.getAllExceptUserId(req.session.user._id)
+        } else {
+            items = await itemData.getAll();
+        }
+        return res.render('items', {
             title: "All Community Items",
             auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
@@ -31,7 +36,7 @@ router.get('/:itemid', async (req, res) => {
     try {
         const itemid = helper.checkIdString(req.params.itemid);
         const item = await itemData.getById(itemid);
-        res.render('item', {
+        return res.render('item', {
             title: "View Item",
             auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
@@ -39,7 +44,7 @@ router.get('/:itemid', async (req, res) => {
         });
     } 
     catch (error) {
-        res.status(404).send({error: error.toString()});
+        return res.status(404).send({error: error.toString()});
     }
 });
 
