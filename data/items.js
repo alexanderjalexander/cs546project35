@@ -1,4 +1,4 @@
-import {items, users} from '../config/mongoCollections.js';
+import {items, trades, users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
@@ -173,6 +173,9 @@ const remove = async (id, userId) => {
         _id: new ObjectId(id),
         userId: new ObjectId(userId),
     });
+    if (!removalInfo) {
+        throw `Error: Could not delete product with id of ${id}`;
+    }
 
     const userCollection = await users();
     await userCollection.updateOne(
@@ -180,9 +183,22 @@ const remove = async (id, userId) => {
         {$pull: {items: new ObjectId(id)}}
     );
 
-    if (!removalInfo) {
+    const tradesCollection = await trades();
+    const updateInfo1 = await tradesCollection.update(
+        {senderId: new ObjectId(userId)},
+        {$pull: {senderItems: new ObjectId(id)}}
+    );
+    if (!updateInfo1) {
         throw `Error: Could not delete product with id of ${id}`;
     }
+    const updateInfo2 = await tradesCollection.update(
+        {receiverId: new ObjectId(userId)},
+        {$pull: {receiverItems: new ObjectId(id)}}
+    );
+    if (!updateInfo2) {
+        throw `Error: Could not delete product with id of ${id}`;
+    }
+
     return {_id: new Object(id), deleted: true}
 }
 
