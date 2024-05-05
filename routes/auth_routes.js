@@ -100,8 +100,8 @@ router.route('/register')
         res.redirect('/login');
     } catch(e) {
         return res.status(500).render('register', {
+            ...req.body,
             title:"Register",
-            auth: req.session.user !== undefined,
             errors: [e], 
             themePreference: 'light'
         });
