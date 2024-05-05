@@ -10,6 +10,39 @@
             "slnt" 0;
 }
 
+/* Navigation */
+nav#nav {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+nav#nav ul {
+    list-style: none;
+    text-align: center;
+}
+
+nav#nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav#nav ul li:last-child {
+    margin-right: 0;
+}
+
+nav#nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav#nav ul li a:hover,
+nav#nav ul li a.currentLink { /* Highlights current page */
+    color: #0056b3;
+}
+
 .alfa-slab-one-regular {
     font-family: "Alfa Slab One", serif;
     font-weight: 400;
