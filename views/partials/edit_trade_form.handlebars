@@ -1,0 +1,14 @@
+<form action="/trades" method="PATCH" id="edit-trade-form">
+    <p>{{otherUser.username}}'s items</p>
+    {{#each otherUser.items}}
+    <label for="{{this._id}}">{{this.name}}</label>
+    <input type="checkbox" id="{{this._id}}" name="otherUserItems" value="{{this._id}}">
+    {{/each}}
+    <p>Your items</p>
+    {{#each thisUser.items}}
+    <label for="{{this._id}}">{{this.name}}</label>
+    <input type="checkbox" id="{{this._id}}"  name="thisUserItems" value="{{this._id}}">
+    {{/each}}
+    <input type="text" name="otherUserId" value="{{otherUser._id}}" hidden>
+    <button type="submit">Edit Trade</button>
+</form>

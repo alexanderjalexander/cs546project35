@@ -19,4 +19,8 @@
         <p>{{this.desc}}</p>
     </div>
     {{/each}}
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Cancel/Delete This Trade</button>
+    </form>
 </div>
