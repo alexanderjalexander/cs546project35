@@ -20,11 +20,23 @@
     color: grey;
 }
 
+div#trade-item {
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 300px;
+}
+div#trade-item *{
+    padding: 5px;
+    width: 200px;
+    margin: auto;
+}
+
 /*Googled how to resize images without stretching:
  https://www.w3schools.com/css/css3_images.asp*/
 div#trade-item img { 
-    border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
-    width: 150px;  
+    width: 150px;
+    margin: auto;
 }
