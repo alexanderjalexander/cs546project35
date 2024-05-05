@@ -146,6 +146,9 @@ router.route('/:tradeId')
     })
     .patch(async (req, res) => {
         //updates existing trade, resends the trade to the database and swaps requester/requestee
+    })
+    .delete(async (req, res) => {
+        
     });
 
 
