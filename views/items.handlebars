@@ -1,5 +1,10 @@
 {{!shows all the items in the community, as per our deliverables}}
 <ol>
     {{#each item}}
+        <li>
+            <strong>Name:</strong> {{this.name}} <br>
+            <strong>Description:</strong> {{this.desc}}
+
+        </li>
     {{/each}}
 </ol>
