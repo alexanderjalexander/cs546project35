@@ -170,13 +170,14 @@ const createUser = async (
     lastName = helper.checkName(lastName);
     username = helper.checkUsername(username);
     username = username.toLowerCase();
+    email = helper.checkEmail(email);
     password = helper.checkPassword(password);
     themePreference = helper.checkTheme(themePreference);
   
     //check for duplicate username in the system first
     const userCollection = await users();
     const foundUsername = await userCollection.findOne({username: username});
-    if (foundUsername) throw 'there is already a user with that name';
+    if (foundUsername) throw 'there is already a user with that username';
     const foundEmail = await userCollection.findOne({email: email});
     if (foundEmail) throw 'there is already a user with that email';
 

@@ -173,16 +173,8 @@ router.route('/:tradeId')
         }
         try {
             await tradeData.remove(req.params.tradeId);
-            const allTrades = await tradeData.getAll(req.session.user._id);
-            await Promise.all(allTrades.map(async (trade) => {
-                trade = await tradeDisplay(trade, req);
-            }));
-            req.session._message = ['successfully removed an item']
+            req.session._message = ['successfully removed a trade']
             return res.redirect('/trades');
-            return res.status(200).render('trades', {
-                title: "Trades",
-                trades: allTrades,
-            });
         } catch (e) {
             const allTrades = await tradeData.getAll(req.session.user._id);
             await Promise.all(allTrades.map(async (trade) => {

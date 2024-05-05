@@ -167,6 +167,7 @@ export const checkEmail = (email) => {
     // }
     if (!(/^[^@]+@[a-z0-9.-]+\.[a-z]{2,}$/i).test(email))
         throw `Error: provided email is not a valid.`
+    email = email.toLowerCase();
     return email;
 }
 
