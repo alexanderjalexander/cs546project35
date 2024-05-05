@@ -103,7 +103,7 @@ router.route('/')
             );
             return res.redirect(`/trades`)
         } catch (e) {
-            return res.status(400).render('trades', {
+            return res.status(500).render('trades', {
                 title: "Trades",
                 trades: allTrades,
                 errors: [e],
