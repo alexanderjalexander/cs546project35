@@ -9,6 +9,15 @@ import multer from "multer";
 import {ObjectId} from "mongodb";
 const upload = multerConfig.single('image');
 
+router.route('/')
+    .get(async (req, res) => {
+        return res.render('profile_self', {
+            title: "My Profile",
+            auth: req.session.user !== undefined,
+            themePreference: req.session.user.themePreference
+        });
+    })
+
 router.route('/items')
     .get(async (req, res) => {
         return res.render('profile_items', {
