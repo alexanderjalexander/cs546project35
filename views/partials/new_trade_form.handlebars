@@ -1,0 +1,13 @@
+<form action="/trades/{{otherUser._id}}" method="POST">
+    <p>{{otherUser.username}}'s items</p>
+    {{#each otherUserItems}}
+    <label for="{{this.desc}}"></label>
+    <input type="checkbox" id="{{this.desc}}">
+    {{/each}}
+    <p>Your items</p>
+    {{#each thisUserItems}}
+    <label for="{{this.desc}}"></label>
+    <input type="checkbox" id="{{this.desc}}">
+    {{/each}}
+    <button type="submit">Send</button>
+</form>
