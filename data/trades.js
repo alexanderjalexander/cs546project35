@@ -40,7 +40,7 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
         senderItems: senderItems.map(id => new ObjectId(id)),
         receiverItems: receiverItems.map(id => new ObjectId(id)),
         senderStatus: "accepted",
-        reciverStatus: "pending"
+        receiverStatus: "pending"
     };
 
     const insertInfo = await tradeCollection.insertOne(newTrade);
@@ -135,11 +135,11 @@ const update = async (id, updateObject) => {
             ? helper.checkArray(updateObject.receiverItems, 'receiverItems')
             : trade.receiverItems,
         senderStatus: (updateObject.hasOwnProperty('senderStatus'))
-            ? helper.checkString(updateObject.status, 'senderStatus')
-            : trade.status,
+            ? helper.checkString(updateObject.senderStatus, 'senderStatus')
+            : trade.senderStatus,
         receiverStatus: (updateObject.hasOwnProperty('receiverStatus'))
-            ? helper.checkString(updateObject.status, 'receiverStatus')
-            : trade.status,
+            ? helper.checkString(updateObject.receiverStatus, 'receiverStatus')
+            : trade.receiverStatus,
     };
 
     const tradesCollection = await trades();
