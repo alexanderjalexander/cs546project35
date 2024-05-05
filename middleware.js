@@ -22,20 +22,21 @@ export const root_middleware = (req, res, next) => {
  */
 export const nav_middleware = (req, res, next) => {
     const everyone = [
-        {label: "View Community Items", url: "/items"},
         {label: "Home", url: "/"},
+        {label: "View Community Items", url: "/items"},
     ];
     const authorized_only = [
+        {label: "My Trades", url: "/trades"},
+        {label: "Direct Messages", url: "/directmsgs"},
         {label: "My Profile", url: "/profile"},
         {label: "Log Out", url: "/logout"},
-        {label: "Direct Messages", url: "/directmsgs"},
-        {label: "My Trades", url: "/trades"},
     ];
     const guest_only = [
         {label: "Log In", url: "/login"},
         {label: "Register", url: "/register"}
     ];
     let navLinks = [];
+    navLinks = navLinks.concat(everyone)
     if (req.session.user && req.originalUrl !== '/logout') {
         //user is authorized
         navLinks = navLinks.concat(authorized_only)
@@ -44,7 +45,6 @@ export const nav_middleware = (req, res, next) => {
         navLinks = navLinks.concat(guest_only)
 
     }
-    navLinks = navLinks.concat(everyone)
     //add an id for the link for the page that the user is currently on
     navLinks.map((el) => {
         if(el.url === req.originalUrl){
