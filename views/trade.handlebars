@@ -1,6 +1,13 @@
 {{!views an individual trade between the current user and another user}}
-{{> new_trade_form}}
 <div class="trade">
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Cancel This Trade</button>
+    </form>
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="PATCH">
+    <button type="submit">Accept This Trade</button>
+    </form>
     <p>Status: {{status}}</p>
     <p><a href="/profiles/{{otherUser._id}}">{{otherUser.username}}</a>'s offerings</p>
     {{#each otherUserItems}}
@@ -19,8 +26,6 @@
         <p>{{this.desc}}</p>
     </div>
     {{/each}}
-    <form action="/trades/{{_id}}" method="post">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit">Cancel/Delete This Trade</button>
-    </form>
+    {{> edit_trade_form}}
+
 </div>

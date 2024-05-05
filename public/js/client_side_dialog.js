@@ -48,3 +48,42 @@ if (deleteProfileItem) {
         })
     }
 }
+
+
+(function($) {
+    $(document).ready(function() {
+        let messageForm = $('#messageNewForm'),
+            senderId = $('#senderId'),
+            recipientId = $('#recipientId'),
+            messageInput = $('#messageInput'),
+            messageDetails = $('#messageDetails'); 
+
+        messageForm.submit(function(event) {
+            event.preventDefault();
+
+            if (!messageInput.val().trim()) {
+                alert("Please enter a message to send.");
+                return;
+            }
+
+            let requestConfig = {
+                method: 'POST',
+                url: '/api/dms/send',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    senderId: senderId.val().trim(),
+                    recipientId: recipientId.val().trim(),
+                    message: messageInput.val().trim()
+                })
+            };
+
+            $.ajax(requestConfig).then(function(response) {
+                messageDetails.html(`<p>Message sent successfully to ${response.recipientId || 'recipient'}!</p>`).show();
+                messageForm[0].reset(); 
+            }).catch(function(error) {
+                console.error('Error sending message:', error);
+                messageDetails.html('<p>Error sending message.</p>').show();
+            });
+        });
+    });
+})(jQuery);
