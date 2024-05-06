@@ -42,12 +42,34 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
         senderStatus: "accepted",
         receiverStatus: "pending"
     };
-
     const insertInfo = await tradeCollection.insertOne(newTrade);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Failed to create trade';
 
     return await get(insertInfo.insertedId.toString());
 };
+
+/**
+ * returns true if there exists a trade with the itemid lists
+ *
+ * @param   {Array[string]}  firstitems   list of string ids 
+ * @param   {Array[string]}  seconditems  list of string ids
+ *
+ * @return  {boolean}               true if trade already exists
+ */
+const exists = async (firstitems, seconditems) => {
+    firstitems = helper.checkIdArray(firstitems);
+    seconditems = helper.checkIdArray(seconditems);
+    const existsHelper = async (senderItems, receiverItems) =>{
+        const tradeCollection = await trades();
+        const trade = await tradeCollection.findOne({
+            senderItems: senderItems,
+            receiverItems: receiverItems
+        });
+        return (trade === null);
+    }
+    return (await existsHelper(firstitems,seconditems) || 
+                await existsHelper(seconditems, firstitems));
+}
 
 /**
  * Swaps sender and receiver roles and their items in a trade
@@ -192,4 +214,5 @@ export default {
     create,
     swap,
     update,
+    exists,
 };
