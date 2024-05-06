@@ -29,7 +29,8 @@ export function checkIdString(id) {
  * @param {Array} arr An array
  * @returns a thrown error or a valid array of strings depending on input.
  */
-export function checkIdArray(arr) {
+export function checkIdArray(arr, name) {
+    if (!arr) throw `${name} must be supplied!`
     arr = arr.map((el) => {
         return checkIdString(el);
     })
