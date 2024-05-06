@@ -114,7 +114,7 @@ router.delete('/:profileId/review', async (req, res) => {
         foundUser = await userData.displayUserData(req.params.profileId);
     } catch(e){
         return res.status(404).render('error', {
-            title: "error",
+            title: "Error",
             errors: ['user not found'],
         })
     }
@@ -124,7 +124,7 @@ router.delete('/:profileId/review', async (req, res) => {
         })){
             return res.render('profile', {
                 ...foundUser,
-                title: "profile",
+                title: "Profile",
                 errors: ['you dont have a review on this user to delete!']
             });
         }
@@ -132,7 +132,7 @@ router.delete('/:profileId/review', async (req, res) => {
         foundUser = await userData.displayUserData(req.params.profileId);
         return res.render('profile', {
             ...foundUser,
-            title: "profile"
+            title: "Profile"
         });
     } catch (e) {
         return res.status(404).render('error', {
@@ -152,11 +152,11 @@ router.get('/', async (req, res) => {
         }
         return res.status(200).render('profiles', {
             users,
-            title: "users"
+            title: "Users"
         })
     } catch (e) {
         return res.status(500).render('error', {
-            title: "error",
+            title: "Error",
             errors: [`unexpected server error ${e}`]
         })
     }
@@ -169,7 +169,7 @@ router.get('/:profileId', async (req, res) => {
         req.params.profileId = help.checkIdString(req.params.profileId);
     } catch (e){
         return res.status(400).render('error', {
-            title: "error",
+            title: "Error",
             errors: ['invalid url'],
         })
     }
@@ -177,7 +177,7 @@ router.get('/:profileId', async (req, res) => {
         foundUser = await userData.getUserById(req.params.profileId);
     } catch(e){
         return res.status(404).render('error', {
-            title: "error",
+            title: "Error",
             errors: ['user not found'],
         })
     }
