@@ -42,6 +42,9 @@ $(document).ready(function() {
         event.preventDefault();
         var messageInput = $('#messageInput');
         var messageText = messageInput.val().trim();
+        var senderId = $('#senderId').val();
+        var receiverId=$("#receiverId").val();
+
         if (!messageText) {
             alert("Please enter a message to send.");
             return;
@@ -52,8 +55,8 @@ $(document).ready(function() {
             url: '/directmsgs/send',
             contentType: 'application/json',
             data: JSON.stringify({
-                senderId: $('#senderId'), // Replace with actual sender ID obtained dynamically
-                receiverId: $('#receiverId'), // Replace with actual recipient ID
+                senderId, 
+                receiverId,
                 message: messageText
             }),
             success: function(response) {
