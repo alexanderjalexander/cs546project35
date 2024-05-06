@@ -100,7 +100,7 @@ nav#nav ul li a.currentLink { /* Highlights current page */
     color: red;
 }
 
-div.trade-item {
+div.trade-item, #edit-trade-form {
     border: 2px solid #ddd;
     border-radius: 4px;
     padding: 5px;
