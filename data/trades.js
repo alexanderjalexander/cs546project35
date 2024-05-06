@@ -65,7 +65,7 @@ const exists = async (firstitems, seconditems) => {
             senderItems: senderItems,
             receiverItems: receiverItems
         });
-        return (trade === null);
+        return (trade !== null);
     }
     return (await existsHelper(firstitems,seconditems) || 
                 await existsHelper(seconditems, firstitems));
