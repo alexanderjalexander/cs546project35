@@ -11,9 +11,7 @@ const upload = multerConfig.single('image');
 router.route('/')
     .get(async (req, res) => {
         return res.render('profile_self', {
-            title: "My Profile",
-            auth: req.session.user !== undefined,
-            themePreference: req.session.user.themePreference
+            title: "My Profile"
         });
     })
 
@@ -21,8 +19,6 @@ router.route('/items')
     .get(async (req, res) => {
         return res.render('profile_items', {
             title: "My Inventory",
-            auth: req.session.user !== undefined,
-            themePreference: req.session.user.themePreference,
             items: await itemData.getAllByUserId(req.session.user._id)
         });
     })
@@ -47,8 +43,6 @@ router.route('/items')
                 return res.status(500).render('profile_items', {
                     title: "My Inventory",
                     errors: errors,
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             } else if (err instanceof TypeError) {
@@ -57,8 +51,6 @@ router.route('/items')
                 return res.status(400).render('profile_items', {
                     title: "My Inventory",
                     errors: errors,
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             } else if (err) {
@@ -67,8 +59,6 @@ router.route('/items')
                 return res.status(500).render('profile_items', {
                     title: "My Inventory",
                     errors: errors,
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             } else if (errors.length !== 0) {
@@ -76,8 +66,6 @@ router.route('/items')
                 return res.status(400).render('profile_items', {
                     title: "My Inventory",
                     errors: errors,
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
@@ -88,8 +76,6 @@ router.route('/items')
                 return res.status(500).render('profile_items', {
                     title: "My Inventory",
                     errors: [e],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
@@ -106,8 +92,6 @@ router.route('/items/:itemId')
             return res.status(400).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
@@ -120,8 +104,6 @@ router.route('/items/:itemId')
             return res.status(404).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
@@ -131,16 +113,12 @@ router.route('/items/:itemId')
             return res.status(403).render('profile_items', {
                 title: "My Inventory",
                 errors: ['Error: that item does not belong to you.'],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
 
         res.render('profile_item', {
             title: `My Inventory - ${item.name}`,
-            auth: req.session.user !== undefined,
-            themePreference: req.session.user.themePreference,
             item
         })
     })
@@ -153,8 +131,6 @@ router.route('/items/:itemId')
                 return res.status(400).render('profile_items', {
                     title: "My Inventory",
                     errors: [e],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
@@ -167,8 +143,6 @@ router.route('/items/:itemId')
                 return res.status(404).render('profile_items', {
                     title: "My Inventory",
                     errors: [e],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
@@ -178,8 +152,6 @@ router.route('/items/:itemId')
                 return res.status(403).render('profile_items', {
                     title: "My Inventory",
                     errors: ['Error: that item does not belong to you.'],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     items: await itemData.getAllByUserId(req.session.user._id)
                 });
             }
@@ -193,8 +165,6 @@ router.route('/items/:itemId')
                 return res.status(400).render('profile_item', {
                     title: `My Inventory - ${item.name}`,
                     errors: ['Error: You must at least one of the following: name, description, price, image.'],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     item
                 });
             }
@@ -222,8 +192,6 @@ router.route('/items/:itemId')
                 return res.status(400).render('profile_item', {
                     title: `My Inventory - ${item.name}`,
                     errors,
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     item: item
                 });
             }
@@ -235,8 +203,6 @@ router.route('/items/:itemId')
                 return res.status(500).render('profile_item', {
                     title: `My Inventory - ${item.name}`,
                     errors: [e],
-                    auth: req.session.user !== undefined,
-                    themePreference: req.session.user.themePreference,
                     item: item
                 });
             }
@@ -253,8 +219,6 @@ router.route('/items/:itemId')
             return res.status(400).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
@@ -267,8 +231,6 @@ router.route('/items/:itemId')
             return res.status(404).render('profile_items', {
                 title: "My Inventory",
                 errors: [e],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
@@ -278,8 +240,6 @@ router.route('/items/:itemId')
             return res.status(403).render('profile_items', {
                 title: "My Inventory",
                 errors: ['Error: you are not authorized to delete that item. It is not yours.'],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }
@@ -292,8 +252,6 @@ router.route('/items/:itemId')
             return res.status(500).render('profile_items', {
                 title: "My Inventory",
                 errors: [`Error: something wrong happened on the serverside: (${e.message}).`],
-                auth: req.session.user !== undefined,
-                themePreference: req.session.user.themePreference,
                 items: await itemData.getAllByUserId(req.session.user._id)
             });
         }

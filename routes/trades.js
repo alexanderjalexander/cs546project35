@@ -132,16 +132,14 @@ router.route('/:tradeId')
         req.params.tradeId = help.tryCatchHelper(errors, ()=>help.checkIdString(req.params.tradeId))
         if (errors.length !== 0){
             return res.status(400).render('error', {
-                errors,
-                auth: req.session.user !== undefined
+                errors
             });
         }
         try{
             const usersTrades = await tradeData.getAll(req.session.user._id);
             let foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
             if (!foundTrade) return res.status(404).render("error", {
-                errors: ["trade not found!"],
-                auth: req.session.user !== undefined
+                errors: ["trade not found!"]
             });
             foundTrade = await tradeDisplay(foundTrade, req);
             foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
@@ -153,7 +151,6 @@ router.route('/:tradeId')
         } catch (e){
             return res.status(500).render('error', {
                 errors: [e],
-                auth: req.session.user !== undefined
             });
         }
 
@@ -171,7 +168,6 @@ router.route('/:tradeId')
         if (errors.length !== 0){  
             return res.status(400).render('error', {
                 errors,
-                auth: req.session.user !== undefined
             });
         }
         //check if the trade exists
@@ -180,7 +176,6 @@ router.route('/:tradeId')
             foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
             if (!foundTrade) return res.status(404).render("error", {
                 errors: ["trade not found!"],
-                auth: req.session.user !== undefined
             });
             foundTrade = await tradeDisplay(foundTrade, req);
             foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
@@ -257,7 +252,6 @@ router.route('/:tradeId')
         if (errors.length !== 0){
             return res.status(400).render('error', {
                 errors,
-                auth: req.session.user !== undefined
             });
         }
         try {
