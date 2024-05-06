@@ -4,10 +4,12 @@
             senderId = $('#senderId'),
             recipientId = $('#recipientId'),
             messageInput = $('#messageInput'),
-            messageDetails = $('#messageDetails'); 
+            messageDetails = $('#messageDetails'),
+            dmList = $('#dmList');
 
         messageForm.submit(function(event) {
             event.preventDefault();
+            messageDetails.html(`<p></p>`);
 
             if (!messageInput.val().trim()) {
                 alert("Please enter a message to send.");
@@ -16,7 +18,7 @@
 
             let requestConfig = {
                 method: 'POST',
-                url: '/directmsgs/send',
+                url: '/directmsgs',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     senderId: senderId.val().trim(),
@@ -26,11 +28,14 @@
             };
 
             $.ajax(requestConfig).then(function(response) {
-                messageDetails.html(`<p>Message sent successfully to ${response.recipientId || 'recipient'}!</p>`).show();
+                messageDetails.html(`<p>Message sent successfully to ${response.recipientId || 'recipient'}!</p>`);
+                if (response.created) {
+                    dmList.append(`<li><a href='/directmsgs/${response.data._id}'>${recipientId.val().trim()}</a></li>`);
+                }
                 messageForm[0].reset(); 
             }).catch(function(error) {
                 console.error('Error sending message:', error);
-                messageDetails.html('<p>Error sending message.</p>').show();
+                messageDetails.html('<p>Error sending message.</p>');
             });
         });
     });
@@ -52,7 +57,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'POST',
-            url: '/directmsgs/send',
+            url: `/directmsgs/${dmId}`,
             contentType: 'application/json',
             data: JSON.stringify({
                 senderId, 

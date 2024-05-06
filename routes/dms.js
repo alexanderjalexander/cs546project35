@@ -24,7 +24,35 @@ router.route('/')
     } catch (e) {
       return res.status(500).json({ error: 'Failed to retrieve direct messages.' });
     }
-  });
+  })
+    .post(async (req, res) => {
+  try {
+    let { senderId, recipientId, message } = req.body;
+    recipientId=await userData.getUserByUsername(recipientId);
+    // Validate inputs
+    if (!senderId || !recipientId || !message) {
+      return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
+    }
+
+    // Attempt to find an existing DM between the two users
+    const existingDMs = await dmData.getByUserId(senderId);
+    let dm = existingDMs.find(dm => (dm.actor1.toString() === recipientId || dm.actor2.toString() === recipientId));
+    let created = false;
+    if (!dm) {
+      // If no existing conversation, create a new one
+      dm = await dmData.create(senderId, recipientId);
+      created = true;
+    }
+
+    // Add the new message to the conversation
+    const updatedDM = await dmData.writeMsg(dm._id.toString(), senderId, message);
+
+    return res.json({ success: true, created, message: 'Message sent successfully', data: updatedDM });
+  } catch (error) {
+    console.error('Failed to send message:', error);
+    return res.status(500).json({ success: false, error: 'Failed to send message' });
+  }
+});;
 
 router.route('/:id')
   .get(async (req, res) => {
@@ -36,16 +64,16 @@ router.route('/:id')
         element.timestamp = element.timestamp.toDateString()
       };
       if (dm) {
-        res.render('dm', {
+        return res.render('dm', {
           ...dm,
           id: req.params.id,
           senderId: req.session.user._id
         });
       } else {
-        res.status(404).json({ error: 'Direct message not found.' });
+        return res.status(404).json({ error: 'Direct message not found.' });
       }
     } catch (e) {
-      res.status(500).json({ error: 'Failed to retrieve direct message.' });
+      return res.status(500).json({ error: 'Failed to retrieve direct message.' });
     }
   })
     .post(async (req, res) => {
@@ -55,40 +83,12 @@ router.route('/:id')
           return res.status(400).json({ success: false, error: 'Bad senderId, recipientId, or message' });
         }
         const updatedDM = await dmData.writeMsg(dmId, senderId, message);
-        res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
+        return res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
       } catch (e) {
         console.error('Failed to send message:', e);
-        res.status(500).json({ success: false, error: 'Failed to send message' });
+        return res.status(500).json({ success: false, error: 'Failed to send message' });
       }
-    })
-
-  router.post('/send', async (req, res) => {
-    try {
-      let { senderId, recipientId, message } = req.body;
-      recipientId=await userData.getUserByUsername(recipientId);
-      // Validate inputs
-      if (!senderId || !recipientId || !message) {
-          return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
-      }
-
-      // Attempt to find an existing DM between the two users
-      const existingDMs = await dmData.getByUserId(senderId);
-      let dm = existingDMs.find(dm => (dm.actor1.toString() === recipientId || dm.actor2.toString() === recipientId));
-
-      if (!dm) {
-          // If no existing conversation, create a new one
-          dm = await dmData.create(senderId, recipientId);
-      }
-
-      // Add the new message to the conversation
-      const updatedDM = await dmData.writeMsg(dm._id.toString(), senderId, message);
-
-      res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
-  } catch (error) {
-      console.error('Failed to send message:', error);
-      res.status(500).json({ success: false, error: 'Failed to send message' });
-  }
-});
+    });
 
 
 export default router;

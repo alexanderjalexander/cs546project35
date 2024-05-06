@@ -1,6 +1,6 @@
 {{!lists all the message chains between the user and all other users they have started a chat with
 Also needs to have a way to start a new chat with a user}}
-<ul>
+<ul id="dmList">
     {{#each dmlist}}
     <li>
         <a href="/directmsgs/{{this._id}}">{{this.otherUser}}</a>
@@ -12,6 +12,10 @@ Also needs to have a way to start a new chat with a user}}
 {{/unless}}
 
 <h2>Send a New Message</h2>
+
+<div id="messageDetails">
+
+</div>
 
 <form id="messageNewForm">
     <input type="hidden" id="senderId" name="senderId" value="{{id}}">
