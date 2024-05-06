@@ -59,6 +59,7 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.use('/', middleware.root_middleware);
 app.use('/', middleware.nav_middleware);
 app.use('/', middleware.message_middleware);
+app.use('/', middleware.auth_middleware);
 app.use('/register', middleware.register_login_middleware);
 app.use('/login', middleware.register_login_middleware);
 app.use('/logout', middleware.protected_middleware);

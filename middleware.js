@@ -77,6 +77,17 @@ export const profile_nav_middleware = (req, res, next) => {
     next();
 }
 
+export const auth_middleware = (req, res, next) => {
+    if (req.session.user !== undefined) {
+        res.locals.auth = true;
+        res.locals.themePreference = req.session.user.themePreference;
+    } else {
+        res.locals.auth = false;
+        res.locals.themePreference = 'dark';
+    }
+    next();
+}
+
 /**
  * Dynamically determines the navLinks that should be visible when the user's 
  * @param {*} req 
