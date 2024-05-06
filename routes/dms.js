@@ -38,8 +38,8 @@ router.route('/:id')
       if (dm) {
         res.render('dm', {
           ...dm,
-          id: req.session.user._id,
-          receiverId: req.params.id
+          id: req.params.id,
+          senderId: req.session.user._id
         });
       } else {
         res.status(404).json({ error: 'Direct message not found.' });
@@ -47,7 +47,20 @@ router.route('/:id')
     } catch (e) {
       res.status(500).json({ error: 'Failed to retrieve direct message.' });
     }
-  });
+  })
+    .post(async (req, res) => {
+      try {
+        let { dmId, senderId, message } = req.body;
+        if ( dmId.trim() === '' || senderId.trim() === '' || message.trim() === '') {
+          return res.status(400).json({ success: false, error: 'Bad senderId, recipientId, or message' });
+        }
+        const updatedDM = await dmData.writeMsg(dmId, senderId, message);
+        res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
+      } catch (e) {
+        console.error('Failed to send message:', error);
+        res.status(500).json({ success: false, error: 'Failed to send message' });
+      }
+    })
 
   router.post('/send', async (req, res) => {
     try {

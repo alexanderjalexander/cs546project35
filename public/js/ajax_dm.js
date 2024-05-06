@@ -42,8 +42,8 @@ $(document).ready(function() {
         event.preventDefault();
         var messageInput = $('#messageInput');
         var messageText = messageInput.val().trim();
-        var senderId = $('#senderId').val();
-        var receiverId=$("#receiverId").val();
+        var dmId = $('#dmId').val();
+        var senderId=$("#senderId").val();
 
         if (!messageText) {
             alert("Please enter a message to send.");
@@ -56,7 +56,7 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify({
                 senderId, 
-                receiverId,
+                dmId,
                 message: messageText
             }),
             success: function(response) {
