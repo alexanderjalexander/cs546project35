@@ -157,7 +157,7 @@ div.trade-item, .edit-trade-form, .new-trade-form {
     padding: 5px;
     width: 300px;
 }
-div.trade-item *{
+div.trade-item *, .profile-item{
     padding: 5px;
     width: 200px;
     margin: auto;

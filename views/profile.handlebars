@@ -10,7 +10,18 @@
 
         <dt>Items: </dt>
         {{#each items}}
-            <dd>{{this.name}}</dd>
+        <dd>
+            <div>
+                <h2><a href="/items/{{_id}}">{{this.name}}</a></h2>
+                <dl>
+                    <dt>Description: </dt>
+                    <dd>{{this.desc}}</dd>
+                    <dt>Price: </dt>
+                    <dd>{{this.price}}</dd>
+                </dl>
+                <img width='500px' alt="{{this.name}}" class="profile-item" src="{{this.image}}">
+            </div>            
+        </dd>
         {{else}}
             <dd>No items</dd>
         {{/each}}
