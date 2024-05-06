@@ -57,7 +57,7 @@ router.route('/:id')
         const updatedDM = await dmData.writeMsg(dmId, senderId, message);
         res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
       } catch (e) {
-        console.error('Failed to send message:', error);
+        console.error('Failed to send message:', e);
         res.status(500).json({ success: false, error: 'Failed to send message' });
       }
     })
