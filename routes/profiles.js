@@ -62,9 +62,29 @@ router.get('/', async (req, res) => {
             errors: [`unexpected server error ${e}`]
         })
     }
+});
 
-
-})
+router.get('/:profileId', async (req, res) => {
+    //verify url param
+    let foundUser = undefined;
+    try{
+        try{
+            req.params.profileId = help.checkIdString(req.params.profileId);
+        } catch (e){
+            return res.status(400).render('error', {
+                title: "error",
+                errors: ['invalid url'],
+            })
+        }
+        foundUser = await userData.getUserById(req.params.profileId);
+    } catch(e){
+        return res.status(404).render('error', {
+            title: "error",
+            errors: ['user not found'],
+        })
+    }
+    return res.json(foundUser);
+});
 
 
 export default router;
