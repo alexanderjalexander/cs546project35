@@ -16,18 +16,60 @@ router.get('/settings', async (req, res) => {
     }
     try {
         const user = await userData.getUserById(req.session.user._id);
-        res.render('profile_settings', {
+        return res.render('profile_settings', {
             user,
             title: 'Edit Profile Settings'
         });
     } catch (error) {
         console.error('Error fetching user settings:', error);
-        res.status(500).send('Error loading account settings.');
+        return res.status(500).send('Error loading account settings.');
     }
 });
 
 router.post('/settings', async (req, res) => {
-    const { username, email, password, wishlist } = req.body;
+    const { password, wishlist } = req.body;
+    const errors = [];
+    req.body.username = help.tryCatchHelper(errors, () => 
+        help.checkUsername(req.body.username));
+    req.body.username = help.tryCatchHelper(errors, () => 
+        help.checkEmail(req.body.email));
+    if (typeof req.body.password == 'string'){
+        if (req.body.password.trim().length == 0){
+            //password is blank, don't count it as an input
+            req.body.password = undefined;
+        }
+    }
+    if (req.body.password){
+        //password supplied
+        req.body.password = help.tryCatchHelper(errors, () => 
+            help.checkPassword(req.body.password));
+    }
+    if (req.body.wishlist) {
+        //wishlist will a string, or a list of strings
+        if (typeof req.body.wishlist == 'string'){
+            //convert from string to list of length 1
+            req.body.wishlist = [req.body.wishlist];
+        }
+        //in this scope wishlist is now only a list of strings
+        req.body.wishlist = req.body.wishlist.map((el)=>{
+            return help.tryCatchHelper(errors, () =>
+                help.checkString(el));
+        })
+    }
+    if (errors.length !== 0){
+        try {
+            const user = await userData.getUserById(req.session.user._id);
+            return res.render('profile_settings', {
+                user,
+                errors: errors,
+                title: 'Edit Profile Settings'
+            });
+        } catch (error) {
+            console.error('Error fetching user settings:', error);
+            res.status(500).send('Error loading account settings.');
+        }
+
+    }
     try {
         const updateData = {
             ...(username && { username }),

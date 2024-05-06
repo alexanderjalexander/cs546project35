@@ -207,6 +207,7 @@ const remove = async (id, userId) => {
     const updateInfo1 = await tradesCollection.updateMany(
         {senderId: new ObjectId(userId)},
         {$pull: {senderItems: new ObjectId(id)}}
+        //here we just need to set the recieverStatus to pending again
     );
     if (!updateInfo1) {
         throw `Error: Could not delete item with id of ${id}`;
@@ -214,6 +215,7 @@ const remove = async (id, userId) => {
     const updateInfo2 = await tradesCollection.updateMany(
         {receiverId: new ObjectId(userId)},
         {$pull: {receiverItems: new ObjectId(id)}}
+        //here we just need to set the senderStatus to pending again
     );
     if (!updateInfo2) {
         throw `Error: Could not delete item with id of ${id}`;
