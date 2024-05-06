@@ -8,6 +8,7 @@ router.route('/')
 .get(async (req, res) => {
     return res.render('home', {
         title: 'Home',
+        user: req.session.user,
         auth: req.session.user !== undefined
     });
 });

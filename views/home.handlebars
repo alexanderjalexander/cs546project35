@@ -1,4 +1,11 @@
 {{!blank page, thisi s so we can render main by itself}}
 
-<h1 id="welcome">Welcome to BarterBuddy!</h1>
-<!-- TODO: Display user's name when logged in. -->
+{{#if user}}
+    <h1 id="welcome">Welcome back, {{user.firstName}}!</h1>
+    <p>Explore new items or add your own!</p>
+{{else}}
+    <h1 id="welcome">Welcome to BarterBuddy!</h1>
+    <p>Sign up or log in to start trading today!</p>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+{{/if}}
