@@ -32,7 +32,6 @@ router.route('/')
     if (!senderId || !recipientId || !message) {
       return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
     }
-    // Check if same person
     if (senderId === recipientId) {
       return res.status(400).json({ success: false, error: 'You cannot send a message to yourself.' });
     }
