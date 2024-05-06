@@ -1,11 +1,12 @@
 {{!views an individual trade between the current user and another user}}
 <div class="trade">
-
+    {{#ifneq thisUserStatus "accepted"}}
     <form action="/trades/{{_id}}" method="post">
     <input type="hidden" name="_method" value="PATCH">
     <input type="hidden" name="accepted" value="true">
     <button type="submit">Accept This Trade</button>
     </form>
+    {{/ifneq}}
 
     <p>Status: {{status}}</p>
     <p><a href="/profiles/{{otherUser._id}}">{{otherUser.username}}</a>'s offerings</p>

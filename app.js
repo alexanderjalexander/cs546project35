@@ -10,6 +10,7 @@ import express from 'express';
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
+import * as helpers from './helpers.js'
 import cookieParser from 'cookie-parser';
 import * as middleware from './middleware.js';
 import fs from 'fs';
@@ -71,7 +72,8 @@ app.post('/items', middleware.protected_middleware);
 // ---------------------------------------
 
 app.engine('handlebars', exphbs.engine({
-  defaultLayout: 'main'
+  defaultLayout: 'main',
+  helpers: {ifeq: helpers.ifeq, ifneq: helpers.ifneq}
 }));
 app.set('view engine', 'handlebars');
 configRoutes(app);
