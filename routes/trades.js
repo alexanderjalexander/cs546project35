@@ -182,6 +182,9 @@ router.route('/:tradeId')
                 errors: ["trade not found!"],
                 auth: req.session.user !== undefined
             });
+            foundTrade = await tradeDisplay(foundTrade, req);
+            foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
+            foundTrade.thisUser.items = await itemData.getAllByUserId(foundTrade.thisUser._id);
         } catch (e) { //server error
             return res.status(500).render('error', {
                 title: "error",
@@ -198,16 +201,17 @@ router.route('/:tradeId')
                 req.body.otherUserItems = [req.body.otherUserItems];
             }
             req.body.thisUserItems = help.tryCatchHelper(errors, () =>{
-                return help.checkIdArray(req.body.thisUserItems)
+                return help.checkIdArray(req.body.thisUserItems, "Your items")
             });
             req.body.otherUserItems = help.tryCatchHelper(errors, () =>{
-                return help.checkIdArray(req.body.otherUserItems)
+                return help.checkIdArray(req.body.otherUserItems, "Other User's items")
             });
         }
 
         if (errors.length !== 0){
-            return res.status(400).render('error', {
-                title: "error",
+            return res.status(400).render('trade', {
+                title: "trade",
+                ...foundTrade,
                 errors: errors,
             });
         }
@@ -216,23 +220,22 @@ router.route('/:tradeId')
         try {
             //they clicked the accept button. 
             //Just update the statuses and return to the same trade
-            let thisTrade = await tradeDisplay(foundTrade, req);
             let newTrade = {}
             if (req.body.accepted) {
                 newTrade = {
-                    senderId: thisTrade.thisUser._id,
+                    senderId: foundTrade.thisUser._id,
                     senderStatus: "accepted",
-                    senderItems: thisTrade.thisUserItems.map((el)=>el._id),
-                    receiverId: thisTrade.otherUser._id,
-                    receiverStatus: thisTrade.otherUserStatus,
-                    receiverItems: thisTrade.otherUserItems.map((el)=>el._id)
+                    senderItems: foundTrade.thisUserItems.map((el)=>el._id),
+                    receiverId: foundTrade.otherUser._id,
+                    receiverStatus: foundTrade.otherUserStatus,
+                    receiverItems: foundTrade.otherUserItems.map((el)=>el._id)
                 };
             } else {
                 newTrade = {
-                    senderId: thisTrade.thisUser._id,
+                    senderId: foundTrade.thisUser._id,
                     senderItems: req.body.thisUserItems,
                     senderStatus: "accepted",
-                    receiverId: thisTrade.otherUser._id,
+                    receiverId: foundTrade.otherUser._id,
                     receiverItems: req.body.otherUserItems,
                     receiverStatus: "pending"
                 };
