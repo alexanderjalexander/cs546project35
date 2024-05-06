@@ -36,8 +36,8 @@ const createReview = async () => {
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
       throw 'Could not add dm';
     const newId = insertInfo.insertedId.toString();
-    const product = await get(newId);
-    return product;
+    const review = await get(newId);
+    return review;
   };
 
 /**
@@ -65,7 +65,7 @@ const addReview = async (id, reviewerId, comment, rate) => {
         timestamp: time
     };
 
-    //first we will find the product we need for the new review
+    //first we will find the user we need for the new review
     let user = await userCollection.findOne({_id: new ObjectId(id)});
   
     user.reviews.push(newReview);
@@ -76,7 +76,7 @@ const addReview = async (id, reviewerId, comment, rate) => {
         {returnDocument: 'after'}
     );
     if (!updatedInfo) {
-        throw 'could not update product successfully';
+        throw 'could not update user successfully';
     }
     await recalcAverageRating(id);
     user = await userCollection.findOne({_id: new ObjectId(id)});
@@ -240,7 +240,7 @@ const addFollower = async(userId, followerId) => {
         {returnDocument: 'after'}
     );
     if (!updatedInfo) {
-        throw 'could not update product successfully';
+        throw 'could not update user successfully';
     }
 
     let follower = await userCollection.findOne({_id: new ObjectId(followerId)});
@@ -251,7 +251,7 @@ const addFollower = async(userId, followerId) => {
         {returnDocument: 'after'}
     );
     if (!updatedInfo2) {
-        throw 'could not update product successfully';
+        throw 'could not update user successfully';
     }
 }
 
@@ -274,7 +274,7 @@ const addWish = async(userId, wish) => {
         {returnDocument: 'after'}
     );
     if (!updatedInfo) {
-        throw 'could not update product successfully';
+        throw 'could not update user successfully';
     }
 }
 

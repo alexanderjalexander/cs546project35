@@ -33,7 +33,7 @@ const getById = async (id) => {
     const itemCollection = await items();
     const item = await itemCollection.findOne({_id: new ObjectId(id)});
     if (item === null) {
-        throw `No product with that id has been found.`
+        throw `No item with that id has been found.`
     }
     item._id = item._id.toString();
     item.userId = item.userId.toString();
@@ -55,7 +55,7 @@ const getAllByUserId = async (userId) => {
     );
 
     if (!items) {
-        throw `No products with that userId has been found.`
+        throw `No items with that userId has been found.`
     }
     const itemList = [];
     for (let itemId of items.items) {
@@ -79,7 +79,7 @@ const getAllExceptUserId = async (userId) => {
     ).toArray();
 
     if (!itemList) {
-        throw `No products have been found.`
+        throw `No items have been found.`
     }
     return itemList;
 }
@@ -193,7 +193,7 @@ const remove = async (id, userId) => {
         userId: new ObjectId(userId),
     });
     if (!removalInfo) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete item with id of ${id}`;
     }
 
     const userCollection = await users();
@@ -209,14 +209,14 @@ const remove = async (id, userId) => {
         {$pull: {senderItems: new ObjectId(id)}}
     );
     if (!updateInfo1) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete item with id of ${id}`;
     }
     const updateInfo2 = await tradesCollection.updateMany(
         {receiverId: new ObjectId(userId)},
         {$pull: {receiverItems: new ObjectId(id)}}
     );
     if (!updateInfo2) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete item with id of ${id}`;
     }
 
     // If in the event there are no items left in the trade,
@@ -225,14 +225,14 @@ const remove = async (id, userId) => {
         {senderItems: []}
     )
     if (!deleteInfo1) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete item with id of ${id}`;
     }
 
     const deleteInfo2 = await tradesCollection.deleteMany(
         {receiverItems: []}
     )
     if (!deleteInfo2) {
-        throw `Error: Could not delete product with id of ${id}`;
+        throw `Error: Could not delete item with id of ${id}`;
     }
 
     return {_id: new Object(id), deleted: true}

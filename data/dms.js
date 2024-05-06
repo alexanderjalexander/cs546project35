@@ -25,7 +25,7 @@ const getById = async (id) => {
     id = helper.checkIdString(id);
     const dmCollection = await dms();
     const dm = await dmCollection.findOne({_id: new ObjectId(id)});
-    if (dm === null) throw 'No product with that id';
+    if (dm === null) throw 'No dm with that id';
 
     //make these assignments so it returns plain strings instead of objectids
     dm._id = dm._id.toString();
@@ -72,10 +72,10 @@ const writeMsg = async (id, senderid, msg) => {
     senderid = helper.checkIdString(senderid);
     msg = helper.checkString(msg);
     const dmsCollection = await dms();
-    //first we will find the product we need for the new review
+    //first we will find the dm for the message
     let dm = await dmsCollection.findOne({_id: new ObjectId(id)});
 
-    //we need to first find the product, then edit it's contents to include the review
+    //we need to first find the dm, then edit it's contents to include the msg
     let time = new Date(Date.now());
     const newMsg = {  
         _id: new ObjectId(),
@@ -86,14 +86,14 @@ const writeMsg = async (id, senderid, msg) => {
     
     dm.messages.push(newMsg);
     
-    //then we will findOneAndUpdate that same product again but replace it with the new product
+    //then we will findOneAndUpdate that same dm again but replace it with the new message
     const updatedInfo = await dmsCollection.findOneAndUpdate(
         {_id: new ObjectId(id)},
         {$set: dm},
         {returnDocument: 'after'}
     );
     if (!updatedInfo) {
-        throw 'could not update product successfully';
+        throw 'could not update dm successfully';
     }
     updatedInfo._id = updatedInfo._id.toString();
     return updatedInfo;
