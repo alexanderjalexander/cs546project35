@@ -92,7 +92,7 @@ export function checkPrice(price, varName) {
  * @param {string} str
  * @returns trimmed item name string
  */
-function checkItemName(str) {
+export function checkItemName(str) {
     str = checkString(str, 'item name');
     if (str.length < 5) {
         throw `Error: item name should be greater than or equal to 5 characters.`
@@ -108,7 +108,7 @@ function checkItemName(str) {
  * @param {string} str
  * @returns trimmed item name string
  */
-function checkItemDesc(str) {
+export function checkItemDesc(str) {
     str = checkString(str, 'item description');
     if (str.length < 5) {
         throw `Error: item description should be greater than or equal to 5 characters.`

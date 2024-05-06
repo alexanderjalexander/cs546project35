@@ -133,9 +133,9 @@ router.route('/items')
             // Input checking
             const errors = [];
             const name = help.tryCatchHelper(errors,
-                () => help.checkString(req.body.name, 'Item Name'));
+                () => help.checkItemName(req.body.name));
             const desc = help.tryCatchHelper(errors,
-                () => help.checkString(req.body.desc, 'Item Description'));
+                () => help.checkItemDesc(req.body.desc));
             req.body.price = Number(req.body.price);
             const price = help.tryCatchHelper(errors,
                 () => help.checkPrice(req.body.price, 'Item Price'));
@@ -280,11 +280,11 @@ router.route('/items/:itemId')
             let updatedItem = {}
             if (req.body.name !== '') {
                 updatedItem.name = help.tryCatchHelper(errors,
-                    () => help.checkString(req.body.name, 'name'))
+                    () => help.checkItemName(req.body.name))
             }
             if (req.body.desc !== '') {
                 updatedItem.desc = help.tryCatchHelper(errors,
-                    () => help.checkString(req.body.desc, 'description'));
+                    () => help.checkItemDesc(req.body.desc));
             }
             if (req.body.price !== '') {
                 updatedItem.price = help.tryCatchHelper(errors,
