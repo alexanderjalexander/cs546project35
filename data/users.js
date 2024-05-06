@@ -329,7 +329,7 @@ const updateUser = async (id, updateData) => {
         { $set: updateData }
     );
 
-    if (updateInfo.modifiedCount === 0) {
+    if (updateInfo.matchedCount === 0) {
         throw new Error('Could not update user');
     }
     return getUserById(id);
