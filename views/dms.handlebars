@@ -14,8 +14,7 @@ Also needs to have a way to start a new chat with a user}}
 <h2>Send a New Message</h2>
 
 <form id="messageNewForm">
-    <label for="senderId">Sender ID:</label>
-    <input type="text" id="senderId" name="senderId" required><br>
+    <input type="hidden" id="senderId" name="senderId" value="{{id}}">
 
     <label for="recipientId">Recipient ID:</label>
     <input type="text" id="recipientId" name="recipientId" required><br>
