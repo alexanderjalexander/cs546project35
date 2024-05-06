@@ -13,8 +13,13 @@ const upload = multer(multerConfig).single('image');
 //GET route to view all items in the community
 router.get('/', async (req, res) => {
     try {
-        const items = await itemData.getAll();
-        res.render('items', {
+        let items;
+        if (req.session.user !== undefined) {
+            items = await itemData.getAllExceptUserId(req.session.user._id)
+        } else {
+            items = await itemData.getAll();
+        }
+        return res.render('items', {
             title: "All Community Items",
             auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
@@ -29,17 +34,24 @@ router.get('/', async (req, res) => {
 //GET route to view a specific item
 router.get('/:itemid', async (req, res) => {
     try {
-        const itemid = helper.checkIdString(req.params.itemid);
-        const item = await itemData.getById(itemid);
-        res.render('item', {
+        req.params.itemid = helper.checkIdString(req.params.itemid);
+    } 
+    catch (error) {
+        return res.status(400).send({error: error.toString()});
+    }
+    try {
+        const item = await itemData.getById(req.params.itemid);
+        if (req.session.user !== undefined && req.session.user._id === item.userId) {
+            return res.redirect(`/profile/items/${req.params.itemid}`); 
+        }
+        return res.render('item', {
             title: "View Item",
             auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             item: item
         });
-    } 
-    catch (error) {
-        res.status(404).send({error: error.toString()});
+    } catch (error) {
+        return res.status(404).send({error: error.toString()});
     }
 });
 
