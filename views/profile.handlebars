@@ -67,6 +67,9 @@
     {{/if}}
     
     <h3>Reviews</h3>
+    {{#if auth}}
+    {{> review_form}}
+    {{/if}}
     <ul>
         {{#each reviews}}
             <li><a href="/profiles/{{this.userId}}">{{this.username}}</a>
