@@ -112,10 +112,10 @@ const update = async (id, userId, updateObject) => {
     let updatedItem = {
         userId: item.userId,
         name: (updateObject.hasOwnProperty('name'))
-            ? helper.checkString(updateObject.name, 'name')
+            ? helper.checkItemName(updateObject.name)
             : item.name,
         desc: (updateObject.hasOwnProperty('desc'))
-            ? helper.checkString(updateObject.desc, 'description')
+            ? helper.checkItemDesc(updateObject.desc)
             : item.desc,
         price: (updateObject.hasOwnProperty('price'))
             ? helper.checkPrice(updateObject.price, 'price')

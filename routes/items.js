@@ -65,9 +65,9 @@ router.route('/')
             // Input checking
             const errors = [];
             const name = help.tryCatchHelper(errors,
-                () => help.checkString(cleanName, 'Item Name'));
+                () => help.checkItemName(cleanName));
             const desc = help.tryCatchHelper(errors,
-                () => help.checkString(cleanDesc, 'Item Description'));
+                () => help.checkItemDesc(cleanDesc));
             req.body.price = Number(req.body.price);
             const price = help.tryCatchHelper(errors,
                 () => help.checkPrice(cleanPrice, 'Item Price'));

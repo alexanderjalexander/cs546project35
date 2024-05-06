@@ -56,18 +56,20 @@
     </ul>
     {{#if auth}}
     {{#if followed}}
-    <form action="/profiles/{{_id}}/follow" method="post">
-    <input type="hidden" name="_method" value="DELETE">
+    <form action="/profiles/{{_id}}/follow/unfollow" method="post">
     <button type="submit">unfollow</button>
     </form>
     {{else}}
-    <form action="/profiles/{{_id}}/follow" method="post">
+    <form action="/profiles/{{_id}}/follow/follow" method="post">
     <button type="submit">follow</button>
     </form>
     {{/if}}
     {{/if}}
     
     <h3>Reviews</h3>
+    {{#if auth}}
+    {{> review_form}}
+    {{/if}}
     <ul>
         {{#each reviews}}
             <li><a href="/profiles/{{this.userId}}">{{this.username}}</a>

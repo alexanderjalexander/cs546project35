@@ -4,7 +4,7 @@ const router = Router();
 import * as help from '../helpers.js';
 import userData from '../data/users.js'
 import itemData from '../data/items.js'
-router.post('/:profileId/follow', async (req, res) => {
+router.post('/:profileId/follow/:arg', async (req, res) => {
     if (!req.session.user) {
         return res.status(403).send("Unauthorized");
     }
@@ -21,8 +21,18 @@ router.post('/:profileId/follow', async (req, res) => {
         })
     }
     try {
-        await userData.addFollower(req.params.profileId, req.session.user._id);
-        req.session._message = ['successfully added a follower']
+        if (req.params.arg === 'follow'){
+            await userData.addFollower(req.params.profileId, req.session.user._id);
+            req.session._message = ['successfully added a follower'];
+        } else if (req.params.arg === 'unfollow'){
+            await userData.removeFollower(req.params.profileId, req.session.user._id);
+            req.session._message = ['successfully removed a follower'];
+        } else {
+            return res.status(400).render('error', {
+                title: 'error',
+                errors: ['invalid url argument']
+            });
+        }
         res.redirect(`/profiles/${req.params.profileId}`);
     } catch (error) {
         return res.status(500).render('error', {
