@@ -33,14 +33,18 @@ const tradeDisplay = async (trade, req) => {
         trade.thisUserStatus = trade.receiverStatus;
     }
     //only statuses are pending accepted and completed
-    if (trade.thisUserStatus !== 'pending' && trade.otherUserStatus !== 'pending'){
-        trade.status = "waiting to complete trade";
-    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "pending"){
+    if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "pending"){
         trade.status = "wating for other user to accept";
     } else if (trade.thisUserStatus == "pending" && trade.otherUserStatus == "accepted"){
         trade.status = "waiting for you to accept";
-    } else {
-
+    } else if (trade.thisUserStatus == "completed" && trade.otherUserStatus != "completed"){
+        trade.status = "waiting for other user to verify trade has taken place";
+    } else if (trade.thisUserStatus != "completed" && trade.otherUserStatus == "completed"){
+        trade.status = "user marked this as complete. Please verify that the trade has taken place";
+    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStats == "accepted"){
+        trade.status = "the status should never be set to this value... something wrong has occured";
+    }  else  if (trade.thisUserStatus == "completed" && trade.otherUserStatus == "completed"){
+        trade.status = "you have both completed the trade. It should've deleted itself by now";
     }
     return trade
 }
@@ -193,7 +197,7 @@ router.route('/:tradeId')
         }
 
         //validate inputs
-        if (!req.body.accepted){
+        if (!req.body.accepted && !req.body.completed){
             if(typeof req.body.thisUserItems == 'string'){
                 req.body.thisUserItems = [req.body.thisUserItems];
             }
@@ -230,6 +234,16 @@ router.route('/:tradeId')
                     receiverStatus: foundTrade.otherUserStatus,
                     receiverItems: foundTrade.otherUserItems.map((el)=>el._id)
                 };
+            } else if (req.body.completed){
+                newTrade = {
+                    //keep everything the same, just set your status to completed
+                    senderId: foundTrade.thisUser._id,
+                    senderStatus: "completed",
+                    senderItems: foundTrade.thisUserItems.map((el)=>el._id),
+                    receiverId: foundTrade.otherUser._id,
+                    receiverStatus: foundTrade.otherUserStatus,
+                    receiverItems: foundTrade.otherUserItems.map((el)=>el._id)
+                }
             } else {
                 newTrade = {
                     senderId: foundTrade.thisUser._id,

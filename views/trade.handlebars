@@ -1,13 +1,22 @@
 {{!views an individual trade between the current user and another user}}
 <div class="trade">
-    {{#ifneq thisUserStatus "accepted"}}
+    {{#ifeq thisUserStatus "pending"}}
     <form action="/trades/{{_id}}" method="post">
     <input type="hidden" name="_method" value="PATCH">
     <input type="hidden" name="accepted" value="true">
     <button type="submit">Accept This Trade</button>
     </form>
-    {{/ifneq}}
-
+    {{/ifeq}}
+    {{#ifeq thisUserStatus "accepted"}}
+        {{#ifneq otherUserStatus "pending"}}
+            {{!if both users have accepted, render a form to complete the trade}}
+                <form action="/trades/{{_id}}" method="post">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="completed" value="true">
+                <button type="submit">Traded Your Items? Click here to mark as completed. NOTICE: once you both do this, the items in the trade will be removed from your inventories</button>
+                </form>
+        {{/ifneq}}
+    {{/ifeq}}
     <p>Status: {{status}}</p>
     <p><a href="/profiles/{{otherUser._id}}">{{otherUser.username}}</a>'s offerings</p>
     {{#each otherUserItems}}
