@@ -22,9 +22,9 @@ export function ifneq(a, b, options){
  * @returns trimmed string, if valid.
  */
 export function checkString(str, name) {
-    if (typeof str !== 'string') throw `${name} must be a string`;
+    if (typeof str !== 'string') throw `Error: ${name} must be a string`;
     if (str.trim().length === 0)
-        throw `${name} cannot be an empty string or just spaces`;
+        throw `Error: ${name} cannot be an empty string or just spaces`;
     str = str.trim();
     return str;
 }
