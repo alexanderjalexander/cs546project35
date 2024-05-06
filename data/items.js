@@ -110,7 +110,7 @@ const update = async (id, userId, updateObject) => {
     }
 
     let updatedItem = {
-        userId: item.userId,
+        userId: new ObjectId(item.userId),
         name: (updateObject.hasOwnProperty('name'))
             ? helper.checkItemName(updateObject.name)
             : item.name,
@@ -188,7 +188,7 @@ const remove = async (id, userId) => {
     }
 
     const itemCollection = await items();
-    const removalInfo = await itemCollection.findOneAndDelete({
+    const removalInfo = await itemCollection.deleteOne({
         _id: new ObjectId(id),
         userId: new ObjectId(userId),
     });
