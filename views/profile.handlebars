@@ -76,8 +76,14 @@
                 <ul>
                     <li>Comment: {{this.comment}}</li>
                     <li>Rating: {{this.rating}}</li>
-                    <li>Time: {{this.timestamp}}</li>
+                    <li>Time: {{this.timestamp}} {{thisUser.username}} {{this.userId}} </li>
                 </ul>
+                {{#ifeq "{{thisUser.username}}" "{{this.userId}}" }}
+                <form action="/profiles/{{this.userId}}/review">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Delete Review</button>
+                </form>
+                {{/ifeq}}
             </li>
         {{else}}
             <li>No reviews yet!</li>
