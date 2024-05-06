@@ -242,11 +242,10 @@ const remove = async (id, userId) => {
 }
 
 const num_trades = async (id) => {
-
     id = helper.checkIdString(id);
     const item = getById(id)
     const tradesCollection = await trades();
-    const allTrades = tradesCollection.find({}).toArray();
+    const allTrades = await tradesCollection.find({}).toArray();
     let count = 0;
     for (const trade of allTrades){
         const s = trade.senderItems.map(el=>el.toString())
