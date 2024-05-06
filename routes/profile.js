@@ -10,7 +10,8 @@ const upload = multerConfig.single('image');
 const router = Router();
 const saltRounds = 10;
 
-router.get('/settings', async (req, res) => {
+router.route('/settings')
+    .get(async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
@@ -24,9 +25,8 @@ router.get('/settings', async (req, res) => {
         console.error('Error fetching user settings:', error);
         return res.status(500).send('Error loading account settings.');
     }
-});
-
-router.post('/settings', async (req, res) => {
+})
+    .post(async (req, res) => {
     const { password, wishlist } = req.body;
     const errors = [];
     req.body.username = help.tryCatchHelper(errors, () => 

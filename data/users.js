@@ -406,6 +406,10 @@ const removeUser = async(id) => {
         throw `Error: Could not delete dm with id of ${id}`;
     }
     return {_id: new Object(id), deleted: true}
+const changeTheme = async(id, theme) => {
+    id = helper.checkIdString(id);
+    theme = helper.checkTheme(theme);
+    await updateUser(id, {themePreference: theme})
 }
 
 export default {
@@ -422,4 +426,5 @@ export default {
     getAll,
     displayUserData,
     removeUser,
+    changeTheme,
 }
