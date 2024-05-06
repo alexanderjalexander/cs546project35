@@ -10,6 +10,10 @@
             "slnt" 0;
 }
 
+hr {
+    border: lightgray solid 1px;
+}
+
 /* Navigation */
 nav#nav {
     background-color: #ffffff;
