@@ -15,6 +15,14 @@ export function ifneq(a, b, options){
     return options.inverse(this);
   };
 
+
+export function checkComment(str){
+    str = checkString(str, 'comment');
+    if (str.length < 10 || str.length > 50)
+        throw 'comment must be between 10 and 50 characters'
+    return str;
+}
+
 /**
  * Checks if a string exists and is a valid string(not just empty spaces).
  * @param {string} str 
@@ -129,6 +137,9 @@ export function checkItemDesc(str) {
  */
 export function checkRating(rating) {
     if(!rating) throw `Error: You must provide rating`;
+    if(typeof rating === 'string' && !isNaN(rating) && !isNaN(parseFloat(rating))){
+        rating = Number.parseFloat(rating);
+    }
     if(typeof rating !== 'number' || Number.isNaN(rating)) throw `Error: rating must be a number`;
     if(rating.toFixed(1).length < rating.toString().length)
         throw `Error: rating cannot have more than one decimal point`

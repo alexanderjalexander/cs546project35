@@ -69,6 +69,10 @@
     <h3>Reviews</h3>
     {{#if auth}}
     {{> review_form}}
+    <form action="/profiles/{{_id}}/review" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Delete Your Review</button>
+    </form>
     {{/if}}
     <ul>
         {{#each reviews}}
@@ -76,7 +80,7 @@
                 <ul>
                     <li>Comment: {{this.comment}}</li>
                     <li>Rating: {{this.rating}}</li>
-                    <li>Time: {{this.timestamp}}</li>
+                    <li>Time: {{this.timestamp}} {{thisUserId}} {{this.userId}} </li>
                 </ul>
             </li>
         {{else}}

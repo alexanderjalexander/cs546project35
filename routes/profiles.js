@@ -43,23 +43,106 @@ router.post('/:profileId/follow/:arg', async (req, res) => {
 });
 
 router.post('/:profileId/review', async (req, res) => {
-    return res.json({error: "implemenet"});
     if (!req.session.user) {
         return res.status(403).send("Unauthorized");
     }
-
-    const reviewContent = req.body.review;
-    if (!reviewContent) {
-        return res.status(400).send("Review content cannot be empty");
+    const errors = [];
+    req.params.profileId = help.tryCatchHelper(errors, ()=>
+        help.checkIdString(req.params.profileId));
+    //check if user exists
+    let foundUser = undefined;
+    try{
+        foundUser = await userData.displayUserData(req.params.profileId);
+    } catch(e){
+        return res.status(404).render('error', {
+            title: "error",
+            errors: ['user not found'],
+        })
     }
-
+    req.body.comment = help.tryCatchHelper(errors, el=>
+                        help.checkComment(req.body.comment));
+    req.body.rating = help.tryCatchHelper(errors, el=>
+                        help.checkRating(req.body.rating));
+    if (errors.length !== 0){
+        return res.status(400).render('profile', {
+            ...foundUser,
+            errors: errors,
+            title: "profile",
+            ...req.body
+        });
+    }
     try {
-        await profileData.addReviewToProfile(req.params.profileId, req.session.user._id, reviewContent);
-        res.redirect('/profiles/' + req.params.profileId);
-    } catch (error) {
-        res.status(500).send(error.message);
+        if (foundUser.reviews.find((element) => {
+            return element.userId.toString() === req.session.user._id
+        })){
+            return res.render('profile', {
+                ...foundUser,
+                title: "profile",
+                errors: ['you already have a review on this user!']
+            });
+        }
+        await userData.addReview(
+            req.params.profileId, 
+            req.session.user._id, 
+            req.body.comment,
+            req.body.rating);
+        foundUser = await userData.displayUserData(req.params.profileId);
+        return res.render('profile', {
+            ...foundUser,
+            title: "profile"
+        });
+    } catch (e) {
+        return res.render('profile', {
+            ...foundUser,
+            title: "profile",
+            errors: ['you already have a review on this user!']
+        });
     }
 });
+
+
+router.delete('/:profileId/review', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(403).send("Unauthorized");
+    }
+    const errors = [];
+    req.params.profileId = help.tryCatchHelper(errors, ()=>
+        help.checkIdString(req.params.profileId));
+    //check if user exists
+    let foundUser = undefined;
+    try{
+        foundUser = await userData.displayUserData(req.params.profileId);
+    } catch(e){
+        return res.status(404).render('error', {
+            title: "error",
+            errors: ['user not found'],
+        })
+    }
+    try {
+        if (!foundUser.reviews.find((element) => {
+            return element.userId.toString() === req.session.user._id
+        })){
+            return res.render('profile', {
+                ...foundUser,
+                title: "profile",
+                errors: ['you dont have a review on this user to delete!']
+            });
+        }
+        await userData.removeReview(req.params.profileId, req.session.user._id)     
+        foundUser = await userData.displayUserData(req.params.profileId);
+        return res.render('profile', {
+            ...foundUser,
+            title: "profile"
+        });
+    } catch (e) {
+        return res.status(404).render('error', {
+            title: "error",
+            errors: [e],
+            thisUserId: req.session.user._id.toString()
+        })
+    }
+});
+
 
 router.get('/', async (req, res) => {
     try{
@@ -106,6 +189,7 @@ router.get('/:profileId', async (req, res) => {
     let self = undefined;
     if(req.session.user){
         self = await userData.displayUserData(req.session.user._id);
+        
         return res.render('profile', {
             title: foundProfile.username,
             ...foundProfile,
