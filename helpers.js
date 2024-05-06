@@ -36,16 +36,17 @@ export function checkString(str, name) {
  */
 export function checkIdString(id) {
     id = checkString(id, 'id')
-    if (!ObjectId.isValid(id)) throw 'invalid object ID';
+    if (!ObjectId.isValid(id)) throw 'Error: invalid object ID';
     return id;
 }
 /**
  * Checks if all element are valid ObjectId strings.
  * @param {Array} arr An array
+ * @param name
  * @returns a thrown error or a valid array of strings depending on input.
  */
 export function checkIdArray(arr, name) {
-    if (!arr) throw `${name} must be supplied!`
+    if (!arr) throw `Error: ${name} must be supplied!`
     arr = arr.map((el) => {
         return checkIdString(el);
     })
@@ -95,11 +96,11 @@ export function checkPrice(price, varName) {
  * @returns string saying `Rating for ${reviewerName} is ${rating}`
  */
 export function checkRating(rating) {
-    if(!rating) throw `You must provide rating`;
-    if(typeof rating !== 'number' || Number.isNaN(rating)) throw `rating must be a number`;
+    if(!rating) throw `Error: You must provide rating`;
+    if(typeof rating !== 'number' || Number.isNaN(rating)) throw `Error: rating must be a number`;
     if(rating.toFixed(1).length < rating.toString().length)
-        throw `rating cannot have more than one decimal point`
-    if((rating < 1 || rating > 5)) throw `rating must be between 0 and 5`
+        throw `Error: rating cannot have more than one decimal point`
+    if((rating < 1 || rating > 5)) throw `Error: rating must be between 0 and 5`
     return rating;
 }
 
@@ -147,7 +148,7 @@ export const checkUsername = (username) => {
  */
 export const checkPassword = (password) => {
     password = checkString(password, 'password');
-    const msg = "password cannot contain whitespace, must be at least 8 characters, and must contain the following: one uppercase letter, one number, one special character.";
+    const msg = "Error: password cannot contain whitespace, must be at least 8 characters, and must contain the following: one uppercase letter, one number, one special character.";
     if (/\s/.test(password)) {
         throw msg
     }
@@ -192,9 +193,6 @@ export const checkTheme = (theme) => {
  */
 export const checkEmail = (email) => {
     email = checkString(email, 'email');
-    // if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))) {
-    //     throw `Error: provided email is not a valid.`
-    // }
     if (!(/^[^@]+@[a-z0-9.-]+\.[a-z]{2,}$/i).test(email))
         throw `Error: provided email is not a valid.`
     email = email.toLowerCase();
