@@ -1,9 +1,5 @@
 {{!views an individual trade between the current user and another user}}
 <div class="trade">
-    <form action="/trades/{{_id}}" method="post">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit">Cancel This Trade</button>
-    </form>
 
     <form action="/trades/{{_id}}" method="post">
     <input type="hidden" name="_method" value="PATCH">
@@ -30,5 +26,9 @@
     </div>
     {{/each}}
     {{> edit_trade_form}}
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Cancel This Trade</button>
+    </form>
 
 </div>
