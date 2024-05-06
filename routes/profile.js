@@ -1,12 +1,49 @@
 //this will have all the routes that deal with viewing your own profile and items.
-import {Router} from 'express';
-const router = Router();
+import { Router } from 'express';
+import userData from '../data/users.js'; // Correct import
+import itemData from '../data/items.js';
 import * as help from '../helpers.js';
-import itemData from '../data/items.js'
-
-import {multerConfig} from "../config/multerConfig.js";
+import { multerConfig } from "../config/multerConfig.js";
 import multer from "multer";
 const upload = multerConfig.single('image');
+const router = Router();
+
+router.get('/settings', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    try {
+        const user = await userData.getUserById(req.session.user._id);
+        res.render('profile_settings', {
+            user,
+            title: 'Edit Profile Settings'
+        });
+    } catch (error) {
+        console.error('Error fetching user settings:', error);
+        res.status(500).send('Error loading account settings.');
+    }
+});
+
+router.post('/settings', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    const { username, email, newPassword, wishlist } = req.body;
+    try {
+        const updateData = {
+            ...(username && { username }),
+            ...(email && { email }),
+            ...(newPassword && { password: await bcrypt.hash(newPassword, saltRounds) }),
+            ...(wishlist && { wishlist })
+        };
+        await userData.updateUser(req.session.user._id, updateData);
+        req.session.user = await getUserById(req.session.user._id);
+        res.redirect('/profile/settings?success=true');
+    } catch (error) {
+        console.error('Failed to update profile:', error);
+        res.status(500).send('Failed to update account settings.');
+    }
+});
 
 router.route('/')
     .get(async (req, res) => {
