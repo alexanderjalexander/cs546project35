@@ -1,2 +1,62 @@
 {{!views an individual profile of the user}}
 {{> profile_nav}}
+<hr>
+
+<div>
+    <h2>{{firstName}} {{lastName}}</h2>
+    <dl>
+        <dt>Username: </dt>
+        <dd>{{username}}</dd>
+        <dt>Email: </dt>
+        <dd>{{email}}</dd>
+
+        <dt>Items: </dt>
+        {{#each items}}
+            <dd>{{this}}</dd>
+        {{else}}
+            <dd>No items</dd>
+        {{/each}}
+
+        <dt>Followers: </dt>
+        {{#each followers}}
+            <dd>{{this}}</dd>
+        {{else}}
+            <dd>No followers</dd>
+        {{/each}}
+
+        <dt>Following: </dt>
+        {{#each following}}
+            <dd>{{this}}</dd>
+        {{else}}
+            <dd>No people they're following</dd>
+        {{/each}}
+
+
+        {{#if avgRating}}
+            <dt>Average Rating: </dt>
+            <dd>{{avgRating}}</dd>
+        {{/if}}
+    </dl>
+    <h3>Wishlist</h3>
+    <ul>
+        {{#each wishlist}}
+            <li>{{this}}</li>
+        {{else}}
+            <li>No wishlist yet!</li>
+        {{/each}}
+    </ul>
+    <h3>Reviews</h3>
+    <ul>
+        {{#each reviews}}
+            <li><a href="/profiles/{{this.userId}}">{{this.userId}}</a>
+                <ul>
+                    <li>Comment: {{this.comment}}</li>
+                    <li>Rating: {{this.rating}}</li>
+                    <li>Time: {{this.timestamp}}</li>
+                </ul>
+            </li>
+        {{else}}
+            <li>No reviews yet!</li>
+        {{/each}}
+    </ul>
+</div>
