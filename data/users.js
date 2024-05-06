@@ -120,6 +120,21 @@ const getUserById = async (id) => {
     user._id = user._id.toString();
     return user;
 }
+
+/**
+ * gets a user by their username
+ * @return  {string} user id converted to string
+ * @param username
+ */
+const getUserByUsername = async (username) => {
+    let id = helper.checkIdString(id);
+    const userCollection = await users();
+    const user = await userCollection.findOne({username: username});
+    if (user === null) throw 'No user with that id';
+
+    //make these assignments so, it returns plain strings instead of ObjectIds
+    return user._id.toString();
+}
 /**
  * logs in the user with an email and password
  * @param {string} email email
@@ -269,7 +284,6 @@ export default {
     getReviewByUserId,
     createUser,
     createReview,
-    addWish,
     addReview,
     addFollower,
     loginUser,
