@@ -40,5 +40,14 @@
     <input type="hidden" name="_method" value="DELETE">
     <button type="submit">Cancel This Trade</button>
     </form>
+    <form id="messageNewForm">
+    <input type="hidden" id="senderId" name="senderId" value="{{thisUser._id}}">
 
+    <input type="text" id="recipientId" name="recipientId" value="{{otherUser.username}}" hidden><br>
+
+    <label for="messageInput">Send a message to {{otherUser.username}}:</label><br>
+    <textarea id="messageInput" name="messageInput" required></textarea><br>
+
+    <button type="submit">Send Message</button>
+</form>
 </div>
