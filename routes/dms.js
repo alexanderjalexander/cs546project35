@@ -32,6 +32,10 @@ router.route('/')
     if (!senderId || !recipientId || !message) {
       return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
     }
+    // Check if same person
+    if (senderId === recipientId) {
+      return res.status(400).json({ success: false, error: 'You cannot send a message to yourself.' });
+    }
 
     const existingDMs = await dmData.getByUserId(senderId);
     let dm = existingDMs.find(dm => (dm.actor1.toString() === recipientId || dm.actor2.toString() === recipientId));
@@ -46,7 +50,7 @@ router.route('/')
     return res.json({ success: true, created, message: 'Message sent successfully', data: updatedDM });
   } catch (error) {
     console.error('Failed to send message:', error);
-    return res.status(500).json({ success: false, error: 'Failed to send message' });
+    return res.status(500).json({ success: false, error: error });
   }
 });;
 
