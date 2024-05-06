@@ -281,6 +281,7 @@ const addWish = async(userId, wish) => {
 export default {
     addWish,
     getUserById,
+    getUserByUsername,
     getReviewByUserId,
     createUser,
     createReview,
