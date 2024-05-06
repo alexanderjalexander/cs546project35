@@ -7,7 +7,6 @@ import userData from '../data/users.js';
 router.route('/')
 .get(async (req, res) => {
     return res.render('home', {
-        title: 'Home',
         user: req.session.user
     });
 });
