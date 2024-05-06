@@ -49,11 +49,11 @@ $(document).ready(function() {
 
         $.ajax({
             method: 'POST',
-            url: '/api/dms/send',
+            url: '/directmsgs/send',
             contentType: 'application/json',
             data: JSON.stringify({
-                senderId: 'currentUserId', // Replace with actual sender ID obtained dynamically
-                recipientId: 'recipientUserId', // Replace with actual recipient ID
+                senderId: $('#senderId'), // Replace with actual sender ID obtained dynamically
+                receiverId: $('#receiverId'), // Replace with actual recipient ID
                 message: messageText
             }),
             success: function(response) {

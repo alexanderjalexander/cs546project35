@@ -37,7 +37,9 @@ router.route('/:id')
       };
       if (dm) {
         res.render('dm', {
-          ...dm
+          ...dm,
+          id: req.session.user._id,
+          receiverId: req.params.id
         });
       } else {
         res.status(404).json({ error: 'Direct message not found.' });
@@ -49,8 +51,8 @@ router.route('/:id')
 
   router.post('/send', async (req, res) => {
     try {
-      const { senderId, recipientId, message } = req.body;
-
+      let { senderId, recipientId, message } = req.body;
+      recipientId=await userData.getUserByUsername(recipientId);
       // Validate inputs
       if (!senderId || !recipientId || !message) {
           return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
