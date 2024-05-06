@@ -36,12 +36,19 @@
             this.addErrorIfEmpty(username, 'Username is required.', errorMessages);
             this.addErrorIfEmpty(email, 'Email is required.', errorMessages);
             this.addErrorIfEmpty(password, 'Password is required.', errorMessages);
+            if (username.length < 5) {
+                errorMessages.push('Username must be at least 5 characters long.');
+            }
+            if (password.length < 8) {
+                errorMessages.push('Password must be at least 8 characters long.');
+            }
+            if (!password.match(/[\!\@\#\$\%\^\&\*]/)) {
+                errorMessages.push('Password must include at least one special character (!, @, #, $, %, ^, &, *).');
+            }
             if (password !== confirmPassword) {
                 errorMessages.push('Passwords do not match.');
             }
 
-            // The following line has a missing declaration for 'role'. Ensure you have this variable declared properly.
-            // this.addErrorIfEmpty(role, 'Role selection is required.', errorMessages);
     
             this.displayErrors(errorMessages, event);
         }
