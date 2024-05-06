@@ -4,19 +4,46 @@ const router = Router();
 import * as help from '../helpers.js';
 import userData from '../data/users.js'
 import itemData from '../data/items.js'
-router.post('/profiles/:profileId/follow', async (req, res) => {
+router.post('/:profileId/follow/:arg', async (req, res) => {
     if (!req.session.user) {
         return res.status(403).send("Unauthorized");
     }
+    const errors = [];
+    req.params.profileId = help.tryCatchHelper(errors, ()=>
+        help.checkIdString(req.params.profileId));
+    //check if user exists
+    try{
+        await userData.getUserById(req.params.profileId);
+    } catch(e){
+        return res.status(404).render('error', {
+            title: "error",
+            errors: ['user not found'],
+        })
+    }
     try {
-        await profileData.followUser(req.session.user._id, req.params.profileId);
-        res.redirect('/profiles/' + req.params.profileId);
+        if (req.params.arg === 'follow'){
+            await userData.addFollower(req.params.profileId, req.session.user._id);
+            req.session._message = ['successfully added a follower'];
+        } else if (req.params.arg === 'unfollow'){
+            await userData.removeFollower(req.params.profileId, req.session.user._id);
+            req.session._message = ['successfully removed a follower'];
+        } else {
+            return res.status(400).render('error', {
+                title: 'error',
+                errors: ['invalid url argument']
+            });
+        }
+        res.redirect(`/profiles/${req.params.profileId}`);
     } catch (error) {
-        res.status(500).send(error.message);
+        return res.status(500).render('error', {
+            title: "error",
+            errors: [e],
+        })
     }
 });
 
 router.post('/:profileId/review', async (req, res) => {
+    return res.json({error: "implemenet"});
     if (!req.session.user) {
         return res.status(403).send("Unauthorized");
     }
@@ -33,18 +60,6 @@ router.post('/:profileId/review', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
-
-router.post('/:profileId/follow', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
-    try {
-        await profileData.followUser(req.session.user._id, req.params.profileId);
-        res.redirect('/profiles/' + req.params.profileId);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-})
 
 router.get('/', async (req, res) => {
     try{
@@ -91,14 +106,19 @@ router.get('/:profileId', async (req, res) => {
     let self = undefined;
     if(req.session.user){
         self = await userData.displayUserData(req.session.user._id);
+        return res.render('profile', {
+            title: foundProfile.username,
+            ...foundProfile,
+            thisUser: self,
+            followed: foundProfile.followers.find((el)=>
+                            el._id.toString()===self._id.toString())
+        });
     }
     return res.render('profile', {
         title: foundProfile.username,
         ...foundProfile,
-        thisUser: self
+        auth: false
     });
-
-    return res.json(foundUser);
 });
 
 
