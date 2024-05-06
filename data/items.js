@@ -1,4 +1,5 @@
 import {items, trades, users} from '../config/mongoCollections.js';
+import tradeData from './trades.js'
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 
@@ -110,7 +111,7 @@ const update = async (id, userId, updateObject) => {
     }
 
     let updatedItem = {
-        userId: item.userId,
+        userId: new ObjectId(item.userId),
         name: (updateObject.hasOwnProperty('name'))
             ? helper.checkItemName(updateObject.name)
             : item.name,
@@ -188,7 +189,7 @@ const remove = async (id, userId) => {
     }
 
     const itemCollection = await items();
-    const removalInfo = await itemCollection.findOneAndDelete({
+    const removalInfo = await itemCollection.deleteOne({
         _id: new ObjectId(id),
         userId: new ObjectId(userId),
     });
@@ -240,8 +241,32 @@ const remove = async (id, userId) => {
     return {_id: new Object(id), deleted: true}
 }
 
+const num_trades = async (id) => {
+    id = helper.checkIdString(id);
+    const item = getById(id)
+    const tradesCollection = await trades();
+    const allTrades = await tradesCollection.find({}).toArray();
+    let count = 0;
+    for (const trade of allTrades){
+        const s = trade.senderItems.map(el=>el.toString())
+        const r = trade.receiverItems.map(el=>el.toString())
+        
+        if (s.includes(id) || r.includes(id)){
+            count = count+1;
+        }
+    }
+    return count;
+}
+
 const exportedMethods = {
-    getAll, getById, getAllByUserId, getAllExceptUserId, update, create, remove
+    getAll, 
+    getById, 
+    getAllByUserId, 
+    getAllExceptUserId, 
+    update, 
+    create, 
+    remove,
+    num_trades,
 }
 
 export default exportedMethods

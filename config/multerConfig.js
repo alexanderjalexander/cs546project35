@@ -1,8 +1,10 @@
 import {ObjectId} from "mongodb";
 import * as path from "node:path";
-
 import multer from "multer";
 
+
+// Most code is based off of the documentation on Multer's site itself
+// https://www.npmjs.com/package/multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'server_images/')
@@ -13,6 +15,8 @@ const storage = multer.diskStorage({
     }
 })
 
+// Image uploading code and regex testing from:
+// https://www.makeuseof.com/upload-image-in-nodejs-using-multer/
 const fileFilter = (req, file, cb) => {
     const fileTypes = /jpeg|jpg|png/;
     const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());

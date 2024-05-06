@@ -4,10 +4,6 @@
     {{> new_trade_form}}
     {{/if}}
     <h2>{{firstName}} {{lastName}}</h2>
-                <form action="/profiles/{{_id}}/review" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit">Delete Review</button>
-                </form>
     <dl>
         <dt>Username: </dt>
         <dd>{{username}}</dd>
@@ -73,6 +69,10 @@
     <h3>Reviews</h3>
     {{#if auth}}
     {{> review_form}}
+    <form action="/profiles/{{_id}}/review" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Delete Your Review</button>
+    </form>
     {{/if}}
     <ul>
         {{#each reviews}}

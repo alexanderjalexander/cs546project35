@@ -15,7 +15,10 @@ const constructorMethod = (app) => {
     app.use('/trades', tradeRoutes);
 
     app.use('*', (req, res) => {
-        return res.status(404).json({error: 'Not found'});
+        return res.status(404).render('home', {
+            title: "Not Found",
+            error: ['the page you requested was not found']
+        })
     });
 };
 

@@ -56,19 +56,23 @@ const create = async (senderId, receiverId, senderItems, receiverItems) => {
  *
  * @return  {boolean}               true if trade already exists
  */
-const exists = async (firstitems, seconditems) => {
-    firstitems = helper.checkIdArray(firstitems);
-    seconditems = helper.checkIdArray(seconditems);
-    const existsHelper = async (senderItems, receiverItems) =>{
+const exists = async (firstUser, secondUser) => {
+    firstUser = helper.checkIdString(firstUser);
+    secondUser = helper.checkIdString(secondUser);
+    const existsHelper = async (sender, receiver) =>{
         const tradeCollection = await trades();
-        const trade = await tradeCollection.findOne({
-            senderItems: senderItems,
-            receiverItems: receiverItems
-        });
-        return (trade === null);
+        const allTrades = await tradeCollection.find({}).toArray();
+        for (const trade of allTrades){
+            if (trade.senderId.toString() === sender){
+                if (trade.receiverId.toString() === receiver){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-    return (await existsHelper(firstitems,seconditems) || 
-                await existsHelper(seconditems, firstitems));
+    return (await existsHelper(firstUser,secondUser) || 
+                await existsHelper(secondUser, firstUser));
 }
 
 /**

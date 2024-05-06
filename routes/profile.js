@@ -8,9 +8,9 @@ import { multerConfig } from "../config/multerConfig.js";
 import multer from "multer";
 const upload = multerConfig.single('image');
 const router = Router();
-const saltRounds = 10;
 
-router.get('/settings', async (req, res) => {
+router.route('/settings')
+    .get(async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
@@ -24,71 +24,95 @@ router.get('/settings', async (req, res) => {
         console.error('Error fetching user settings:', error);
         return res.status(500).send('Error loading account settings.');
     }
-});
+})
+    .post(async (req, res) => {
+        const errors = [];
 
-router.post('/settings', async (req, res) => {
-    const { password, wishlist } = req.body;
-    const errors = [];
-    req.body.username = help.tryCatchHelper(errors, () => 
-        help.checkUsername(req.body.username));
-    req.body.username = help.tryCatchHelper(errors, () => 
-        help.checkEmail(req.body.email));
-    if (typeof req.body.password == 'string'){
-        if (req.body.password.trim().length == 0){
-            //password is blank, don't count it as an input
-            req.body.password = undefined;
-        }
-    }
-    if (req.body.password){
-        //password supplied
-        req.body.password = help.tryCatchHelper(errors, () => 
+        // Password is required
+        // Must have one of following: new username, new email, new password & confirm password, new wishlist
+
+        req.body.password = help.tryCatchHelper(errors, () =>
             help.checkPassword(req.body.password));
-    }
-    if (req.body.wishlist) {
-        //wishlist will a string, or a list of strings
-        if (typeof req.body.wishlist == 'string'){
-            //convert from string to list of length 1
-            req.body.wishlist = [req.body.wishlist];
-        }
-        //in this scope wishlist is now only a list of strings
-        req.body.wishlist = req.body.wishlist.map((el)=>{
-            return help.tryCatchHelper(errors, () =>
-                help.checkString(el, "wishlist items"));
-        })
-    }
-    if (errors.length !== 0){
-        try {
+
+        const user = await userData.getUserById(req.session.user._id);
+
+        const pswdMatch = await bcrypt.compare(req.body.password, user.hashedPassword);
+        if (!pswdMatch) {
+            errors.push('Error: the passwords do not match.');
             const user = await userData.getUserById(req.session.user._id);
-            return res.render('profile_settings', {
+            return res.status(400).render('profile_settings', {
                 user,
                 errors: errors,
                 title: 'Edit Profile Settings'
             });
-        } catch (error) {
-            console.error('Error fetching user settings:', error);
-            res.status(500).send('Error loading account settings.');
         }
 
-    }
-    try {
-        const updateData = {
-            ...(username && { username }),
-            ...(email && { email }),
-            ...(password && { password }),
-            ...(wishlist && { wishlist })
-        };
-        await userData.updateUser(req.session.user._id, updateData);
-        req.session.user = await userData.getUserById(req.session.user._id);
-        res.render('profile_settings', {
-            user: req.session.user,
-            success: true,
-            title: 'Edit Profile Settings'
-        });
-    } catch (error) {
-        console.error('Failed to update profile:', error);
-        res.status(500).send('Failed to update account settings.');
-    }
-});
+        if (req.body.username.trim() === '' && req.body.email.trim() === '' && req.body.newPassword.trim() === ''
+            && (req.body.wishlist === undefined
+                || (typeof req.body.wishlist === 'string' && req.body.wishlist.trim().length === 0)
+                || (Array.isArray(req.body.wishlist) && req.body.wishlist.length === 0))) {
+            errors.push('Error: you must provide either a new username, new email, new password, or an updated wishlist.');
+        }
+
+        if (req.body.username.trim().length !== 0) {
+            req.body.username = help.tryCatchHelper(errors, () => help.checkUsername(req.body.username))
+        }
+
+        if (req.body.email.trim().length !== 0) {
+            req.body.email = help.tryCatchHelper(errors, () => help.checkEmail(req.body.email))
+        }
+
+        if (req.body.newPassword.trim().length !== 0) {
+            req.body.newPassword = help.tryCatchHelper(errors, () => help.checkPassword(req.body.newPassword))
+            if (req.body.newPassword !== req.body.newPasswordConfirm.trim()) {
+                errors.push('Error: new passwords do not match.')
+            }
+        }
+
+        if (req.body.wishlist !== undefined) {
+            //wishlist will a string, or a list of strings
+            if (typeof req.body.wishlist == 'string'){
+                //convert from string to list of length 1
+                req.body.wishlist = [req.body.wishlist];
+            }
+            //in this scope wishlist is now only a list of strings
+            req.body.wishlist = req.body.wishlist.map((el)=>{
+                return help.tryCatchHelper(errors, () =>
+                    help.checkString(el, "wishlist items"));
+            })
+        }
+        if (errors.length !== 0){
+            const user = await userData.getUserById(req.session.user._id);
+            return res.status(400).render('profile_settings', {
+                user,
+                errors: errors,
+                title: 'Edit Profile Settings'
+            });
+        }
+
+        try {
+            const updateData = {
+                ...(req.body.username && { username: req.body.username }),
+                ...(req.body.email && { email: req.body.email }),
+                ...(req.body.newPassword && { password: req.body.newPassword }),
+                ...(req.body.wishlist && { wishlist: req.body.wishlist })
+            };
+            await userData.updateUser(req.session.user._id, updateData);
+            req.session.user = await userData.getUserById(req.session.user._id);
+            return res.render('profile_settings', {
+                user: req.session.user,
+                success: true,
+                title: 'Edit Profile Settings'
+            });
+        } catch (error) {
+            console.error('Failed to update profile:', error);
+            return res.status(500).render('profile_settings', {
+                user: await userData.getUserById(req.session.user._id),
+                errors: errors,
+                title: 'Edit Profile Settings'
+            });
+        }
+    });
 
 router.route('/')
     .get(async (req, res) => {
@@ -119,7 +143,20 @@ router.route('/')
             });
         }
 
-    })
+    });
+
+router.route('/delete').delete(async (req, res) => {
+        //delete the user from the database
+        try {
+            await userData.removeUser(req.session.user._id);
+            return res.redirect('/logout');
+        } catch (e) {
+            return res.status(500).render('error', {
+                title: "error",
+                errors: [e]
+            })
+        }
+    });
 
 router.route('/items')
     .get(async (req, res) => {

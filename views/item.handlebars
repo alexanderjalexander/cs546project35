@@ -1,1 +1,18 @@
 {{! view a specific item. (no session needed). Contains a link to trade request for the item's owner (redirects)}}
+<div>
+    <dl>
+        <dt>Description: </dt>
+        <dd>{{item.desc}}</dd>
+        <dt>Price: </dt>
+        <dd>{{item.price}}</dd>
+    </dl>
+    <img width='500px' alt="{{item.desc}}" src="{{item.image}}">
+    <p>Currently there are {{item.popularity}} trade(s) ongoing for this item</p>
+</div>
+<p>Want to trade for this item?</p>
+{{#if auth}}
+<a href="/profiles/{{item.userId}}">Go to owner's profile to trade</a>
+{{#else}}-
+<a href="/login">login to trade</a>
+{{/else}}
+{{/if}}

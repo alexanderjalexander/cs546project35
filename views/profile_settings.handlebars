@@ -3,26 +3,36 @@
 {{#if success}}
 <p>Profile updated successfully!</p>
 {{/if}}
-<form action="/profile/settings" method="post">
+<ul id="accountSettingsErrors" class="error"></ul>
+<form id="accountUpdateForm" action="/profile/settings" method="post">
+    <label>Anything with a * before it denotes a required field.</label><br>
+
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" value="{{user.username}}"><br>
 
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" value="{{user.email}}"><br>
 
-    <label for="newPassword">Old Password (optional):</label>
-    <input type="password" id="newPassword" name="newPassword"><br>
+    <label for="password">* Current Password (for verification):</label>
+    <input type="password" id="password" name="password"><br>
 
     <label for="newPassword">New Password (optional):</label>
     <input type="password" id="newPassword" name="newPassword"><br>
 
-    <label for="wishlist">Wishlist (optional):</label><button id='addWishlistItem' type="button" >+</button><br>
+    <label for="newPasswordConfirm">Confirm Password (required if changing password):</label>
+    <input type="password" id="newPasswordConfirm" name="newPasswordConfirm"><br>
+
+    <label for="wishlist">Wishlist:</label>
+    <button id='addWishlistItem' type="button" >Add</button>
+    <button id='removeWishlistItem' type="button" >Remove</button><br>
 <!-- Turns out if you have multiple inputs with the same name, it just concatenates them together into an array!!! -->
-    {{#each user.wishlist}}
-        <input type="text" id="wishlist " name="wishlist" value="{{this}}"><button type="button" >X</button><br>
-    {{else}}
-        <input type="text" id="wishlist" name="wishlist" value=""><button type="button" >X</button><br>
-    {{/each}}
+    <div id="wishlistArray">
+        {{#each user.wishlist}}
+            <input id="wishlist" type="text" name="wishlist" value="{{this}}"><br>
+        {{else}}
+            <input id="wishlist" type="text" name="wishlist" value=""><br>
+        {{/each}}
+    </div>
 
     <button type="submit">Save Changes</button>
 </form>

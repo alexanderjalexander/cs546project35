@@ -73,19 +73,27 @@ router.get('/:itemid', async (req, res) => {
         req.params.itemid = helper.checkIdString(req.params.itemid);
     } 
     catch (error) {
-        return res.status(400).send({error: error.toString()});
+
+        return res.status(400).render('error', {
+            title: "error",
+            errors: [error]
+        })
     }
     try {
         const item = await itemData.getById(req.params.itemid);
         if (req.session.user !== undefined && req.session.user._id === item.userId) {
             return res.redirect(`/profile/items/${req.params.itemid}`); 
         }
+        item.popularity = await itemData.num_trades(item._id.toString());
         return res.render('item', {
             title: "View Item",
             item: item
         });
     } catch (error) {
-        return res.status(404).send({error: error.toString()});
+        return res.status(404).render('items', {
+            title: "itmes",
+            errors: ['item not found']
+        });
     }
 });
 

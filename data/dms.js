@@ -99,10 +99,27 @@ const writeMsg = async (id, senderid, msg) => {
     return updatedInfo;
 }
 
+const remove = async (id) => {
+  id = helper.checkIdString(id);
+
+  const tradeCollection = await dms();
+  const removalInfo = await tradeCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+  });
+  
+  if (!removalInfo) {
+      throw `Error: Could not delete dm with id of ${id}`;
+  }
+
+  return {_id: new Object(id), deleted: true}
+
+}
+
 
 export default {
     getByUserId,
     getById,
     create,
-    writeMsg
+    writeMsg,
+    remove,
 };

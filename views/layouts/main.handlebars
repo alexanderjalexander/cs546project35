@@ -6,12 +6,15 @@
     <link rel="stylesheet" href="../../public/css/styles.css">
     <link rel="icon" type="image/png" href="/public/img/favicon.png">
 </head>
-<body class="{{themePreference}}">
+<body id="websiteBody" class="{{themePreference}}">
 <nav id="nav">
     <ul>
         {{#each navLinks}}
             <li><a class={{this.class}} href="{{this.url}}">{{this.label}}</a></li>
         {{/each}}
+        <li>
+            <button id="changeTheme" value="{{themePreference}}">Toggle Dark/Light Mode</button>
+        </li>
     </ul>
 </nav>
 <main>
@@ -31,6 +34,8 @@
     <script src="/public/js/ajax_add_item_json.js"></script>
     <script src="/public/js/ajax_dm.js"></script>
     <script src="/public/js/ajax_filter.js"></script>
+    <script src="/public/js/ajax_change_theme.js"></script>
+    <script src="/public/js/dom_settings_controller.js"></script>
 </main>
 </body>
 </html>
