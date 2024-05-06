@@ -101,6 +101,13 @@ router.route('/')
             foundProfile.following = await Promise.all(foundProfile.following.map(async (el) => {
                 return await userData.getUserById(el.toString());
             }));
+            foundProfile.reviews = await Promise.all(foundProfile.reviews.map(async (el) => {
+                const reviewUser = await userData.getUserById(el.userId.toString());
+                return {
+                    ...el,
+                    username: reviewUser.username
+                }
+            }));
             return res.render('profile_self', {
                 title: "My Profile",
                 ...foundProfile,

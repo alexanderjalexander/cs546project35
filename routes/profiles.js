@@ -3,7 +3,7 @@ import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
 import userData from '../data/users.js'
-
+import itemData from '../data/items.js'
 router.post('/profiles/:profileId/follow', async (req, res) => {
     if (!req.session.user) {
         return res.status(403).send("Unauthorized");
@@ -68,14 +68,14 @@ router.get('/:profileId', async (req, res) => {
     //verify url param
     let foundUser = undefined;
     try{
-        try{
-            req.params.profileId = help.checkIdString(req.params.profileId);
-        } catch (e){
-            return res.status(400).render('error', {
-                title: "error",
-                errors: ['invalid url'],
-            })
-        }
+        req.params.profileId = help.checkIdString(req.params.profileId);
+    } catch (e){
+        return res.status(400).render('error', {
+            title: "error",
+            errors: ['invalid url'],
+        })
+    }
+    try{
         foundUser = await userData.getUserById(req.params.profileId);
     } catch(e){
         return res.status(404).render('error', {
@@ -83,6 +83,26 @@ router.get('/:profileId', async (req, res) => {
             errors: ['user not found'],
         })
     }
+    const foundProfile = await userData.getUserById(req.params.profileId);
+    foundProfile.items = await itemData.getAllByUserId(req.params.profileId);
+    foundProfile.followers = await Promise.all(foundProfile.followers.map(async (el) => {
+        return await userData.getUserById(el.toString());
+    }));
+    foundProfile.following = await Promise.all(foundProfile.following.map(async (el) => {
+        return await userData.getUserById(el.toString());
+    }));
+    foundProfile.reviews = await Promise.all(foundProfile.reviews.map(async (el) => {
+        const reviewUser = await userData.getUserById(el.userId.toString());
+        return {
+            ...el,
+            username: reviewUser.username
+        }
+    }));
+    return res.render('profile', {
+        title: foundProfile.username,
+        ...foundProfile,
+    });
+
     return res.json(foundUser);
 });
 
