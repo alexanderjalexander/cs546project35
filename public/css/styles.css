@@ -20,6 +20,31 @@ main {
     margin: auto;
 }
 
+dialog {
+    width: 50%;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    filter: drop-shadow(0px 0px 5px #00000044);
+}
+
+dialog form input {
+    display: block;
+    width: 90%;
+    margin: 5px auto;
+}
+
+input {
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 15px;
+}
+
+br {
+    display: block;
+}
+
 #welcome {
     font-size: 3.5em;
     font-weight: 750;

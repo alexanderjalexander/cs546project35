@@ -81,6 +81,7 @@ export const auth_middleware = (req, res, next) => {
     if (req.session.user !== undefined) {
         res.locals.auth = true;
         res.locals.themePreference = req.session.user.themePreference;
+        res.locals.thisUserId = req.session.user._id.toString()
     } else {
         res.locals.auth = false;
         res.locals.themePreference = 'dark';

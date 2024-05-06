@@ -1,6 +1,7 @@
 <button id="openDeleteProfileItem">Delete</button>
 <dialog id="deleteProfileItem">
     <button id="closeDeleteProfileItem" aria-label="close" formnovalidate>X</button>
+    <ul id="deleteProfileItemErrors" class="error"></ul>
     <form action="/profile/items/{{item._id}}" method="post">
         <input type="hidden" name="_id" value="{{item._id}}">
         <input type="hidden" name="_method" value="DELETE">
