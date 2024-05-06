@@ -295,6 +295,13 @@ const updateUser = async (id, updateData) => {
     return getUserById(id);
 }
 
+const getAll = async() => {
+    const userCollection = await users();
+    let userList = await userCollection.find({}).toArray();
+    if (!userList) throw 'Could not fetch all users.';
+    return userList;
+}
+
 export default {
     addWish,
     getUserById,
@@ -306,4 +313,5 @@ export default {
     addFollower,
     loginUser,
     updateUser,
+    getAll,
 }
