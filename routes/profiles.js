@@ -2,7 +2,7 @@
 import {Router} from 'express';
 const router = Router();
 import * as help from '../helpers.js';
-
+import userData from '../data/users.js'
 
 router.post('/profiles/:profileId/follow', async (req, res) => {
     if (!req.session.user) {
@@ -44,6 +44,26 @@ router.post('/:profileId/follow', async (req, res) => {
     } catch (error) {
         res.status(500).send(error.message);
     }
+})
+
+router.get('/', async (req, res) => {
+    try{
+        let users = await userData.getAll();
+        if (req.session.user){
+            //filter out the current user?
+        }
+        return res.status(200).render('profiles', {
+            users,
+            title: "users"
+        })
+    } catch (e) {
+        return res.status(500).render('error', {
+            title: "error",
+            errors: [`unexpected server error ${e}`]
+        })
+    }
+
+
 })
 
 
