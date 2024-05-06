@@ -106,9 +106,9 @@ const recalcAverageRating = async (userId) => {
   }
 
 /**
- * gets a user by id
- * @param   {string}  id  user's ObjectId as a string
- * @return  {string}      user JSON (id's converted to strings)
+ * gets User By a string id
+ * @param {string} id user's id as a string
+ * @returns {Promise<*> | object}
  */
 const getUserById = async (id) => {
     id = helper.checkIdString(id);
@@ -307,41 +307,3 @@ export default {
     loginUser,
     updateUser,
 }
-
-
-/* 
-async function getAllReviews()
-{
-    const reviewCollection = await getAllReviews();
-    const reviewList = await reviewCollection.find({}).toArray();
-    return reviewList;
-}
-
-async function getReviewById(id)
-{
-    id = helper.checkId(id);
-    const reviewCollection = await reviews();
-    const review = await reviewCollection.findOne({_id: new ObjectId(id)});
-    if (!review) throw 'Error: review not found';
-    return review;
-
-}
-
-async function addReview (comment, rating, reviewId, timestamp) {
-    comment = helper.checkString(comment, 'Comment');
-    rating = helper.checkString(rating, 'Rating'); 
-    reviewId = helper.checkString(reviewId, 'Review ID');
-    timestamp = helper.checkString(rating, 'Timestamp');
-
-    const newReview = {
-        comment: comment,
-        rating: rating, 
-        review: {
-            id: new ObjectId(reviewId),
-
-        }
-    };
-
-}
-
-export {getAllReviews, getReviewById, addReview} */

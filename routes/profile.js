@@ -27,20 +27,21 @@ router.get('/settings', async (req, res) => {
 });
 
 router.post('/settings', async (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    const { username, email, newPassword, wishlist } = req.body;
+    const { username, email, password, wishlist } = req.body;
     try {
         const updateData = {
             ...(username && { username }),
             ...(email && { email }),
-            ...(newPassword && { password: newPassword }),
+            ...(password && { password }),
             ...(wishlist && { wishlist })
         };
-        await userData.updateUser(req.session.user._id.toString(), updateData);
-        req.session.user = await userData.getUserById(req.session.user._id.toString());
-        res.redirect('/profile/settings?success=true');
+        await userData.updateUser(req.session.user._id, updateData);
+        req.session.user = await userData.getUserById(req.session.user._id);
+        res.render('profile_settings', {
+            user: req.session.user,
+            success: true,
+            title: 'Edit Profile Settings'
+        });
     } catch (error) {
         console.error('Failed to update profile:', error);
         res.status(500).send('Failed to update account settings.');
@@ -50,7 +51,8 @@ router.post('/settings', async (req, res) => {
 router.route('/')
     .get(async (req, res) => {
         return res.render('profile_self', {
-            title: "My Profile"
+            title: "My Profile",
+            ...(await userData.getUserById(req.session.user._id)),
         });
     })
 
