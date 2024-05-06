@@ -40,9 +40,9 @@ const tradeDisplay = async (trade, req) => {
     } else if (trade.thisUserStatus == "completed" && trade.otherUserStatus != "completed"){
         trade.status = "waiting for other user to verify trade has taken place";
     } else if (trade.thisUserStatus != "completed" && trade.otherUserStatus == "completed"){
-        trade.status = "user marked this as complete. Please verify that the trade has taken place";
-    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStats == "accepted"){
-        trade.status = "the status should never be set to this value... something wrong has occured";
+        trade.status = "other user marked this as complete. Please verify that the trade has taken place";
+    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "accepted"){
+        trade.status = "waiting for both users to verify that the trade has completed";
     }  else  if (trade.thisUserStatus == "completed" && trade.otherUserStatus == "completed"){
         trade.status = "you have both completed the trade. It should've deleted itself by now";
     }
@@ -251,6 +251,20 @@ router.route('/:tradeId')
             }
             await tradeData.update(tradeId, newTrade);
             req.session._message = ['successfully updated trade'];
+            if (newTrade.senderStatus == "completed" && newTrade.receiverStatus == "completed"){
+                //delete the trade and all it's items
+                //when all the items are removed the trade should automatically delete itself
+
+                const deleteItems = newTrade.senderItems
+                for (const itemId of newTrade.senderItems){
+                    await itemData.remove(itemId.toString(), newTrade.senderId.toString());
+                }
+                for (const itemId of newTrade.receiverItems){
+                    await itemData.remove(itemId.toString(), newTrade.receiverId.toString());
+                }
+                req.session._message == ['successfully marked trade as completed. Items have been automatically removed from inventory'];
+                return res.redirect('/trades');
+            }
             return res.redirect(`/trades/${tradeId}`);
         } catch (e) {
             return res.status(500).render('error', {
