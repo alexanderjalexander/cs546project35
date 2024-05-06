@@ -9,39 +9,6 @@ const saltRounds = 13;
 
 
 /**
- * Gets a review from the user collection by a user
- * @param {string} reviewerId the user's ID as a string
- * @returns one review that belongs to that userId
- */
-const getReviewByUserId = async (reviewerId) => {
-    reviewerId = helper.checkIdString(reviewerId);
-    const reviewCollection = await reviews();
-    const review = await reviewCollection.findOne({reviewerId: new ObjectId(reviewerId)});
-    if (item == null) throw 'Error: review with userId not found';
-    review._id=review._id.toString();
-    return review;
-
-}
-
-/**
- * creates a new review in the users collection
- * @returns {string} ObjectId of the reviews collection
- */
-
-const createReview = async () => {
-    const userCollection = await users();
-    const newReview = {
-      temp: []
-    };
-    const insertInfo = await userCollection.insertOne(newReview);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId)
-      throw 'Could not add dm';
-    const newId = insertInfo.insertedId.toString();
-    const review = await get(newId);
-    return review;
-  };
-
-/**
  * adds a review to the user collection
  * @param {string} id ObjectId of the user to be reviewed
  * @param {string} reviewerId reviewer's ID as a string
@@ -84,6 +51,38 @@ const addReview = async (id, reviewerId, comment, rate) => {
     user._id = user._id.toString();
     return user;
 }
+/**
+ * removes a review
+ * @param {string} id ObjectId of the user to be reviewed
+ * @param {string} reviewerId reviewer's ID as a string
+ * @returns 
+ */
+const removeReview = async (id, reviewerId) => {
+    id = helper.checkIdString(id);
+    reviewerId = helper.checkIdString(reviewerId);
+    const userCollection = await users();
+
+    //first we will find the user we need for the new review
+    let user = await userCollection.findOne({_id: new ObjectId(id)});
+  
+    user.reviews = user.reviews.filter((el) =>{
+        return (el.userId.toString() !== reviewerId.toString());
+    })
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(id)},
+        {$set: user},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    await recalcAverageRating(id);
+    user = await userCollection.findOne({_id: new ObjectId(id)});
+    user._id = user._id.toString();
+    return user;
+}
+
 /**
  * recalculates the average rating of a user
  * @param   {string}  userId  user's ObjectId string
@@ -256,6 +255,44 @@ const addFollower = async(userId, followerId) => {
     }
 }
 
+/**
+ * removes a follower.
+ * Also adds to the following list of the object specified by followerId
+ * @param   {string}  userId      string id of the followee
+ * @param   {string}  followerId  string id of the follower
+ */
+const removeFollower = async(userId, followerId) => {
+    userId = helper.checkIdString(userId);
+    followerId = helper.checkIdString(followerId);
+    const userCollection = await users();
+
+    let followee = await userCollection.findOne({_id: new ObjectId(userId)});
+    followee.followers = followee.followers.filter((el)=>{
+        return (el.toString() !== followerId.toString());
+    });
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$set: followee},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+
+    let follower = await userCollection.findOne({_id: new ObjectId(followerId)});
+    follower.following = follower.following.filter((el)=>{
+        return (el.toString() !== userId.toString());
+    });
+    const updatedInfo2 = await userCollection.findOneAndUpdate(
+        {_id: new ObjectId(followerId)},
+        {$set: follower},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo2) {
+        throw 'could not update user successfully';
+    }
+}
+
 
 /**
  * adds a wish to the users wishlist
@@ -327,11 +364,11 @@ export default {
     addWish,
     getUserById,
     getUserByUsername,
-    getReviewByUserId,
     createUser,
-    createReview,
     addReview,
     addFollower,
+    removeReview,
+    removeFollower,
     loginUser,
     updateUser,
     getAll,
