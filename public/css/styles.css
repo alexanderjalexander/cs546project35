@@ -23,7 +23,7 @@ main {
 #welcome {
     font-size: 3.5em;
     font-weight: 750;
-    color: black;
+    /*color: black;*/
     text-align: center;
     margin: 20px 0;
 }
@@ -170,4 +170,9 @@ div.trade-item img {
     padding: 5px;
     width: 150px;
     margin: auto;
+}
+
+.dark {
+    background-color: #000; 
+    color: #fff; 
 }
