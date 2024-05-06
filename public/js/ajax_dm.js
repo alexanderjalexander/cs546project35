@@ -5,7 +5,8 @@
             recipientId = $('#recipientId'),
             messageInput = $('#messageInput'),
             messageDetails = $('#messageDetails'),
-            dmList = $('#dmList');
+            dmList = $('#dmList'),
+            noDmsMessage = $('#noDmsMessage');
 
         messageForm.submit(function(event) {
             event.preventDefault();
@@ -29,13 +30,16 @@
 
             $.ajax(requestConfig).then(function(response) {
                 messageDetails.html(`<p>Message sent successfully to ${response.recipientId || 'recipient'}!</p>`);
+                if (noDmsMessage) {
+                    noDmsMessage.remove();
+                }
                 if (response.created) {
                     dmList.append(`<li><a href='/directmsgs/${response.data._id}'>${recipientId.val().trim()}</a></li>`);
                 }
                 messageForm[0].reset(); 
             }).catch(function(error) {
-                console.error('Error sending message:', error);
-                messageDetails.html('<p>Error sending message.</p>');
+                console.error('Error sending message:', error.responseJSON);
+                messageDetails.html(`<p>Error sending message: ${error.responseJSON.error}</p>`);
             });
         });
     });
