@@ -113,10 +113,10 @@ router.route('/')
         //now we need to create a new trade object
 
         try {
-            if (tradeData.exists(req.body.thisUserItems, req.body.otherUserItems)){
+            if (await tradeData.exists(req.body.otherUserId, req.session.user._id)){
                 return res.status(400).render('error',{
                     title: "error",
-                    errors: ['this trade already exists']
+                    errors: ['you already have a trade with this user']
                 })
             }
             const newTrade = await tradeData.create(
