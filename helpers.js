@@ -1,5 +1,20 @@
 import {ObjectId} from 'mongodb';
 
+//handlebars helper to check if two arguments are equal pulled from stackoverflow https://stackoverflow.com/questions/41423727/handlebars-registerhelper-serverside-with-expressjs
+export function ifeq(a, b, options){
+    if (a == b) {
+      return options.fn(this);
+      }
+    return options.inverse(this);
+  };
+//handlebars helper to check if two arguments are not equal pulled from stackoverflow https://stackoverflow.com/questions/41423727/handlebars-registerhelper-serverside-with-expressjs
+export function ifneq(a, b, options){
+    if (a != b) {
+      return options.fn(this);
+      }
+    return options.inverse(this);
+  };
+
 /**
  * Checks if a string exists and is a valid string(not just empty spaces).
  * @param {string} str 
@@ -29,7 +44,8 @@ export function checkIdString(id) {
  * @param {Array} arr An array
  * @returns a thrown error or a valid array of strings depending on input.
  */
-export function checkIdArray(arr) {
+export function checkIdArray(arr, name) {
+    if (!arr) throw `${name} must be supplied!`
     arr = arr.map((el) => {
         return checkIdString(el);
     })

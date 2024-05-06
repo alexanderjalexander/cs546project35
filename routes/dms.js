@@ -18,8 +18,7 @@ router.route('/')
       }));
       return res.render('dms', {
         dmlist: dmList,
-        username: req.session.user !== undefined ? req.session.user.username : '',
-        auth: req.session.user !== undefined
+        title: "My Direct messages",
       });
     } catch (e) {
       return res.status(500).json({ error: 'Failed to retrieve direct messages.' });
@@ -37,7 +36,6 @@ router.route('/:id')
       };
       if (dm) {
         res.render('dm', {
-          auth: req.session.user !== undefined,
           ...dm
         });
       } else {

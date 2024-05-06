@@ -24,6 +24,7 @@ export const nav_middleware = (req, res, next) => {
     const everyone = [
         {label: "Home", url: "/"},
         {label: "View Community Items", url: "/items"},
+        {label: "Community Users", url: "/profiles"}
     ];
     const authorized_only = [
         {label: "My Trades", url: "/trades"},
@@ -56,6 +57,37 @@ export const nav_middleware = (req, res, next) => {
     res.locals.navLinks = navLinks
     next();
 }
+
+export const profile_nav_middleware = (req, res, next) => {
+    const links = [
+        {label: "My Profile", url: "/profile"},
+        {label: "My Inventory", url: "/profile/items"},
+        {label: "My Settings", url: "/profile/settings"},
+    ];
+    let navLinks = [].concat(links)
+    //add an id for the link for the page that the user is currently on
+    navLinks.map((el) => {
+        if(el.url === req.originalUrl){
+            el.class = "currentLink";
+        } else{
+            el.class = "otherLink";
+        }
+    });
+    res.locals.profileNavLinks = navLinks
+    next();
+}
+
+export const auth_middleware = (req, res, next) => {
+    if (req.session.user !== undefined) {
+        res.locals.auth = true;
+        res.locals.themePreference = req.session.user.themePreference;
+    } else {
+        res.locals.auth = false;
+        res.locals.themePreference = 'dark';
+    }
+    next();
+}
+
 /**
  * Dynamically determines the navLinks that should be visible when the user's 
  * @param {*} req 

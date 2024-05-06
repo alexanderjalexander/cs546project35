@@ -21,7 +21,6 @@ router.get('/', async (req, res) => {
         }
         return res.render('items', {
             title: "All Community Items",
-            auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             items: items
         });
@@ -46,8 +45,6 @@ router.get('/:itemid', async (req, res) => {
         }
         return res.render('item', {
             title: "View Item",
-            auth: req.session.user !== undefined,
-            themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             item: item
         });
     } catch (error) {

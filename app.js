@@ -10,6 +10,7 @@ import express from 'express';
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
+import * as helpers from './helpers.js'
 import cookieParser from 'cookie-parser';
 import * as middleware from './middleware.js';
 import fs from 'fs';
@@ -58,10 +59,12 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.use('/', middleware.root_middleware);
 app.use('/', middleware.nav_middleware);
 app.use('/', middleware.message_middleware);
+app.use('/', middleware.auth_middleware);
 app.use('/register', middleware.register_login_middleware);
 app.use('/login', middleware.register_login_middleware);
 app.use('/logout', middleware.protected_middleware);
 app.use('/profile', middleware.protected_middleware);
+app.use('/profile', middleware.profile_nav_middleware);
 app.use('/directmsgs', middleware.protected_middleware);
 app.use('/trades', middleware.protected_middleware);
 app.use('/profiles/:profileId/follow', middleware.protected_middleware);
@@ -71,7 +74,8 @@ app.post('/items', middleware.protected_middleware);
 // ---------------------------------------
 
 app.engine('handlebars', exphbs.engine({
-  defaultLayout: 'main'
+  defaultLayout: 'main',
+  helpers: {ifeq: helpers.ifeq, ifneq: helpers.ifneq}
 }));
 app.set('view engine', 'handlebars');
 configRoutes(app);

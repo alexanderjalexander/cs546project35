@@ -33,14 +33,18 @@ const tradeDisplay = async (trade, req) => {
         trade.thisUserStatus = trade.receiverStatus;
     }
     //only statuses are pending accepted and completed
-    if (trade.thisUserStatus !== 'pending' && trade.otherUserStatus !== 'pending'){
-        trade.status = "waiting to complete trade";
-    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "pending"){
+    if (trade.thisUserStatus == "accepted" && trade.otherUserStatus == "pending"){
         trade.status = "wating for other user to accept";
     } else if (trade.thisUserStatus == "pending" && trade.otherUserStatus == "accepted"){
         trade.status = "waiting for you to accept";
-    } else {
-
+    } else if (trade.thisUserStatus == "completed" && trade.otherUserStatus != "completed"){
+        trade.status = "waiting for other user to verify trade has taken place";
+    } else if (trade.thisUserStatus != "completed" && trade.otherUserStatus == "completed"){
+        trade.status = "user marked this as complete. Please verify that the trade has taken place";
+    } else if (trade.thisUserStatus == "accepted" && trade.otherUserStats == "accepted"){
+        trade.status = "the status should never be set to this value... something wrong has occured";
+    }  else  if (trade.thisUserStatus == "completed" && trade.otherUserStatus == "completed"){
+        trade.status = "you have both completed the trade. It should've deleted itself by now";
     }
     return trade
 }
@@ -132,16 +136,14 @@ router.route('/:tradeId')
         req.params.tradeId = help.tryCatchHelper(errors, ()=>help.checkIdString(req.params.tradeId))
         if (errors.length !== 0){
             return res.status(400).render('error', {
-                errors,
-                auth: req.session.user !== undefined
+                errors
             });
         }
         try{
             const usersTrades = await tradeData.getAll(req.session.user._id);
             let foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
             if (!foundTrade) return res.status(404).render("error", {
-                errors: ["trade not found!"],
-                auth: req.session.user !== undefined
+                errors: ["trade not found!"]
             });
             foundTrade = await tradeDisplay(foundTrade, req);
             foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
@@ -153,7 +155,6 @@ router.route('/:tradeId')
         } catch (e){
             return res.status(500).render('error', {
                 errors: [e],
-                auth: req.session.user !== undefined
             });
         }
 
@@ -171,7 +172,6 @@ router.route('/:tradeId')
         if (errors.length !== 0){  
             return res.status(400).render('error', {
                 errors,
-                auth: req.session.user !== undefined
             });
         }
         //check if the trade exists
@@ -180,8 +180,10 @@ router.route('/:tradeId')
             foundTrade = usersTrades.find((el)=>{return el._id == req.params.tradeId});
             if (!foundTrade) return res.status(404).render("error", {
                 errors: ["trade not found!"],
-                auth: req.session.user !== undefined
             });
+            foundTrade = await tradeDisplay(foundTrade, req);
+            foundTrade.otherUser.items = await itemData.getAllByUserId(foundTrade.otherUser._id);
+            foundTrade.thisUser.items = await itemData.getAllByUserId(foundTrade.thisUser._id);
         } catch (e) { //server error
             return res.status(500).render('error', {
                 title: "error",
@@ -190,7 +192,7 @@ router.route('/:tradeId')
         }
 
         //validate inputs
-        if (!req.body.accepted){
+        if (!req.body.accepted && !req.body.completed){
             if(typeof req.body.thisUserItems == 'string'){
                 req.body.thisUserItems = [req.body.thisUserItems];
             }
@@ -198,16 +200,17 @@ router.route('/:tradeId')
                 req.body.otherUserItems = [req.body.otherUserItems];
             }
             req.body.thisUserItems = help.tryCatchHelper(errors, () =>{
-                return help.checkIdArray(req.body.thisUserItems)
+                return help.checkIdArray(req.body.thisUserItems, "Your items")
             });
             req.body.otherUserItems = help.tryCatchHelper(errors, () =>{
-                return help.checkIdArray(req.body.otherUserItems)
+                return help.checkIdArray(req.body.otherUserItems, "Other User's items")
             });
         }
 
         if (errors.length !== 0){
-            return res.status(400).render('error', {
-                title: "error",
+            return res.status(400).render('trade', {
+                title: "trade",
+                ...foundTrade,
                 errors: errors,
             });
         }
@@ -216,23 +219,32 @@ router.route('/:tradeId')
         try {
             //they clicked the accept button. 
             //Just update the statuses and return to the same trade
-            let thisTrade = await tradeDisplay(foundTrade, req);
             let newTrade = {}
             if (req.body.accepted) {
                 newTrade = {
-                    senderId: thisTrade.thisUser._id,
+                    senderId: foundTrade.thisUser._id,
                     senderStatus: "accepted",
-                    senderItems: thisTrade.thisUserItems.map((el)=>el._id),
-                    receiverId: thisTrade.otherUser._id,
-                    receiverStatus: thisTrade.otherUserStatus,
-                    receiverItems: thisTrade.otherUserItems.map((el)=>el._id)
+                    senderItems: foundTrade.thisUserItems.map((el)=>el._id),
+                    receiverId: foundTrade.otherUser._id,
+                    receiverStatus: foundTrade.otherUserStatus,
+                    receiverItems: foundTrade.otherUserItems.map((el)=>el._id)
                 };
+            } else if (req.body.completed){
+                newTrade = {
+                    //keep everything the same, just set your status to completed
+                    senderId: foundTrade.thisUser._id,
+                    senderStatus: "completed",
+                    senderItems: foundTrade.thisUserItems.map((el)=>el._id),
+                    receiverId: foundTrade.otherUser._id,
+                    receiverStatus: foundTrade.otherUserStatus,
+                    receiverItems: foundTrade.otherUserItems.map((el)=>el._id)
+                }
             } else {
                 newTrade = {
-                    senderId: thisTrade.thisUser._id,
+                    senderId: foundTrade.thisUser._id,
                     senderItems: req.body.thisUserItems,
                     senderStatus: "accepted",
-                    receiverId: thisTrade.otherUser._id,
+                    receiverId: foundTrade.otherUser._id,
                     receiverItems: req.body.otherUserItems,
                     receiverStatus: "pending"
                 };
@@ -254,7 +266,6 @@ router.route('/:tradeId')
         if (errors.length !== 0){
             return res.status(400).render('error', {
                 errors,
-                auth: req.session.user !== undefined
             });
         }
         try {

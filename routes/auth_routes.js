@@ -8,7 +8,7 @@ router.route('/')
 .get(async (req, res) => {
     return res.render('home', {
         title: 'Home',
-        auth: req.session.user !== undefined
+        user: req.session.user
     });
 });
 
@@ -16,8 +16,7 @@ router.route('/login')
 .get(async (req, res) => {
     //code here for GET
     return res.render('login', {
-        title:"Login",
-        auth: req.session.user !== undefined
+        title:"Login"
     });
 })
 .post(async (req, res) => {
@@ -30,9 +29,7 @@ router.route('/login')
     if (errors.length !== 0) {
         return res.status(400).render('login', {
             title:"Login",
-            auth: req.session.user !== undefined,
-            errors: errors, 
-            themePreference: 'light'
+            errors: errors
         });
     }
     
@@ -44,9 +41,7 @@ router.route('/login')
         return res.status(400).render('login', {
             ...req.body,
             title:"Login",
-            auth: req.session.user !== undefined,
-            errors: [e],
-            themePreference: 'light'
+            errors: [e]
         });
     }
 })
@@ -54,8 +49,7 @@ router.route('/login')
 router.route('/register')
 .get(async (req, res) => {
     return res.status(200).render('register', {
-        title: 'Register',
-        auth: req.session.user !== undefined
+        title: 'Register'
     })
 })
 .post(async (req, res) => {
@@ -82,9 +76,7 @@ router.route('/register')
         return res.status(400).render('register', {
             ...req.body,
             title:"Register",
-            auth: req.session.user !== undefined,
-            errors: errors, 
-            themePreference: 'light'
+            errors: errors
         });
     }
 
@@ -102,8 +94,7 @@ router.route('/register')
         return res.status(500).render('register', {
             ...req.body,
             title:"Register",
-            errors: [e], 
-            themePreference: 'light'
+            errors: [e]
         });
     }
 })
@@ -113,8 +104,7 @@ router.route('/logout')
     //code here for GET
     req.session.destroy();
     return res.status(200).render('logout', {
-        title: 'Logged Out',
-        auth: false,
+        title: 'Logged Out'
     });
 });
 
