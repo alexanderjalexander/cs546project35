@@ -127,7 +127,7 @@ const getUserById = async (id) => {
  * @param username
  */
 const getUserByUsername = async (username) => {
-    let id = helper.checkIdString(id);
+    username = helper.checkString(username);
     const userCollection = await users();
     const user = await userCollection.findOne({username: username});
     if (user === null) throw 'No user with that id';
