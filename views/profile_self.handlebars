@@ -12,23 +12,23 @@
 
         <dt>Items: </dt>
         {{#each items}}
-            <dd>{{this}}</dd>
+            <dd>{{this.name}}</dd>
         {{else}}
             <dd>No items</dd>
         {{/each}}
 
         <dt>Followers: </dt>
         {{#each followers}}
-            <dd>{{this}}</dd>
+            <dd><a href="/profiles/{{this._id}}">{{this.username}}</a></dd>
         {{else}}
-            <dd>No followers</dd>
+            <dd>None</dd>
         {{/each}}
 
         <dt>Following: </dt>
         {{#each following}}
-            <dd>{{this}}</dd>
+            <dd><a href="/profiles/{{this._id}}">{{this.username}}</a></dd>
         {{else}}
-            <dd>No people they're following</dd>
+            <dd>None</dd>
         {{/each}}
 
 

@@ -92,10 +92,26 @@ router.post('/settings', async (req, res) => {
 
 router.route('/')
     .get(async (req, res) => {
-        return res.render('profile_self', {
-            title: "My Profile",
-            ...(await userData.getUserById(req.session.user._id)),
-        });
+        try{
+            const foundProfile = await userData.getUserById(req.session.user._id);
+            foundProfile.items = await itemData.getAllByUserId(req.session.user._id);
+            foundProfile.followers = await Promise.all(foundProfile.followers.map(async (el) => {
+                return await userData.getUserById(el.toString());
+            }));
+            foundProfile.following = await Promise.all(foundProfile.following.map(async (el) => {
+                return await userData.getUserById(el.toString());
+            }));
+            return res.render('profile_self', {
+                title: "My Profile",
+                ...foundProfile,
+            });
+        } catch (e){
+            return res.status(500).render('error', {
+                title: "error",
+                errors: [`Error: something wrong happened on the serverside: (${e}).`],
+            });
+        }
+
     })
 
 router.route('/items')
