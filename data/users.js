@@ -360,6 +360,12 @@ const displayUserData = async(id) => {
     return foundProfile;
 }
 
+const changeTheme = async(id, theme) => {
+    id = helper.checkIdString(id);
+    theme = helper.checkTheme(theme);
+    await updateUser(id, {themePreference: theme})
+}
+
 export default {
     addWish,
     getUserById,
@@ -373,4 +379,5 @@ export default {
     updateUser,
     getAll,
     displayUserData,
+    changeTheme,
 }

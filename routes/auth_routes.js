@@ -1,8 +1,8 @@
 //this will have the /login /register etc. routes
 import {Router} from 'express';
-const router = Router();
 import * as help from '../helpers.js';
 import userData from '../data/users.js';
+const router = Router();
 
 router.route('/')
 .get(async (req, res) => {
@@ -106,5 +106,24 @@ router.route('/logout')
         title: 'Logged Out'
     });
 });
+
+router.post('/theme', async (req, res) => {
+    try {
+        req.body.themePreference = help.checkTheme(req.body.themePreference);
+    } catch (e) {
+        return res.status(400).json({success: false, errors: [e]});
+    }
+    if (req.session.user !== undefined) {
+        try {
+            await userData.changeTheme(req.session.user._id, req.body.themePreference);
+            req.session.user.themePreference = req.body.themePreference;
+        } catch (e) {
+            return res.status(500).json({success: false, errors: [e]});
+        }
+    }
+    req.session.themePreference = req.body.themePreference;
+    res.locals.themePreference = req.body.themePreference;
+    return res.json({success: true, themePreference: req.body.themePreference});
+})
 
 export default router;
