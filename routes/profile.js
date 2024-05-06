@@ -1,12 +1,14 @@
 //this will have all the routes that deal with viewing your own profile and items.
 import { Router } from 'express';
-import userData from '../data/users.js'; // Correct import
+import userData from '../data/users.js';
 import itemData from '../data/items.js';
 import * as help from '../helpers.js';
+import bcrypt from 'bcrypt';
 import { multerConfig } from "../config/multerConfig.js";
 import multer from "multer";
 const upload = multerConfig.single('image');
 const router = Router();
+const saltRounds = 10;
 
 router.get('/settings', async (req, res) => {
     if (!req.session.user) {
@@ -33,11 +35,11 @@ router.post('/settings', async (req, res) => {
         const updateData = {
             ...(username && { username }),
             ...(email && { email }),
-            ...(newPassword && { password: await bcrypt.hash(newPassword, saltRounds) }),
+            ...(newPassword && { password: newPassword }),
             ...(wishlist && { wishlist })
         };
-        await userData.updateUser(req.session.user._id, updateData);
-        req.session.user = await getUserById(req.session.user._id);
+        await userData.updateUser(req.session.user._id.toString(), updateData);
+        req.session.user = await userData.getUserById(req.session.user._id.toString());
         res.redirect('/profile/settings?success=true');
     } catch (error) {
         console.error('Failed to update profile:', error);

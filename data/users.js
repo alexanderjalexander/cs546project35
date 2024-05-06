@@ -278,6 +278,23 @@ const addWish = async(userId, wish) => {
     }
 }
 
+const updateUser = async (id, updateData) => {
+    const userCollection = await users();
+    if (updateData.password) {
+        updateData.hashedPassword = await bcrypt.hash(updateData.password, saltRounds);
+        delete updateData.password;
+    }
+    const updateInfo = await userCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updateData }
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+        throw new Error('Could not update user');
+    }
+    return getUserById(id);
+}
+
 export default {
     addWish,
     getUserById,
@@ -288,6 +305,7 @@ export default {
     addReview,
     addFollower,
     loginUser,
+    updateUser,
 }
 
 
