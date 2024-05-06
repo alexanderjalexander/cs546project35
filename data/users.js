@@ -1,4 +1,5 @@
 import {users} from '../config/mongoCollections.js';
+import itemData from './items.js'
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 import bcrypt from 'bcrypt';
@@ -302,6 +303,26 @@ const getAll = async() => {
     return userList;
 }
 
+const displayUserData = async(id) => {
+    id = helper.checkIdString(id);
+    const foundProfile = await getUserById(id);
+    foundProfile.items = await itemData.getAllByUserId(id);
+    foundProfile.followers = await Promise.all(foundProfile.followers.map(async (el) => {
+        return await getUserById(el.toString());
+    }));
+    foundProfile.following = await Promise.all(foundProfile.following.map(async (el) => {
+        return await getUserById(el.toString());
+    }));
+    foundProfile.reviews = await Promise.all(foundProfile.reviews.map(async (el) => {
+        const reviewUser = await getUserById(el.userId.toString());
+        return {
+            ...el,
+            username: reviewUser.username
+        }
+    }));
+    return foundProfile;
+}
+
 export default {
     addWish,
     getUserById,
@@ -314,4 +335,5 @@ export default {
     loginUser,
     updateUser,
     getAll,
+    displayUserData,
 }
