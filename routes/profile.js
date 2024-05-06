@@ -119,7 +119,20 @@ router.route('/')
             });
         }
 
-    })
+    });
+
+router.route('/delete').delete(async (req, res) => {
+        //delete the user from the database
+        try {
+            await userData.removeUser(req.session.user._id);
+            return res.redirect('/logout');
+        } catch (e) {
+            return res.status(500).render('error', {
+                title: "error",
+                errors: [e]
+            })
+        }
+    });
 
 router.route('/items')
     .get(async (req, res) => {

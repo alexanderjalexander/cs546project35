@@ -1,5 +1,7 @@
 import {users} from '../config/mongoCollections.js';
 import itemData from './items.js'
+import tradeData from './trades.js'
+import dmData from './dms.js'
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
 import bcrypt from 'bcrypt';
@@ -360,6 +362,52 @@ const displayUserData = async(id) => {
     return foundProfile;
 }
 
+const removeUser = async(id) => {
+    id = helper.checkIdString(id);
+    const foundUser = await getUserById(id);
+    //get all the trades for which the user is a party
+    const allTrades = await tradeData.getAll(id);
+    for (const trade of allTrades){
+        await tradeData.remove(trade._id.toString());
+    }
+    //remove all their items
+    for (const itemId of foundUser.items){ 
+        await itemData.remove(itemId.toString(), id);
+    }
+
+    //remove all of their followings
+    for (const followerId of foundUser.followers){
+        await removeFollower(id, followerId.toString());
+    }
+    for (const followeeId of foundUser.following){
+        await removeFollower(followeeId.toString(), id);
+    }
+    
+    const allUsers = await getAll();
+    for (const user of allUsers){
+        try{
+            await removeReview(user._id.toString(), id);
+        } catch(e){
+            //this doesn't matter
+        }
+    }
+
+    //remove user's dms
+    const userDms = await dmData.getByUserId(id);
+    for (const dm of userDms){
+        await dmData.remove(dm._id.toString());
+    }
+    //now remove the user themselves
+    const userCollection = await users();
+    const removalInfo = await userCollection.findOneAndDelete({
+        _id: new ObjectId(id),
+    });
+    if (!removalInfo) {
+        throw `Error: Could not delete dm with id of ${id}`;
+    }
+    return {_id: new Object(id), deleted: true}
+}
+
 export default {
     addWish,
     getUserById,
@@ -373,4 +421,5 @@ export default {
     updateUser,
     getAll,
     displayUserData,
+    removeUser,
 }
