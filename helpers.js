@@ -87,6 +87,38 @@ export function checkPrice(price, varName) {
     return price;
 }
 
+/**
+ * Checks if item name is valid, and is <= 50 chars and >= 5 chars
+ * @param {string} str
+ * @returns trimmed item name string
+ */
+function checkItemName(str) {
+    str = checkString(str, 'item name');
+    if (str.length < 5) {
+        throw `Error: item name should be greater than or equal to 5 characters.`
+    }
+    if (str.length > 50) {
+        throw `Error: item name should be less than or equal to 50 characters.`
+    }
+    return str
+}
+
+/**
+ * Checks if item desc is valid, and is <= 250 chars and >= 5 chars
+ * @param {string} str
+ * @returns trimmed item name string
+ */
+function checkItemDesc(str) {
+    str = checkString(str, 'item description');
+    if (str.length < 5) {
+        throw `Error: item description should be greater than or equal to 5 characters.`
+    }
+    if (str.length > 250) {
+        throw `Error: item description should be less than or equal to 250 characters.`
+    }
+    return str
+}
+
 //helpers for reviews
 
 /**
