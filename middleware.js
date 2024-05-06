@@ -28,6 +28,7 @@ export const nav_middleware = (req, res, next) => {
     const authorized_only = [
         {label: "My Trades", url: "/trades"},
         {label: "Direct Messages", url: "/directmsgs"},
+        {label: "Community Users", url: "/profiles"},
         {label: "My Profile", url: "/profile"},
         {label: "Log Out", url: "/logout"},
     ];
