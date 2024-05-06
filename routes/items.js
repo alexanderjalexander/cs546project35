@@ -34,16 +34,23 @@ router.get('/', async (req, res) => {
 //GET route to view a specific item
 router.get('/:itemid', async (req, res) => {
     try {
-        const itemid = helper.checkIdString(req.params.itemid);
-        const item = await itemData.getById(itemid);
+        req.params.itemid = helper.checkIdString(req.params.itemid);
+    } 
+    catch (error) {
+        return res.status(400).send({error: error.toString()});
+    }
+    try {
+        const item = await itemData.getById(req.params.itemid);
+        if (req.session.user !== undefined && req.session.user._id === item.userId) {
+            return res.redirect(`/profile/items/${req.params.itemid}`); 
+        }
         return res.render('item', {
             title: "View Item",
             auth: req.session.user !== undefined,
             themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             item: item
         });
-    } 
-    catch (error) {
+    } catch (error) {
         return res.status(404).send({error: error.toString()});
     }
 });
