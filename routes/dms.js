@@ -29,7 +29,6 @@ router.route('/')
   try {
     let { senderId, recipientId, message } = req.body;
     recipientId=await userData.getUserByUsername(recipientId);
-    // Validate inputs
     if (!senderId || !recipientId || !message) {
       return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
     }
@@ -38,17 +37,14 @@ router.route('/')
       return res.status(400).json({ success: false, error: 'You cannot send a message to yourself.' });
     }
 
-    // Attempt to find an existing DM between the two users
     const existingDMs = await dmData.getByUserId(senderId);
     let dm = existingDMs.find(dm => (dm.actor1.toString() === recipientId || dm.actor2.toString() === recipientId));
     let created = false;
     if (!dm) {
-      // If no existing conversation, create a new one
       dm = await dmData.create(senderId, recipientId);
       created = true;
     }
 
-    // Add the new message to the conversation
     const updatedDM = await dmData.writeMsg(dm._id.toString(), senderId, message);
 
     return res.json({ success: true, created, message: 'Message sent successfully', data: updatedDM });
