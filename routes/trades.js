@@ -197,22 +197,17 @@ router.route('/:tradeId')
             if(typeof req.body.otherUserItems == 'string'){
                 req.body.otherUserItems = [req.body.otherUserItems];
             }
-            for (let id of req.body.thisUserItems){
-                id = help.tryCatchAsync(errors, (el) => {
-                    return help.checkIdString(id, "item id");
-                });
-            }
-            for (let id of req.body.otherUserItems){
-                id = help.tryCatchAsync(errors, (el) => {
-                    return help.checkIdString(id, "item id");
-                });
-            }
+            req.body.thisUserItems = help.tryCatchHelper(errors, () =>{
+                return help.checkIdArray(req.body.thisUserItems)
+            });
+            req.body.otherUserItems = help.tryCatchHelper(errors, () =>{
+                return help.checkIdArray(req.body.otherUserItems)
+            });
         }
 
         if (errors.length !== 0){
-            return res.status(400).render('trades', {
-                title: "Trades",
-                trades: allTrades,
+            return res.status(400).render('error', {
+                title: "error",
                 errors: errors,
             });
         }
@@ -227,8 +222,10 @@ router.route('/:tradeId')
                 newTrade = {
                     senderId: thisTrade.thisUser._id,
                     senderStatus: "accepted",
+                    senderItems: thisTrade.thisUserItems.map((el)=>el._id),
                     receiverId: thisTrade.otherUser._id,
-                    receiverStatus: "pending"
+                    receiverStatus: thisTrade.otherUserStatus,
+                    receiverItems: thisTrade.otherUserItems.map((el)=>el._id)
                 };
             } else {
                 newTrade = {
@@ -242,7 +239,7 @@ router.route('/:tradeId')
             }
             await tradeData.update(tradeId, newTrade);
             req.session._message = ['successfully updated trade'];
-            res.redirect(`/trades/${tradeId}`);
+            return res.redirect(`/trades/${tradeId}`);
         } catch (e) {
             return res.status(500).render('error', {
                 title: "server error",

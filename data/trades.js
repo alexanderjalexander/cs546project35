@@ -121,24 +121,41 @@ const update = async (id, updateObject) => {
     trade.senderId = new ObjectId(trade.senderId);
     trade.receiverId = new ObjectId(trade.receiverId);
 
+    if (Object.keys(updateObject).includes('senderId'))
+        updateObject.senderId = new ObjectId(helper.checkIdString(updateObject.senderId));
+    if (Object.keys(updateObject).includes('receiverId'))
+        updateObject.receiverId = new ObjectId(helper.checkIdString(updateObject.receiverId));
+    if (Object.keys(updateObject).includes('senderStatus'))
+        updateObject.senderStatus = helper.checkString(updateObject.senderStatus);
+    if (Object.keys(updateObject).includes('receiverStatus'))
+        updateObject.receiverStatus = helper.checkString(updateObject.receiverStatus);
+    if (Object.keys(updateObject).includes('senderItems')){
+        updateObject.senderItems = helper.checkIdArray(updateObject.senderItems);
+        updateObject.senderItems = updateObject.senderItems.map((el)=>new ObjectId(el));
+    }
+    if (Object.keys(updateObject).includes('receiverItems')){
+        updateObject.receiverItems = helper.checkIdArray(updateObject.receiverItems);
+        updateObject.receiverItems = updateObject.receiverItems.map((el)=>new ObjectId(el));
+    }
+
     let updatedTrade = {
         senderId: (updateObject.hasOwnProperty('senderId'))
-            ? helper.checkIdString(updateObject.senderId, 'senderId')
+            ? updateObject.senderId
             : trade.senderId,
         receiverId: (updateObject.hasOwnProperty('receiverId'))
-            ? helper.checkIdString(updateObject.receiverId, 'receiverId')
+            ? updateObject.receiverId
             : trade.receiverId,
         senderItems: (updateObject.hasOwnProperty('senderItems'))
-            ? helper.checkIdArray(updateObject.senderItems, 'senderItems')
+            ? updateObject.senderItems
             : trade.senderItems,
         receiverItems: (updateObject.hasOwnProperty('receiverItems'))
-            ? helper.checkArray(updateObject.receiverItems, 'receiverItems')
+            ? updateObject.receiverItems
             : trade.receiverItems,
         senderStatus: (updateObject.hasOwnProperty('senderStatus'))
-            ? helper.checkString(updateObject.senderStatus, 'senderStatus')
+            ? updateObject.senderStatus
             : trade.senderStatus,
         receiverStatus: (updateObject.hasOwnProperty('receiverStatus'))
-            ? helper.checkString(updateObject.receiverStatus, 'receiverStatus')
+            ? updateObject.receiverStatus
             : trade.receiverStatus,
     };
 
