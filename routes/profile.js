@@ -53,7 +53,7 @@ router.post('/settings', async (req, res) => {
         //in this scope wishlist is now only a list of strings
         req.body.wishlist = req.body.wishlist.map((el)=>{
             return help.tryCatchHelper(errors, () =>
-                help.checkString(el));
+                help.checkString(el, "wishlist items"));
         })
     }
     if (errors.length !== 0){

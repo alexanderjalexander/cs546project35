@@ -133,6 +133,9 @@ export const checkUsername = (username) => {
     if (/\d/.test(username)) {
         throw `Error: username cannot contain numbers.`
     }
+    if (/ /.test(username)) {
+        throw `Error: username cannot contain spaces.`
+    }
     return username;
 }
 
@@ -173,7 +176,7 @@ export const checkTheme = (theme) => {
         throw `Error: You must supply a theme!`;
     }
     if (typeof theme !== 'string') {
-        throw `Error: username must be a string!`;
+        throw `Error: theme must be a string!`;
     }
     theme = theme.toLowerCase();
     if (theme !== 'light' && theme !== 'dark') {
