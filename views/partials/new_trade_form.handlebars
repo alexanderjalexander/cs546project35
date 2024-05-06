@@ -1,6 +1,6 @@
 <form action="/trades" method="POST" id="new-trade-form">
-    <p>{{otherUser.username}}'s items</p>
-    {{#each otherUser.items}}
+    <p>{{username}}'s items</p>
+    {{#each items}}
     <label for="{{this._id}}">{{this.name}}</label>
     <input type="checkbox" id="{{this._id}}" name="otherUserItems" value="{{this._id}}">
     {{/each}}
@@ -9,6 +9,6 @@
     <label for="{{this._id}}">{{this.name}}</label>
     <input type="checkbox" id="{{this._id}}"  name="thisUserItems" value="{{this._id}}">
     {{/each}}
-    <input type="text" name="otherUserId" value="{{otherUser._id}}" hidden>
+    <input type="text" name="otherUserId" value="{{_id}}" hidden>
     <button type="submit">Request Trade</button>
 </form>

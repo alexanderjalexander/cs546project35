@@ -1,5 +1,8 @@
 {{!views an individual profile of a user}}
 <div>
+    {{#if auth}}
+    {{> new_trade_form}}
+    {{/if}}
     <h2>{{firstName}} {{lastName}}</h2>
     <dl>
         <dt>Username: </dt>

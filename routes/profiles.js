@@ -83,24 +83,19 @@ router.get('/:profileId', async (req, res) => {
             errors: ['user not found'],
         })
     }
-    const foundProfile = await userData.getUserById(req.params.profileId);
-    foundProfile.items = await itemData.getAllByUserId(req.params.profileId);
-    foundProfile.followers = await Promise.all(foundProfile.followers.map(async (el) => {
-        return await userData.getUserById(el.toString());
-    }));
-    foundProfile.following = await Promise.all(foundProfile.following.map(async (el) => {
-        return await userData.getUserById(el.toString());
-    }));
-    foundProfile.reviews = await Promise.all(foundProfile.reviews.map(async (el) => {
-        const reviewUser = await userData.getUserById(el.userId.toString());
-        return {
-            ...el,
-            username: reviewUser.username
-        }
-    }));
+    if (req.session.user && req.session.user._id === req.params.profileId){
+        //user is looking at themself. Redirect to the self page
+        return res.redirect('/profile');
+    }
+    const foundProfile = await userData.displayUserData(req.params.profileId);
+    let self = undefined;
+    if(req.session.user){
+        self = await userData.displayUserData(req.session.user._id);
+    }
     return res.render('profile', {
         title: foundProfile.username,
         ...foundProfile,
+        thisUser: self
     });
 
     return res.json(foundUser);
