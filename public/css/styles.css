@@ -10,6 +10,45 @@
             "slnt" 0;
 }
 
+#welcome {
+    font-size: 3.5em;
+    font-weight: 750;
+    color: black;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.sub-message {
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.user-welcome, .login-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+}
+
+.button-cta {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button-cta:hover {
+    background-color: #003880;
+}
+
 /* Navigation */
 nav#nav {
     background-color: #ffffff;
