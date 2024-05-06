@@ -43,6 +43,7 @@ router.get('/:itemid', async (req, res) => {
         if (req.session.user !== undefined && req.session.user._id === item.userId) {
             return res.redirect(`/profile/items/${req.params.itemid}`); 
         }
+        return res.json(item);
         return res.render('item', {
             title: "View Item",
             item: item
