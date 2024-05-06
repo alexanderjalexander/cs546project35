@@ -62,6 +62,7 @@ app.use('/register', middleware.register_login_middleware);
 app.use('/login', middleware.register_login_middleware);
 app.use('/logout', middleware.protected_middleware);
 app.use('/profile', middleware.protected_middleware);
+app.use('/profile', middleware.profile_nav_middleware);
 app.use('/directmsgs', middleware.protected_middleware);
 app.use('/trades', middleware.protected_middleware);
 app.use('/profiles/:profileId/follow', middleware.protected_middleware);
