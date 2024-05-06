@@ -19,53 +19,11 @@ jQuery.fn.extend({close: function() {
 }});
 
 (function ($) {
-    // Validation Function Declarations
-    function tryCatchHelper (errors, fn) {
-        try {
-            return fn();
-        } catch(e) {
-            errors.push(e);
-        }
-    }
-
-    function checkString(str, name) {
-        if (typeof str !== 'string') throw `${name} must be a string`;
-        if (str.trim().length === 0)
-            throw `${name} cannot be an empty string or just spaces`;
-        str = str.trim();
-        return str;
-    }
-
-    function checkPrice(price, varName) {
-        if (price === null || price === undefined) {
-            throw `Error: Provided arg ${varName} doesn't exist`;
-        }
-        if (typeof price !== 'number') {
-            throw `Error: Provided arg ${varName} is not a number. Must be a number >= 0.`;
-        }
-        if (price <= 0) throw `Error: Provided arg ${varName} must be > 0.`
-        if (calcDecimalPlaces(price) > 2) {
-            throw `Error: Provided arg ${varName} must be a price with <= 2 decimal places.`
-        }
-        return price;
-    }
-
-    function calcDecimalPlaces(num) {
-        if (Math.floor(num) !== num || !Number.isInteger(num)) {
-            let splitnum = num.toString().split('.');
-            return splitnum[1].length;
-        } else {
-            return 0;
-        }
-    }
-
     // Reference to form element and where things will go
     let addItemJsonForm = $('#addProfileItemJson'),
         addProfileItemJsonErrors = $('#addProfileItemJsonErrors'),
         openItemJsonForm = $('#openAddProfileItemJson'),
-        closeItemJsonForm = $('#closeAddProfileItemJson'),
-        noItemsText = $('#noItemsText'),
-        communityItems = $('#communityItemsList');
+        closeItemJsonForm = $('#closeAddProfileItemJson');
 
     // Form Items
     let nameJson = $('#nameJson'),
@@ -88,9 +46,9 @@ jQuery.fn.extend({close: function() {
         // Input checking. If fields are missing or empty, finish and return.
         const errors = []
         let name = tryCatchHelper(errors,
-            () => checkString(nameJson.val(), 'name'));
+            () => checkItemName(nameJson.val()));
         let desc = tryCatchHelper(errors,
-            () => checkString(descJson.val(), 'description'));
+            () => checkItemDesc(descJson.val()));
         let price = tryCatchHelper(errors,
             () => checkPrice(Number(priceJson.val()), 'price'));
         let image = imageJson.prop('files');
