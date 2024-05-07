@@ -139,6 +139,8 @@ router.route('/')
                 return res.status(400).json({success: false, errors: errors});
             }
 
+            req.file.path = req.file.path.replaceAll('\\', '\/');
+
             let item;
             try {
                 item = await itemData.create(req.session.user._id, name, desc, price, '/' + req.file.path)

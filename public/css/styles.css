@@ -74,6 +74,11 @@ br {
     margin: 10px 0;
 }
 
+.dark .message {
+    background-color: #1f1f1f;
+    color: white;
+}
+
 #sender {
     font-weight: bold;
 }

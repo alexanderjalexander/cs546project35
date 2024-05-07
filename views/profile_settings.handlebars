@@ -45,10 +45,10 @@
         <ul id="deleteAccountErrors" class="error"></ul>
         <form action="/profile/delete" method="post">
             <input type="hidden" name="_method" value="DELETE">
-            <label for="submit">Are you absolutely sure you want to delete your account? Doing this
+            <label for="submitDelete">Are you absolutely sure you want to delete your account? Doing this
                 is an irreversible action and will delete your items, DMs, following/followers, etc.</label>
             <br>
-            <input type="submit" value="Yes, I'm absolutely sure">
+            <input id="submitDelete" type="submit" value="Yes, I'm absolutely sure">
         </form>
     </dialog>
 </div>

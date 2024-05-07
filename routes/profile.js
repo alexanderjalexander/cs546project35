@@ -213,6 +213,10 @@ router.route('/items')
                 });
             }
 
+            if (req.file !== undefined) {
+                req.file.path = req.file.path.replaceAll('\\', '\/');
+            }
+
             try {
                 await itemData.create(req.session.user._id, name, desc, price, '/' + req.file.path)
             } catch (e) {
@@ -328,6 +332,7 @@ router.route('/items/:itemId')
                     () => help.checkPrice(Number(req.body.price), 'price'));
             }
             if (req.file !== undefined) {
+                req.file.path = req.file.path.replaceAll('\\', '\/');
                 updatedItem.image = '/' + req.file.path;
             }
 
