@@ -43,6 +43,7 @@
         }
     
         validateRegistrationForm(event) {
+
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -70,17 +71,27 @@
         }
 
         validateTradeForm(event) {
-            const otherUserItems = document.getElementsByName("otherUserItems").value;
-            const thisUserItems = document.getElementsByName("thisUserItems").value;
-            const otherUserId = document.getElementsByName("otherUserId").value;
-            const _method = document.getElementsByName("_method").value;
-
-            console.log(otherUserItems);
-            console.log(thisUserItems);
-            console.log(otherUserId);
-            console.log(_method);
-
+            const otherUserItems = document.getElementsByName("otherUserItems");
+            const thisUserItems = document.getElementsByName("thisUserItems");
+            const otherUserId = document.getElementsByName("otherUserId")[0].value;
+            //look through the .checked value of each thing in the nodelist
             let errorMessages = [];
+            let thisItems = [];
+            let otherItems = [];
+            otherUserItems.forEach( (element) =>{
+                if (element.checked){
+                    otherItems.push(element.value);
+                }
+            })
+            thisUserItems.forEach( (element) =>{
+                if (element.checked){
+                    thisItems.push(element.value);
+                }
+            })
+            if (thisItems.length == 0 || otherItems.length == 0){
+                errorMessages.push("must select at least 1 item from each user")
+            }
+
             this.displayErrors(errorMessages, event);
 
         }
