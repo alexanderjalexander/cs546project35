@@ -92,6 +92,24 @@
                 }
             ]
             
+        },
+        {
+            "username": "krasinski",
+            "firstName": "Andrew",
+            "lastName": "krasinski",
+            "email": "krasinski@gmail.com",
+            "wishlist": [
+            ],
+            "password": "ABCDEFG1!",
+            "themePreference": "dark",
+            "followers": [
+            ],
+            "following": [
+            ],
+            "reviews": [
+                
+            ]
+            
         } 
     ],
     "dms": [
