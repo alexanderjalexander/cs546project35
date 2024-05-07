@@ -12,6 +12,16 @@
             event.preventDefault();
             messageDetails.html(`<p></p>`);
 
+            if (!senderId.val().trim()) {
+                alert("Please enter a senderId to send.");
+                return;
+            }
+
+            if (!recipientId.val().trim()) {
+                alert("Please enter a recipientId to send.");
+                return;
+            }
+
             if (!messageInput.val().trim()) {
                 alert("Please enter a message to send.");
                 return;
