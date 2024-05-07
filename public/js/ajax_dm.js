@@ -69,15 +69,18 @@ $(document).ready(function() {
                 message: messageText
             }),
             success: function(response) {
-                $('#dm').append(`
-                    <li>
+                $('#dm').html('');
+                for (let message of response.data.messages) {
+                    $('#dm').append(`
+                    <li class="message">
                         <div>
-                            <label id="sender">You</label>
-                            <p id="content">${messageText}</p>
-                            <p id="timestamp">${new Date().toLocaleString()}</p>
+                            <p id="sender">${message.sender}</p>
+                            <p id="content">${message.content}</p>
+                            <p id="timestamp">${message.timestamp}</p>
                         </div>
                     </li>
                 `);
+                }
                 messageInput.val(''); 
             },
             error: function() {

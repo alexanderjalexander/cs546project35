@@ -1,7 +1,8 @@
 import { Router } from 'express';
 const router = Router();
 import dmData from '../data/dms.js'; 
-import userData from '../data/users.js'; 
+import userData from '../data/users.js';
+import xss from "xss";
 
 router.route('/')
   .get(async (req, res) => {
@@ -28,7 +29,10 @@ router.route('/')
     .post(async (req, res) => {
   try {
     let { senderId, recipientId, message } = req.body;
-    recipientId=await userData.getUserByUsername(recipientId);
+    senderId = xss(senderId);
+    recipientId = xss(recipientId);
+    message = xss(message);
+    recipientId = await userData.getUserByUsername(recipientId);
     if (!senderId || !recipientId || !message) {
       return res.status(400).json({ success: false, error: 'Missing senderId, recipientId, or message' });
     }
@@ -78,10 +82,18 @@ router.route('/:id')
     .post(async (req, res) => {
       try {
         let { dmId, senderId, message } = req.body;
+        dmId = xss(dmId);
+        senderId = xss(senderId);
+        message = xss(message);
         if ( dmId.trim() === '' || senderId.trim() === '' || message.trim() === '') {
           return res.status(400).json({ success: false, error: 'Bad senderId, recipientId, or message' });
         }
         const updatedDM = await dmData.writeMsg(dmId, senderId, message);
+        for(const element of updatedDM.messages){
+          const sender = await userData.getUserById(element.sender.toString());
+          element.sender = sender.username;
+          element.timestamp = element.timestamp.toDateString();
+        }
         return res.json({ success: true, message: 'Message sent successfully', data: updatedDM });
       } catch (e) {
         console.error('Failed to send message:', e);
