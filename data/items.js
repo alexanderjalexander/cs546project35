@@ -259,15 +259,20 @@ const num_trades = async (id) => {
     return count;
 }
 
-const getAllByFollowing = async (userId) => {
-    userId = helper.checkIdString(userId);
+const getAllByFollowing = async (user_Id) => {
+    user_Id = helper.checkIdString(user_Id);
 
-    const user = userData.getUserById(userId);
-    const following = user.following.map(id => {userId: id});
+    const userCollection = await users();
+    const user = await userCollection.findOne({_id: new ObjectId(user_Id)})
+    let following = user.following;
+    let followingObjects = [];
+    for (let follow of following) {
+        followingObjects.push({userId: follow})
+    }
 
     const itemCollection = await items();
     const itemList = await itemCollection.find(
-        {$or: following}
+        {$or: followingObjects}
     ).toArray();
 
     if (!itemList) {

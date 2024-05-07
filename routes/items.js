@@ -12,31 +12,27 @@ const upload = multer(multerConfig).single('image');
 
 router.get('/', async (req, res) => {
     try {
-        let items;
         const filter = req.query.filter;
-        switch (filter) {
-            case 'value':
-                items = await itemData.getAll();
-                items.sort((a, b) => a.price - b.price); 
-                break;
-            case 'name':
-                items = await itemData.getAll();
-                items.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'followedUsers':
-                if (req.session.user) {
-                    items = await itemData.getAllFollowedByUser(req.session.user._id);
-                } else {
-                    items = await itemData.getAll();
-                }
-                break;
-            default:
-                items = await itemData.getAll();
-        }
+        let items;
         if (req.session.user !== undefined) {
             items = await itemData.getAllExceptUserId(req.session.user._id)
         } else {
             items = await itemData.getAll();
+        }
+        switch (String(filter)) {
+            case 'value':
+                items = items.sort((a, b) => a.price - b.price);
+                break;
+            case 'name':
+                items = items.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'followedUsers':
+                if (req.session.user) {
+                    items = await itemData.getAllByFollowing(req.session.user._id);
+                } else {
+                    items = await itemData.getAll();
+                }
+                break;
         }
         return res.render('items', {
             title: "All Community Items",
@@ -44,26 +40,42 @@ router.get('/', async (req, res) => {
         });
     } 
     catch (error) {
+        let items = await itemData.getAll();
         res.status(500).render('items', {
             title: "All Community Items",
+            errors: [error],
             items: items
         });
     }
 });
 
-router.get('/filter', async (req, res) => {
-    let filter = req.query.filter;
+router.post('/filterJSON', async (req, res) => {
+    let filter = req.body.filter;
     try {
-        let items = await itemData.getAll();
-        res.json(items.map(item => ({
-            _id: item._id,
-            name: item.name,
-            desc: item.desc,
-            price: item.price,
-            image: item.image
-        })));
+        let items;
+
+        if (req.session.user !== undefined) {
+            items = await itemData.getAllExceptUserId(req.session.user._id)
+        } else {
+            items = await itemData.getAll();
+        }
+        switch (String(filter)) {
+            case 'value':
+                items = items.sort((a, b) => a.price - b.price);
+                break;
+            case 'name':
+                items = items.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'followedUsers':
+                if (req.session.user) {
+                    items = await itemData.getAllByFollowing(req.session.user._id);
+                }
+                break;
+        }
+
+        return res.json(items);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve items.' });
+        return res.status(500).json({ error: 'Failed to retrieve items.' });
     }
 });
 

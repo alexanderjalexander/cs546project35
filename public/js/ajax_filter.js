@@ -6,9 +6,8 @@
             $('#communityItemsErrors').empty();
 
             let requestConfig = {
-                method: 'GET',
-                url: '/items/filter',
-                contentType: 'application/json',
+                method: 'POST',
+                url: '/items/filterJSON',
                 data: {
                     filter: selectedFilter
                 }
