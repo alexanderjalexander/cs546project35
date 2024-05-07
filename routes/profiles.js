@@ -5,9 +5,6 @@ import * as help from '../helpers.js';
 import userData from '../data/users.js'
 import itemData from '../data/items.js'
 router.post('/:profileId/follow/:arg', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
     const errors = [];
     req.params.profileId = help.tryCatchHelper(errors, ()=>
         help.checkIdString(req.params.profileId));
@@ -43,9 +40,6 @@ router.post('/:profileId/follow/:arg', async (req, res) => {
 });
 
 router.post('/:profileId/review', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
     const errors = [];
     req.params.profileId = help.tryCatchHelper(errors, ()=>
         help.checkIdString(req.params.profileId));
@@ -68,17 +62,19 @@ router.post('/:profileId/review', async (req, res) => {
             ...foundUser,
             errors: errors,
             title: "profile",
-            ...req.body
+            ...req.body,
+            thisUser: await userData.displayUserData(req.session.user._id)
         });
     }
     try {
         if (foundUser.reviews.find((element) => {
             return element.userId.toString() === req.session.user._id
         })){
-            return res.render('profile', {
+            return res.status(400).render('profile', {
                 ...foundUser,
                 title: "profile",
-                errors: ['you already have a review on this user!']
+                errors: ['you already have a review on this user!'],
+                thisUser: await userData.displayUserData(req.session.user._id)
             });
         }
         await userData.addReview(
@@ -87,24 +83,22 @@ router.post('/:profileId/review', async (req, res) => {
             req.body.comment,
             req.body.rating);
         foundUser = await userData.displayUserData(req.params.profileId);
-        return res.render('profile', {
+        return res.status(200).render('profile', {
             ...foundUser,
             title: "profile"
         });
     } catch (e) {
-        return res.render('profile', {
+        return res.status(500).render('profile', {
             ...foundUser,
             title: "profile",
-            errors: ['you already have a review on this user!']
+            errors: ['something went wrong!'],
+            thisUser: await userData.displayUserData(req.session.user._id)
         });
     }
 });
 
 
 router.delete('/:profileId/review', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send("Unauthorized");
-    }
     const errors = [];
     req.params.profileId = help.tryCatchHelper(errors, ()=>
         help.checkIdString(req.params.profileId));
