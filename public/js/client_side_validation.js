@@ -17,8 +17,35 @@
                 this.registerForm.addEventListener('submit', (event) => this.validateRegistrationForm(event));
             }
             if (this.newTradeForm){
-                this.newTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event))
+                this.newTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event));
             }
+            if (this.editTradeForm){
+                this.editTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event));
+            }
+            if (this.newReviewForm){
+                this.newReviewForm.addEventListener('submit', (event) => this.validateReviewForm(event))
+            }
+        }
+
+        validateReviewForm(event){
+            let comment = document.getElementById('commentInput').value;
+            let rating = document.getElementById('ratingInput').value;
+            let errorMessages = [];
+    
+            this.addErrorIfEmpty(comment, 'comment is required.', errorMessages);
+            this.addErrorIfEmpty(rating, 'rating is required.', errorMessages);
+            rating = Number.parseFloat(rating);
+            if (rating){
+                rating = tryCatchHelper(errorMessages, () => {
+                    return checkRating(rating);
+                })
+            }
+            if (comment){
+                comment = tryCatchHelper(errorMessages, () => {
+                    return checkComment(comment);
+                })  
+            }
+            this.displayErrors(errorMessages, event);
         }
     
         validateLoginForm(event) {
@@ -73,7 +100,6 @@
         validateTradeForm(event) {
             const otherUserItems = document.getElementsByName("otherUserItems");
             const thisUserItems = document.getElementsByName("thisUserItems");
-            const otherUserId = document.getElementsByName("otherUserId")[0].value;
             //look through the .checked value of each thing in the nodelist
             let errorMessages = [];
             let thisItems = [];
