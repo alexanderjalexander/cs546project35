@@ -79,6 +79,10 @@ br {
     color: white;
 }
 
+.dark hr {
+    border-color: darkslategrey;
+}
+
 #sender {
     font-weight: bold;
 }
