@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@100..900&display=swap');
 
-* {
+body {
     font-family: "Inter", sans-serif, -apple-system,BlinkMacSystemFont,
         "Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     font-optical-sizing: auto;
@@ -130,6 +130,8 @@ br {
 }
 
 /* Navigation */
+nav 
+
 nav#nav {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -195,6 +197,10 @@ div.trade-item img {
     padding: 5px;
     width: 150px;
     margin: auto;
+}
+
+.light {
+    background-color: white; 
 }
 
 .dark {
