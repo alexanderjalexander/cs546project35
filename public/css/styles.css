@@ -159,9 +159,21 @@ nav#nav ul li a {
     transition: color 0.3s ease;
 }
 
+.dark nav#nav ul li a {
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
 nav#nav ul li a:hover,
 nav#nav ul li a.currentLink { /* Highlights current page */
     color: #0056b3;
+}
+
+.dark nav#nav ul li a:hover,
+.dark nav#nav ul li a.currentLink { /* Highlights current page */
+    color: #3093ff;
 }
 
 .alfa-slab-one-regular {
@@ -212,4 +224,8 @@ div.trade-item img {
     background-color: black;
     color:white;
     
+}
+
+.dark {
+
 }
