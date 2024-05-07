@@ -1,0 +1,32 @@
+{{!lists all the message chains between the user and all other users they have started a chat with
+Also needs to have a way to start a new chat with a user}}
+<ul id="dmList">
+    {{#each dmlist}}
+    <li>
+        <a href="/directmsgs/{{this._id}}">{{this.otherUser}}</a>
+    </li>
+    {{/each}}
+</ul>
+{{#unless dmlist}}
+<p id="noDmsMessage">You have no dms :(</p>
+{{/unless}}
+
+<h2>Send a New Message</h2>
+
+<div id="messageDetails">
+
+</div>
+
+<form id="messageNewForm">
+    <input type="hidden" id="senderId" name="senderId" value="{{id}}">
+
+    <label for="recipientId">Recipient ID:</label>
+    <input type="text" id="recipientId" name="recipientId" required><br>
+
+    <label for="messageInput">Your Message:</label><br>
+    <textarea id="messageInput" name="messageInput" required></textarea><br>
+
+    <button type="submit">Send Message</button>
+</form>
+
+<script src="public/js/client_side_dialog.js"></script>

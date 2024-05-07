@@ -1,0 +1,26 @@
+{{!renders the view of an individual text chain between the user and the other user}}
+<div class="dm-container">
+    <ol id="dm">
+        {{#each messages}}
+        <li class="message">
+            <div>
+                <p class="sender">{{this.sender}}</p>
+                <p class="content">{{this.content}}</p>
+                <p class="timestamp">{{this.timestamp}}</p>
+            </div>
+        </li>
+        {{/each}}
+    </ol>
+
+    <form id="messageBox" class="message-form">
+        <input id="dmId" type="hidden" name="dmId" value="{{id}}">
+        <input id="senderId" type="hidden" name="senderId" value="{{senderId}}">
+
+        <label for="messageInput">Your Message:</label><br>
+        <textarea id="messageInput" name="messageInput" required></textarea><br>
+
+        <button type="submit" class="button-cta">Send Message</button>
+    </form>
+</div>
+
+<script src="public/js/client_side_dialog.js"></script>

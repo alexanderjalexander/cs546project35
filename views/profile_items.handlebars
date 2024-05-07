@@ -1,0 +1,21 @@
+{{> profile_nav}}
+
+<hr>
+
+<!-- Adding a profile item Handlebars -->
+{{> add_profile_item}}
+
+{{#each items}}
+    <div>
+        <h2><a href="/profile/items/{{_id}}">{{name}}</a></h2>
+        <dl>
+            <dt>Description: </dt>
+            <dd>{{desc}}</dd>
+            <dt>Price: </dt>
+            <dd>{{price}}</dd>
+        </dl>
+        <img width='500' alt="{{name}}" src="{{image}}">
+    </div>
+{{else}}
+    <p>No items. :(</p>
+{{/each}}

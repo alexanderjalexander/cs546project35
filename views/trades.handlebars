@@ -1,0 +1,28 @@
+{{!shows all the trades for which the user is an actor of}}
+
+{{#each trades}}
+<div class="trade-div">
+    
+<p><a href="/trades/{{this._id}}">Trade with {{this.otherUser.username}}</a></p>
+    <ul>
+    {{#each otherUserItems}}
+    <li>
+    {{this.name}}
+    </li>
+    {{/each}}
+    </ul>
+
+<p>in exchange for:</p>
+<ul>
+    {{#each thisUserItems}}
+    <li>
+    {{this.name}}
+    </li>
+    {{/each}}
+</ul>
+<p>Status: {{this.status}}</p>
+
+</div><br>
+{{else}}
+    <p>No trades at the moment. Start one by going to a user's page!</p>
+{{/each}}

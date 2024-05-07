@@ -1,0 +1,19 @@
+{{!blank page, thisi s so we can render main by itself}}
+
+{{#if auth}}
+    <div class="user-welcome">
+        <h1 id="welcome">Welcome, {{user.firstName}}! 👋</h1>
+        <p>BarterBuddy is a place where users can trade their items for other items. Rather than buying items for money like on ebay, here you barter!</p>
+        <p class="sub-message">Explore new items or add your own</p>
+    </div>
+{{else}}
+    <div class="login-register">
+        <h1 id="welcome">Welcome to BarterBuddy!</h1>
+        <p>BarterBuddy is a place where users can trade their items for other items. Rather than buying items for money like on ebay, here you barter!</p>
+        <p class="sub-message">Sign up or log in to start trading today</p>
+        <div class="button-container">
+            <a href="/login" class="button-cta">Log In</a>
+            <a href="/register" class="button-cta">Register</a>
+        </div>
+    </div>
+{{/if}}

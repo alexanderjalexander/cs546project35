@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@100..900&display=swap');
+
+body {
+    font-family: "Inter", sans-serif, -apple-system,BlinkMacSystemFont,
+        "Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings:
+            "slnt" 0;
+}
+
+hr {
+    border: lightgray solid 1px;
+}
+
+main {
+    width: 75%;
+    max-width: 1280px;
+    margin: auto;
+}
+
+dialog {
+    width: 50%;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    filter: drop-shadow(0px 0px 5px #00000044);
+}
+
+dialog form input {
+    display: block;
+    width: 90%;
+    margin: 5px auto;
+}
+
+input {
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 15px;
+}
+
+br {
+    display: block;
+}
+
+#welcome {
+    font-size: 3.5em;
+    font-weight: 750;
+    /*color: black;*/
+    text-align: center;
+    margin: 20px 0;
+}
+
+.dm-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+}
+
+#dm {
+    width: 100%;
+    list-style-type: none;
+    padding: 0;
+}
+
+.message {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.dark .message {
+    background-color: #1f1f1f;
+    color: white;
+}
+
+.dark hr {
+    border-color: darkslategrey;
+}
+
+#sender {
+    font-weight: bold;
+}
+
+.message-form {
+    width: 100%;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.message-form label,
+.message-form textarea,
+.message-form button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.message-form textarea {
+    height: 100px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.sub-message {
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.user-welcome, .login-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+}
+
+.button-cta {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button-cta:hover {
+    background-color: #003880;
+}
+
+/* Navigation */
+nav 
+
+nav#nav {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+nav#nav ul {
+    list-style: none;
+    text-align: center;
+}
+
+nav#nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav#nav ul li:last-child {
+    margin-right: 0;
+}
+
+nav#nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.dark nav#nav ul li a {
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav#nav ul li a:hover,
+nav#nav ul li a.currentLink { /* Highlights current page */
+    color: #0056b3;
+}
+
+.dark nav#nav ul li a:hover,
+.dark nav#nav ul li a.currentLink { /* Highlights current page */
+    color: #3093ff;
+}
+
+.alfa-slab-one-regular {
+    font-family: "Alfa Slab One", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.currentLink {
+    color: grey;
+}
+
+.error {
+    color: red;
+}
+
+div.trade-item, .edit-trade-form, .new-trade-form {
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 300px;
+}
+div.trade-item *, .profile-item{
+    padding: 5px;
+    width: 200px;
+    margin: auto;
+}
+
+/*Googled how to resize images without stretching:
+ https://www.w3schools.com/css/css3_images.asp*/
+div.trade-item img { 
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+    margin: auto;
+}
+
+.light {
+    background-color: white; 
+}
+
+.dark {
+    background-color: #000; 
+    color: #fff; 
+}
+
+.dark-mode {
+    background-color: black;
+    color:white;
+    
+}
+
+.dark input, .dark select, .dark button {
+    background-color: #111111;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.dark input:hover, .dark select:hover, .dark button:hover {
+    background-color: #333333
+}
+
+.dark a {
+    color: #3093ff;
+}
+
+.dark dialog {
+    background-color: #000000;
+    color: white;
+}

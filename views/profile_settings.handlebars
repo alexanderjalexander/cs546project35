@@ -1,0 +1,54 @@
+{{> profile_nav}}
+<hr>
+{{#if success}}
+<p>Profile updated successfully!</p>
+{{/if}}
+<ul id="accountSettingsErrors" class="error"></ul>
+<form id="accountUpdateForm" action="/profile/settings" method="post">
+    <label>Anything with a * before it denotes a required field.</label><br>
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" value="{{user.username}}"><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{user.email}}"><br>
+
+    <label for="password">* Current Password (for verification):</label>
+    <input type="password" id="password" name="password"><br>
+
+    <label for="newPassword">New Password (optional):</label>
+    <input type="password" id="newPassword" name="newPassword"><br>
+
+    <label for="newPasswordConfirm">Confirm Password (required if changing password):</label>
+    <input type="password" id="newPasswordConfirm" name="newPasswordConfirm"><br>
+
+    <label for="wishlist">Wishlist:</label>
+    <button id='addWishlistItem' type="button" >Add</button>
+    <button id='removeWishlistItem' type="button" >Remove</button><br>
+<!-- Turns out if you have multiple inputs with the same name, it just concatenates them together into an array!!! -->
+    <div id="wishlistArray">
+        {{#each user.wishlist}}
+            <input id="wishlist" type="text" name="wishlist" value="{{this}}"><br>
+        {{else}}
+            <input id="wishlist" type="text" name="wishlist" value=""><br>
+        {{/each}}
+    </div>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+
+<div>
+    <button id="openDeleteAccount">Delete My Account</button>
+    <dialog id="deleteAccount">
+        <button id="closeDeleteAccount" aria-label="close" formnovalidate>X</button>
+        <ul id="deleteAccountErrors" class="error"></ul>
+        <form action="/profile/delete" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <label for="submitDelete">Are you absolutely sure you want to delete your account? Doing this
+                is an irreversible action and will delete your items, DMs, following/followers, etc.</label>
+            <br>
+            <input id="submitDelete" type="submit" value="Yes, I'm absolutely sure">
+        </form>
+    </dialog>
+</div>

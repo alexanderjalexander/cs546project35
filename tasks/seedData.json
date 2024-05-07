@@ -1,0 +1,218 @@
+{
+    "users": [
+        {
+            "username": "kholden",
+            "firstName": "Kian",
+            "lastName": "Holden",
+            "email": "kian@gmail.com",
+            "wishlist": [
+                "Desk Chair",
+                "Linear Algebra TextBook"
+            ],
+            "password": "ABCDEFG1!",
+            "themePreference": "light",
+            "followers": [
+                "kenjamin"
+            ],
+            "following": [
+                "pattyh"
+            ],
+            "reviews": [
+                {
+                    "reviewer": "pattyh",
+                    "comment": "Not the best student...",
+                    "rating": 3.8
+                },
+                {
+                    "reviewer": "kenjamin",
+                    "comment": "Amazing guy",
+                    "rating": 5
+                }
+            ]
+            
+        }, 
+        {
+            "username": "pattyh",
+            "firstName": "patrick",
+            "lastName": "hill",
+            "email": "patrick@gmail.com",
+            "wishlist": [
+                "New 546 TA",
+                "The end of CSS"
+            ],
+            "password": "ABCDEFG2!",
+            "themePreference": "dark",
+            "followers": [
+                "kholden",
+                "kenjamin"
+            ],
+            "following": [
+            ],
+            "reviews": [
+                {
+                    "reviewer": "kholden",
+                    "comment": "truly one of the professors of all time",
+                    "rating": 4.3
+                },
+                {
+                    "reviewer": "kenjamin",
+                    "comment": "i would die for this man",
+                    "rating": 5
+                }
+            ]
+            
+        }, 
+        {
+            "username": "kenjamin",
+            "firstName": "Ken",
+            "lastName": "Masters",
+            "email": "ken@gmail.com",
+            "wishlist": [
+                "Martial Arts Cookbook",
+                "mini-fridge"
+            ],
+            "password": "ABCDEFG3!",
+            "themePreference": "light",
+            "followers": [
+            ],
+            "following": [
+                "pattyh",
+                "kholden"
+            ],
+            "reviews": [
+                {
+                    "reviewer": "pattyh",
+                    "comment": "pretty bad student tbh",
+                    "rating": 1.3
+                },
+                {
+                    "reviewer": "kholden",
+                    "comment": "pretty fun",
+                    "rating": 4.8
+                }
+            ]
+            
+        },
+        {
+            "username": "krasinski",
+            "firstName": "Andrew",
+            "lastName": "krasinski",
+            "email": "krasinski@gmail.com",
+            "wishlist": [
+            ],
+            "password": "ABCDEFG1!",
+            "themePreference": "dark",
+            "followers": [
+            ],
+            "following": [
+            ],
+            "reviews": [
+                
+            ]
+            
+        } 
+    ],
+    "dms": [
+
+    ],
+    "items": [
+        {
+            "user": "kholden",
+            "name": "fridge",
+            "description": "I've used this mini-fridge for a year. It's pretty small",
+            "price": 40.99,
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSHngGPTx42k_oWPlZ7IR6ce2NCSGxTRRspeC0maYlug&s" 
+        },
+        {
+            "user": "kholden",
+            "name": "calculus textbook",
+            "description": "This is old and used, but it's pretty cheap",
+            "price": 10.99,
+            "image": "https://atlas-content-cdn.pixelsquid.com/stock-images/textbooks-book-Va7kewA-600.jpg" 
+        },
+        {
+            "user": "pattyh",
+            "name": "cigarettes",
+            "description": "I need to quit these...",
+            "price": 0.99,
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJIcXkRpLOeYrWF_dZycCoIpok06beyXpCj7aNrZtkRQ&s" 
+        },
+        {
+            "user": "kenjamin",
+            "name": "Linear Algebra TextBook",
+            "description": "math book",
+            "price": 20.99,
+            "image": "https://open.umn.edu/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MjIwMCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5e9704092f548c6111e89cafe7e2c051b838513/eyJfcmFpbHMiOnsiZGF0YSI6eyJmb3JtYXQiOiJwbmciLCJyZXNpemUiOiI0OTB4MTAwMCJ9LCJwdXIiOiJ2YXJpYXRpb24ifX0=--1d221d0e87311391d13a7728d03226e2fff3667a/Nicholson-LAWA-2021A-Thumbnail.png" 
+        }
+    ],
+    "trades": [
+        {
+            "sender": "kholden",
+            "receiver": "pattyh",
+            "senderItems": ["fridge", "calculus textbook"],
+            "receiverItems": ["cigarettes"],
+            "senderStatus": "accepted",
+            "receiverStatus": "pending"
+        },
+        {
+            "sender": "kenjamin",
+            "receiver": "kholden",
+            "senderItems": ["Linear Algebra TextBook"],
+            "receiverItems": ["fridge"],
+            "senderStatus": "accepted",
+            "receiverStatus": "accepted"
+        }
+    ],
+    "DMS": [
+        {
+            "actor1": "kholden",
+            "actor2": "kenjamin",
+            "messages": [
+                {
+                    "sender": "kholden",
+                    "content": "This is a message"
+                },
+                {
+                    "sender": "kholden",
+                    "content": "This is a double text!"
+                },
+                {
+                    "sender": "kenjamin",
+                    "content": "This is an answer!"
+                }
+            ]
+        },
+        {
+            "actor1": "pattyh",
+            "actor2": "kholden",
+            "messages": [
+                {
+                    "sender": "pattyh",
+                    "content": "Hello"
+                },
+                {
+                    "sender": "kholden",
+                    "content": "Hi! I have a textbook to trade you"
+                },
+                {
+                    "sender": "pattyh",
+                    "content": "Sure thing!"
+                }
+            ]
+        },
+        {
+            "actor1": "kenjamin",
+            "actor2": "pattyh",
+            "messages": [
+                {
+                    "sender": "kenjamin",
+                    "content": "Please bump my grade to an A :sob:"
+                },
+                {
+                    "sender": "pattyh",
+                    "content": "No..."
+                }
+            ]
+        }
+    ]
+}

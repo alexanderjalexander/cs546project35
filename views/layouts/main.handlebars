@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BarterBuddy {{#if title}}- {{title}}{{/if}}</title>
+    <link rel="stylesheet" href="../../public/css/styles.css">
+    <link rel="icon" type="image/png" href="/public/img/favicon.png">
+</head>
+<body id="websiteBody" class="{{themePreference}}">
+<nav id="nav">
+    <ul>
+        {{#each navLinks}}
+            <li><a class={{this.class}} href="{{this.url}}">{{this.label}}</a></li>
+        {{/each}}
+        <li>
+            <button id="changeTheme" value="{{themePreference}}">Toggle Dark/Light Mode</button>
+        </li>
+    </ul>
+</nav>
+<main>
+    {{> error}}
+    <div id="errorContainer">
+        {{#each _message}}
+        <p>{{this}}</p>
+        {{/each}}
+    </div>
+    {{#if title}}
+        <h1>{{title}}</h1>
+    {{/if}}
+    {{{body}}}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src='/public/js/client_side_validation.js' defer></script>
+    <script src='/public/js/client_side_dialog.js'></script>
+    <script src='/public/js/client_side_helpers.js'></script>
+    <script src="/public/js/ajax_add_item_json.js"></script>
+    <script src="/public/js/ajax_dm.js"></script>
+    <script src="/public/js/ajax_filter.js"></script>
+    <script src="/public/js/ajax_change_theme.js"></script>
+    <script src="/public/js/dom_settings_controller.js"></script>
+</main>
+</body>
+</html>

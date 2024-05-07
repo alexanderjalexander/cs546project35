@@ -1,0 +1,90 @@
+{{!views an individual profile of a user}}
+<div>
+    {{#if auth}}
+    {{> new_trade_form}}
+    {{/if}}
+    <h2>{{firstName}} {{lastName}}</h2>
+    <dl>
+        <dt>Username: </dt>
+        <dd>{{username}}</dd>
+
+        <dt>Items: </dt>
+        {{#each items}}
+        <dd>
+            <div>
+                <h2><a href="/items/{{_id}}">{{this.name}}</a></h2>
+                <dl>
+                    <dt>Description: </dt>
+                    <dd>{{this.desc}}</dd>
+                    <dt>Price: </dt>
+                    <dd>{{this.price}}</dd>
+                </dl>
+                <img width='500' alt="{{this.name}}" class="profile-item" src="{{this.image}}">
+            </div>            
+        </dd>
+        {{else}}
+            <dd>No items</dd>
+        {{/each}}
+
+        <dt>Followers: </dt>
+        {{#each followers}}
+            <dd><a href="/profiles/{{this._id}}">{{this.username}}</a></dd>
+        {{else}}
+            <dd>None</dd>
+        {{/each}}
+
+        <dt>Following: </dt>
+        {{#each following}}
+            <dd><a href="/profiles/{{this._id}}">{{this.username}}</a></dd>
+        {{else}}
+            <dd>None</dd>
+        {{/each}}
+
+
+        {{#if avgRating}}
+            <dt>Average Rating: </dt>
+            <dd>{{avgRating}}</dd>
+        {{/if}}
+    </dl>
+    <h3>Wishlist</h3>
+    <ul>
+        {{#each wishlist}}
+            <li>{{this}}</li>
+        {{else}}
+            <li>No wishlist yet!</li>
+        {{/each}}
+    </ul>
+    {{#if auth}}
+    {{#if followed}}
+    <form action="/profiles/{{_id}}/follow/unfollow" method="post">
+    <button type="submit">unfollow</button>
+    </form>
+    {{else}}
+    <form action="/profiles/{{_id}}/follow/follow" method="post">
+    <button type="submit">follow</button>
+    </form>
+    {{/if}}
+    {{/if}}
+    
+    <h3>Reviews</h3>
+    {{#if auth}}
+    {{> review_form}}
+    <form action="/profiles/{{_id}}/review" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Delete Your Review</button>
+    </form>
+    {{/if}}
+    <ul>
+        {{#each reviews}}
+            <li><a href="/profiles/{{this.userId}}">{{this.username}}</a>
+                <ul>
+                    <li>Comment: {{this.comment}}</li>
+                    <li>Rating: {{this.rating}}</li>
+                    <li>Time: {{this.timestamp}} {{thisUserId}} {{this.userId}} </li>
+                </ul>
+            </li>
+        {{else}}
+            <li>No reviews yet!</li>
+        {{/each}}
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+<form action="/trades/{{_id}}" method="post" class="edit-trade-form" id="edit-trade-form">
+    <input type="hidden" name="_method" value="PATCH">
+    <input type="hidden" name="otherUserId" value="{{otherUser._id}}">
+    <p>Select items from these lists to change the trade</p>
+    <p>{{otherUser.username}}'s items</p>
+    <ul>
+        {{#each otherUser.items}}
+        <li>
+        <label for="{{this._id}}">{{this.name}}</label>
+        <input type="checkbox" id="{{this._id}}" name="otherUserItems" value="{{this._id}}">
+        {{/each}}
+        </li>
+    </ul>
+    
+    <p>Your items</p>
+    <ul>
+    {{#each thisUser.items}}
+    <li>
+    <label for="{{this._id}}">{{this.name}}</label>
+    <input type="checkbox" id="{{this._id}}"  name="thisUserItems" value="{{this._id}}">
+    </li>
+    {{/each}}
+    </ul>
+    <button type="submit">Edit Trade</button>
+</form>

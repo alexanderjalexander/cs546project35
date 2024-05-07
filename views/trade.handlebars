@@ -1,0 +1,53 @@
+{{!views an individual trade between the current user and another user}}
+<div class="trade">
+    {{#ifeq thisUserStatus "pending"}}
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="PATCH">
+    <input type="hidden" name="accepted" value="true">
+    <button type="submit">Accept This Trade</button>
+    </form>
+    {{/ifeq}}
+    {{#ifeq thisUserStatus "accepted"}}
+        {{#ifneq otherUserStatus "pending"}}
+            {{!if both users have accepted, render a form to complete the trade}}
+                <form action="/trades/{{_id}}" method="post">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="completed" value="true">
+                <button type="submit">Traded Your Items? Click here to mark as completed. NOTICE: once you both do this, the items in the trade will be removed from your inventories</button>
+                </form>
+        {{/ifneq}}
+    {{/ifeq}}
+    <p>Status: {{status}}</p>
+    <p><a href="/profiles/{{otherUser._id}}">{{otherUser.username}}</a>'s offerings</p>
+    {{#each otherUserItems}}
+    <div class="trade-item">
+        <p>{{this.name}}: ${{this.price}}</p>
+        <img src="{{this.image}}" alt="{{this.desc}}"> 
+        <p>{{this.desc}}</p>
+    </div>
+    {{/each}}
+
+    <p>{{thisUser.username}}'s offerings</p>
+    {{#each thisUserItems}}
+    <div class="trade-item">
+        <p>{{this.name}}: ${{this.price}}</p>
+        <img src="{{this.image}}" alt="{{this.desc}}"> 
+        <p>{{this.desc}}</p>
+    </div>
+    {{/each}}
+    {{> edit_trade_form}}
+    <form action="/trades/{{_id}}" method="post">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Cancel This Trade</button>
+    </form>
+    <form id="messageNewForm">
+    <input type="hidden" id="senderId" name="senderId" value="{{thisUser._id}}">
+
+    <input type="text" id="recipientId" name="recipientId" value="{{otherUser.username}}" hidden><br>
+
+    <label for="messageInput">Send a message to {{otherUser.username}}:</label><br>
+    <textarea id="messageInput" name="messageInput" required></textarea><br>
+
+    <button type="submit">Send Message</button>
+</form>
+</div>

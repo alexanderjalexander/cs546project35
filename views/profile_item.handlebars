@@ -1,0 +1,19 @@
+{{> profile_nav}}
+
+<hr>
+
+<!-- Editing Profile Item Handlebars -->
+{{> edit_profile_item}}
+
+<!-- Deleting a profile item. -->
+{{> delete_profile_item}}
+
+<div>
+    <dl>
+        <dt>Description: </dt>
+        <dd>{{item.desc}}</dd>
+        <dt>Price: </dt>
+        <dd>{{item.price}}</dd>
+    </dl>
+    <img width='500' alt="{{item.name}}" src="{{item.image}}">
+</div>
