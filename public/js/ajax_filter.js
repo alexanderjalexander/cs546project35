@@ -23,7 +23,7 @@
                             <dt>Price:</dt>
                             <dd>${item.price}</dd>
                         </dl>
-                        <img width='500px' alt="${item.name}" src="${item.image}">
+                        <img width='500' alt="${item.name}" src="${item.image}">
                     </div>
                 `).join(''));
             }).catch(function(response) {
