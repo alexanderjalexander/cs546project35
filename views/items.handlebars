@@ -4,6 +4,13 @@
 {{/if}}
 
 <ul id="communityItemsErrors" class="error"></ul>
+<div class="search-bar">
+    <form id="searchForm">
+        <label for="searchBar">Search: </label>
+        <input type="text" id="searchBar">
+        <input type="submit" value="Search">
+    </form>
+</div>
 <div class="search-bar-filter">
     <form id="filterForm" action="/items" method="POST">
         <label for="filterSelect">Sort/Filter:</label>

@@ -31,5 +31,17 @@
                 $('#communityItemsErrors').append(`<li>${response.responseJSON.error}</li>`);
             });
         });
+
+        $('#searchForm').submit(function(event) {
+            event.preventDefault();
+            let children = $('#communityItemsList').children();
+            for (let child of children) {
+                let item_elements = child.children;
+                if (item_elements) {
+                    let heading = item_elements[0].innerText;
+                    child.hidden = !heading.toLowerCase().includes($('#searchBar').val().toLowerCase());
+                }
+            }
+        })
     });
 })(jQuery);
