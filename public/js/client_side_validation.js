@@ -4,6 +4,9 @@
             this.loginForm = document.getElementById('signin-form');
             this.registerForm = document.getElementById('signup-form');
             this.errorContainer = document.getElementById('errorContainer');
+            this.newTradeForm = document.getElementById('new-trade-form');
+            this.newReviewForm = document.getElementById('new-review-form');
+            this.editTradeForm = document.getElementById('edit-trade-form');
         }
     
         initialize() {
@@ -13,16 +16,29 @@
             if (this.registerForm) {
                 this.registerForm.addEventListener('submit', (event) => this.validateRegistrationForm(event));
             }
+            if (this.newTradeForm){
+                this.newTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event))
+            }
         }
     
         validateLoginForm(event) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
             let errorMessages = [];
     
             this.addErrorIfEmpty(email, 'Email is required.', errorMessages);
             this.addErrorIfEmpty(password, 'Password is required.', errorMessages);
-    
+            if (email) {
+                email = tryCatchHelper(errorMessages, () => {
+                    return checkEmail(email);
+                })
+            }
+            if (password){
+                password = tryCatchHelper(errorMessages, () =>{
+                    return checkPassword(password)
+                })
+            }
+               
             this.displayErrors(errorMessages, event);
         }
     
@@ -51,6 +67,22 @@
 
     
             this.displayErrors(errorMessages, event);
+        }
+
+        validateTradeForm(event) {
+            const otherUserItems = document.getElementsByName("otherUserItems").value;
+            const thisUserItems = document.getElementsByName("thisUserItems").value;
+            const otherUserId = document.getElementsByName("otherUserId").value;
+            const _method = document.getElementsByName("_method").value;
+
+            console.log(otherUserItems);
+            console.log(thisUserItems);
+            console.log(otherUserId);
+            console.log(_method);
+
+            let errorMessages = [];
+            this.displayErrors(errorMessages, event);
+
         }
     
         addErrorIfEmpty(fieldValue, errorMessage, errorList) {
