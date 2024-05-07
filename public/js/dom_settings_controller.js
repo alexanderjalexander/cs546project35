@@ -12,6 +12,9 @@ if (accountUpdateForm) {
                     type: 'text',
                     name: 'wishlist',
                 })
+                wishlistInput.setAttribute('id', 'wishlist');
+                wishlistInput.setAttribute('type', 'text');
+                wishlistInput.setAttribute('name', 'wishlist');
                 const lineBreak = document.createElement('br');
                 wishlistArray.appendChild(wishlistInput);
                 wishlistArray.appendChild(lineBreak);
