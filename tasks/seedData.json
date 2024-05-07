@@ -142,7 +142,7 @@
             "name": "Linear Algebra TextBook",
             "description": "math book",
             "price": 20.99,
-            "image": "public/LinAlg" 
+            "image": "https://open.umn.edu/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MjIwMCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5e9704092f548c6111e89cafe7e2c051b838513/eyJfcmFpbHMiOnsiZGF0YSI6eyJmb3JtYXQiOiJwbmciLCJyZXNpemUiOiI0OTB4MTAwMCJ9LCJwdXIiOiJ2YXJpYXRpb24ifX0=--1d221d0e87311391d13a7728d03226e2fff3667a/Nicholson-LAWA-2021A-Thumbnail.png" 
         }
     ],
     "trades": [
