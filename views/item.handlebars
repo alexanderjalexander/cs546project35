@@ -12,7 +12,7 @@
 <p>Want to trade for this item?</p>
 {{#if auth}}
 <a href="/profiles/{{item.userId}}">Go to owner's profile to trade</a>
-{{#else}}-
-<a href="/login">login to trade</a>
-{{/else}}
 {{/if}}
+{{#unless auth}}
+<a href="/login">login to trade</a>
+{{/unless}}
