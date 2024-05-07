@@ -255,13 +255,13 @@ router.route('/:tradeId')
                     receiverStatus: "pending"
                 };
             }
-            if (await tradeData.exists(newTrade.senderItems, newTrade.receiverItems)){
-                return res.status(400).render('trade', {
-                    title: "trade",
-                    ...foundTrade,
-                    errors: ['you already have a trade with those items'],
-                });
-            }
+            // if (await tradeData.exists(newTrade.senderItems, newTrade.receiverItems)){
+            //     return res.status(400).render('trade', {
+            //         title: "trade",
+            //         ...foundTrade,
+            //         errors: ['you already have a trade with those items'],
+            //     });
+            // }
             await tradeData.update(tradeId, newTrade);
             req.session._message = ['successfully updated trade'];
             if (newTrade.senderStatus == "completed" && newTrade.receiverStatus == "completed"){
