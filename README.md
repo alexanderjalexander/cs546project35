@@ -28,8 +28,9 @@ Whereas ecommerce and selling platforms like Ebay and Craigslist involve cash fo
 
 ## How to Use:
 
-1. download and unzip (if needed) the code. (Make sure you have the env)
-2. ensure all necessary development CLI’s are installed
-3. in the root directory of the project run “npm install”
-4. run “node ./tasks/seed.js”
-5. then run “npm start”
+1. Download and unzip the project code.
+2. Open the project up in your favorite IDE. 
+3. in the root directory of the project run `npm install` to install all dependencies.
+4. Run `npm run seed`.
+5. Then run `npm start`.
+6. If it's not already there, ensure that a new `/server_images` folder appears in the server directory. If the server directory doesn't take care of this for you(it should), then create this folder. This directory is vital for public image uploading/hosting.
