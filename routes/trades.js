@@ -255,7 +255,7 @@ router.route('/:tradeId')
                     receiverStatus: "pending"
                 };
             }
-            if (tradeData.exists(newTrade.senderItems, newTrade.receiverItems)){
+            if (await tradeData.exists(newTrade.senderItems, newTrade.receiverItems)){
                 return res.status(400).render('trade', {
                     title: "trade",
                     ...foundTrade,
