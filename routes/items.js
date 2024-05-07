@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
 router.get('/filter', async (req, res) => {
     let filter = req.query.filter;
     try {
-        let items = await itemData.getAllFiltered(filter); 
+        let items = await itemData.getAll();
         res.json(items.map(item => ({
             _id: item._id,
             name: item.name,

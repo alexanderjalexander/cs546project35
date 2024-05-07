@@ -89,10 +89,20 @@ function checkPrice(price, varName) {
 function checkRating(rating) {
     if(!rating) throw `Error: You must provide rating`;
     if(typeof rating !== 'number' || Number.isNaN(rating)) throw `Error: rating must be a number`;
+    if(typeof rating === 'string' && !isNaN(rating) && !isNaN(parseFloat(rating))){
+        rating = Number.parseFloat(rating);
+    }
     if(rating.toFixed(1).length < rating.toString().length)
         throw `Error: rating cannot have more than one decimal point`
     if((rating < 1 || rating > 5)) throw `Error: rating must be between 0 and 5`
     return rating;
+}
+
+function checkComment(str){
+    str = checkString(str, 'comment');
+    if (str.length < 10 || str.length > 50)
+        throw 'comment must be between 10 and 50 characters'
+    return str;
 }
 
 /**

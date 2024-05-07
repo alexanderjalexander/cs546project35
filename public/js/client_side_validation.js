@@ -4,6 +4,9 @@
             this.loginForm = document.getElementById('signin-form');
             this.registerForm = document.getElementById('signup-form');
             this.errorContainer = document.getElementById('errorContainer');
+            this.newTradeForm = document.getElementById('new-trade-form');
+            this.newReviewForm = document.getElementById('new-review-form');
+            this.editTradeForm = document.getElementById('edit-trade-form');
         }
     
         initialize() {
@@ -13,20 +16,61 @@
             if (this.registerForm) {
                 this.registerForm.addEventListener('submit', (event) => this.validateRegistrationForm(event));
             }
+            if (this.newTradeForm){
+                this.newTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event));
+            }
+            if (this.editTradeForm){
+                this.editTradeForm.addEventListener('submit', (event) => this.validateTradeForm(event));
+            }
+            if (this.newReviewForm){
+                this.newReviewForm.addEventListener('submit', (event) => this.validateReviewForm(event))
+            }
+        }
+
+        validateReviewForm(event){
+            let comment = document.getElementById('commentInput').value;
+            let rating = document.getElementById('ratingInput').value;
+            let errorMessages = [];
+    
+            this.addErrorIfEmpty(comment, 'comment is required.', errorMessages);
+            this.addErrorIfEmpty(rating, 'rating is required.', errorMessages);
+            rating = Number.parseFloat(rating);
+            if (rating){
+                rating = tryCatchHelper(errorMessages, () => {
+                    return checkRating(rating);
+                })
+            }
+            if (comment){
+                comment = tryCatchHelper(errorMessages, () => {
+                    return checkComment(comment);
+                })  
+            }
+            this.displayErrors(errorMessages, event);
         }
     
         validateLoginForm(event) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
             let errorMessages = [];
     
             this.addErrorIfEmpty(email, 'Email is required.', errorMessages);
             this.addErrorIfEmpty(password, 'Password is required.', errorMessages);
-    
+            if (email) {
+                email = tryCatchHelper(errorMessages, () => {
+                    return checkEmail(email);
+                })
+            }
+            if (password){
+                password = tryCatchHelper(errorMessages, () =>{
+                    return checkPassword(password)
+                })
+            }
+               
             this.displayErrors(errorMessages, event);
         }
     
         validateRegistrationForm(event) {
+
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -51,6 +95,31 @@
 
     
             this.displayErrors(errorMessages, event);
+        }
+
+        validateTradeForm(event) {
+            const otherUserItems = document.getElementsByName("otherUserItems");
+            const thisUserItems = document.getElementsByName("thisUserItems");
+            //look through the .checked value of each thing in the nodelist
+            let errorMessages = [];
+            let thisItems = [];
+            let otherItems = [];
+            otherUserItems.forEach( (element) =>{
+                if (element.checked){
+                    otherItems.push(element.value);
+                }
+            })
+            thisUserItems.forEach( (element) =>{
+                if (element.checked){
+                    thisItems.push(element.value);
+                }
+            })
+            if (thisItems.length == 0 || otherItems.length == 0){
+                errorMessages.push("must select at least 1 item from each user")
+            }
+
+            this.displayErrors(errorMessages, event);
+
         }
     
         addErrorIfEmpty(fieldValue, errorMessage, errorList) {
