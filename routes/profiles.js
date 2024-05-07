@@ -180,6 +180,8 @@ router.get('/:profileId', async (req, res) => {
         return res.redirect('/profile');
     }
     const foundProfile = await userData.displayUserData(req.params.profileId);
+    delete foundProfile.themePreference;
+    delete foundProfile.hashedPassword;
     let self = undefined;
     if(req.session.user){
         self = await userData.displayUserData(req.session.user._id);
