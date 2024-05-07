@@ -226,6 +226,21 @@ div.trade-item img {
     
 }
 
-.dark {
+.dark input, .dark select, .dark button {
+    background-color: #111111;
+    color: white;
+    transition: background-color 0.3s ease;
+}
 
+.dark input:hover, .dark select:hover, .dark button:hover {
+    background-color: #333333
+}
+
+.dark a {
+    color: #3093ff;
+}
+
+.dark dialog {
+    background-color: #000000;
+    color: white;
 }
