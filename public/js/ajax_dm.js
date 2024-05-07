@@ -69,16 +69,19 @@ $(document).ready(function() {
                 message: messageText
             }),
             success: function(response) {
-                $('#dm').append(`
-                    <li>
+                $('#dm').html('');
+                for (let message of response.data.messages) {
+                    $('#dm').append(`
+                    <li class="message">
                         <div>
-                            <label id="sender">You</label>
-                            <p id="content">${messageText}</p>
-                            <p id="timestamp">${new Date().toLocaleString()}</p>
+                            <p id="sender">${message.sender}</p>
+                            <p id="content">${message.content}</p>
+                            <p id="timestamp">${message.timestamp}</p>
                         </div>
                     </li>
                 `);
-                messageInput.val(''); // Clear the input after sending
+                }
+                messageInput.val(''); 
             },
             error: function() {
                 alert('Failed to send message.');
@@ -86,52 +89,3 @@ $(document).ready(function() {
         });
     });
 });
-
-/* (function($) {
-    $(document).ready(function() {
-        let messageForm = $('#messageBox'),
-            messageInput = $('#messageInput'),
-            messageList = $('#dm'); 
-            senderId = $('#senderId').val(), 
-            recipientId = $('#recipientId').val(); 
-
-        messageForm.submit(function(event) {
-            event.preventDefault();
-
-            let messageText = messageInput.val().trim();
-            if (!messageText) {
-                alert("Please enter a message to send.");
-                return;
-            }
-
-            let requestConfig = {
-                method: 'POST',
-                url: '/api/dms/send', // Make sure this matches your API endpoint
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    senderId: senderId,
-                    recipientId: recipientId,
-                    message: messageText
-                })
-            };
-
-            $.ajax(requestConfig).then(function(response) {
-                let newMessageHtml = `<li>
-                    <div>
-                        <label id="sender">${'You'}</label>
-                        <p id="content">${messageText}</p>
-                        <p id="timestamp">${new Date().toLocaleString()}</p>
-                    </div>
-                </li>`;
-                messageList.append(newMessageHtml);
-
-                messageInput.val('');
-            }).catch(function(error) {
-                console.error('Error sending message:', error);
-                alert('Failed to send message.');
-            });
-        });
-    });
-})(jQuery);
-
- */

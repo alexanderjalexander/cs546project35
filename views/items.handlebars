@@ -2,7 +2,21 @@
 {{#if auth}}
     {{> add_profile_item_json}}
 {{/if}}
-<div id="communityItemsList">
+<div id="communityItemsList"> {{!Where I found how to do the drop down: https://www.w3schools.com/html/html_form_elements.asp}}
+    <ul id="communityItemsErrors" class="error"></ul>
+<div class="search-bar-filter">
+    <form id="filterForm" action="/items" method="GET">
+        <label for="filter">Filter:</label>
+        <select name="filter" id="filter">
+            <option value="">Select Filter</option>
+            <option value="value">By Value</option>
+            <option value="name">Alphabetically</option>
+            <option value="followedUsers">By Followed User</option>
+        </select>
+        <input type="submit" value="Apply">
+    </form>
+</div>
+
 {{#each items}}
     <div>
         <h2><a href="/items/{{_id}}">{{name}}</a></h2>
@@ -15,6 +29,6 @@
         <img width='500px' alt="{{name}}" src="{{image}}">
     </div>
 {{else}}
-    <p id="noItemsText">No items. :(</p>
+    <p id="noItemsText">No items. </p>
 {{/each}}
 </div>

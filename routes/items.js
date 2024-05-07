@@ -10,10 +10,29 @@ import * as help from "../helpers.js";
 const router = Router();
 const upload = multer(multerConfig).single('image');
 
-//GET route to view all items in the community
 router.get('/', async (req, res) => {
     try {
         let items;
+        const filter = req.query.filter;
+        switch (filter) {
+            case 'value':
+                items = await itemData.getAll();
+                items.sort((a, b) => a.price - b.price); 
+                break;
+            case 'name':
+                items = await itemData.getAll();
+                items.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'followedUsers':
+                if (req.session.user) {
+                    items = await itemData.getAllFollowedByUser(req.session.user._id);
+                } else {
+                    items = await itemData.getAll();
+                }
+                break;
+            default:
+                items = await itemData.getAll();
+        }
         if (req.session.user !== undefined) {
             items = await itemData.getAllExceptUserId(req.session.user._id)
         } else {
@@ -21,16 +40,34 @@ router.get('/', async (req, res) => {
         }
         return res.render('items', {
             title: "All Community Items",
-            themePreference: req.session.user !== undefined ? req.session.user.themePreference : 'light',
             items: items
         });
     } 
     catch (error) {
-        res.status(500).send({error: error.toString()});
+        res.status(500).render('items', {
+            title: "All Community Items",
+            items: items
+        });
     }
 });
 
-//GET route to view a specific item
+router.get('/filter', async (req, res) => {
+    let filter = req.query.filter;
+    try {
+        let items = await itemData.getAll();
+        res.json(items.map(item => ({
+            _id: item._id,
+            name: item.name,
+            desc: item.desc,
+            price: item.price,
+            image: item.image
+        })));
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve items.' });
+    }
+});
+
+
 router.get('/:itemid', async (req, res) => {
     try {
         req.params.itemid = helper.checkIdString(req.params.itemid);
@@ -61,16 +98,13 @@ router.get('/:itemid', async (req, res) => {
 });
 
 
-//POST route to create new item via quick add form
 router.route('/')
     .post(async (req, res) => {
         upload(req, res, async function (err) {
-            // Input cleaning
             let cleanName = xss(req.body.name);
             let cleanDesc = xss(req.body.desc);
             let cleanPrice = Number(xss(req.body.price));
 
-            // Input checking
             const errors = [];
             const name = help.tryCatchHelper(errors,
                 () => help.checkItemName(cleanName));
@@ -80,20 +114,16 @@ router.route('/')
             const price = help.tryCatchHelper(errors,
                 () => help.checkPrice(cleanPrice, 'Item Price'));
 
-            // If errors occurred, propagate them back to the user
             if (err instanceof multer.MulterError || err) {
-                // Multer Error occurred while uploading
                 errors.push('Error: ' + err.message);
                 return res.status(500).json({success: false, errors: errors});
             } else if (err instanceof TypeError) {
-                // TypeError due to invalid file format
                 errors.push(err);
                 return res.status(400).json({success: false, errors: errors});
             } else if (req.file === undefined) {
                 errors.push('Error: You must supply an image, either in .png, .jpeg, or .jpg formats.');
                 return res.status(400).json({success: false, errors: errors});
             } else if (errors.length !== 0) {
-                // No multer error, but validation errors
                 return res.status(400).json({success: false, errors: errors});
             }
 
