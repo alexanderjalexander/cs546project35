@@ -113,12 +113,12 @@ router.route('/')
         //now we need to create a new trade object
 
         try {
-            if (await tradeData.exists(req.body.otherUserId, req.session.user._id)){
-                return res.status(400).render('error',{
-                    title: "error",
-                    errors: ['you already have a trade with this user']
-                })
-            }
+            // if (await tradeData.exists(req.body.otherUserId, req.session.user._id)){
+            //     return res.status(400).render('error',{
+            //         title: "error",
+            //         errors: ['you already have a trade with this user']
+            //     })
+            // }
             const newTrade = await tradeData.create(
                 req.session.user._id,
                 req.body.otherUserId,
@@ -254,13 +254,6 @@ router.route('/:tradeId')
                     receiverItems: req.body.otherUserItems,
                     receiverStatus: "pending"
                 };
-            }
-            if (await tradeData.exists(newTrade.senderItems, newTrade.receiverItems)){
-                return res.status(400).render('trade', {
-                    title: "trade",
-                    ...foundTrade,
-                    errors: ['you already have a trade with those items'],
-                });
             }
             await tradeData.update(tradeId, newTrade);
             req.session._message = ['successfully updated trade'];
