@@ -2,7 +2,7 @@ import {items, trades, users} from '../config/mongoCollections.js';
 import tradeData from './trades.js'
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
-import {userData} from "./index.js";
+import * as userData from "./users.js";
 
 /**@typedef {({
  * _id:ObjectId,
