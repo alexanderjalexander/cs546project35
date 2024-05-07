@@ -2,6 +2,7 @@ import {items, trades, users} from '../config/mongoCollections.js';
 import tradeData from './trades.js'
 import {ObjectId} from 'mongodb';
 import * as helper from '../helpers.js'
+import {userData} from "./index.js";
 
 /**@typedef {({
  * _id:ObjectId,
@@ -258,11 +259,29 @@ const num_trades = async (id) => {
     return count;
 }
 
+const getAllByFollowing = async (userId) => {
+    userId = helper.checkIdString(userId);
+
+    const user = userData.getUserById(userId);
+    const following = user.following.map(id => {userId: id});
+
+    const itemCollection = await items();
+    const itemList = await itemCollection.find(
+        {$or: following}
+    ).toArray();
+
+    if (!itemList) {
+        throw `No items have been found.`
+    }
+    return itemList;
+}
+
 const exportedMethods = {
     getAll, 
     getById, 
     getAllByUserId, 
-    getAllExceptUserId, 
+    getAllExceptUserId,
+    getAllByFollowing,
     update, 
     create, 
     remove,
